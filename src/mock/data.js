@@ -1,11 +1,9 @@
-const BASE_URL = 'https://freestore-project.herokuapp.com'
+const BASE_URL = '';
 
-function config(token, refresh) {
+function config(token) {
     return {
         headers: {
             "Authorization": `Bearer ${token}`,
-            "Refresh": `${refresh}`,
-            "Access-Control-Allow-Origin": '*'
         }
     }
 }

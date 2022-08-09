@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import GlobalStyle from '../assets/styles/GlobalStyle';
 import UserContext from './contexts/UserContext';
+import LoginScreen from './pages/LoginScreen/LoginScreen';
 
 function App() {
   return (
@@ -9,7 +10,7 @@ function App() {
 
       <BrowserRouter>
         <Routes>
-          <Route path={'/'} element={<></>} />
+          <Route path={'/'} element={<LoginScreen />} />
         </Routes>
       </BrowserRouter >
     </UserContext.Provider>
