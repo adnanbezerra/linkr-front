@@ -48,7 +48,7 @@ export const Posts = styled.div`
 `
 
 export const NewPost = styled.div`
-    height: 200px;
+    height: 210px;
     display: flex;
     border-radius: 15px;
     padding: 20px;
@@ -93,6 +93,10 @@ export const Perfil = styled.div`
         width: 100%;
         text-align: center;
         margin-top: 5px;
+        font-size: 11px;
+        font-family: 'Lato', sans-serif;
+        font-weight: 400;
+        color: #FFFFFF;
     }
 `
 
@@ -100,7 +104,7 @@ export const PostContent = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding-left: 20px;
     box-sizing: border-box;
 
 
@@ -113,11 +117,29 @@ export const PostContent = styled.div`
 
     input{
         width: 100%;
+        height: 30px;
         margin-bottom: 5px;
         box-sizing: border-box;
         background-color: #EFEFEF;
         border: 0;
         border-radius: 5px;
+        font-family: 'Lato', sans-serif;
+        font-weight: 300;
+        padding: 10px;
+    }
+
+    textarea{
+        width: 100%;
+        height: 60px;
+        box-sizing: border-box;
+        border: 0;
+        border-radius: 5px;
+        background-color: #EFEFEF;
+        font-size: 15px;
+        resize: none;
+        font-family: 'Lato', sans-serif;
+        font-weight: 300;
+        padding: 10px;
     }
 
     button{
@@ -126,22 +148,34 @@ export const PostContent = styled.div`
         background-color: #1877F2;
         border: 0;
         border-radius: 5px;
+        margin-top: 5px;
+        color: #FFFFFF;
+        cursor: pointer;
     }
 
     h2{
         margin-bottom: 10px;
-    }
-
-    h4{
-        width: 100%;
-        background-color: lightblue;
-        margin-bottom: 10px;
+        font-size: 20px;
+        font-family: 'Lato', sans-serif;
+        font-weight: 300;
     }
 
     h3{
         width: 100%;
-        background-color: red;
-        margin-bottom: 5px;
+        margin-bottom: 10px;
+        font-size: 19px;
+        font-family: 'Lato', sans-serif;
+        font-weight: 400;
+        color: #FFFFFF;
+    }
+
+    p{
+        width: 100%;
+        margin-bottom: 10px;
+        font-size: 17px;
+        font-family: 'Lato', sans-serif;
+        font-weight: 400;
+        color: #B7B7B7;
     }
 `
 
@@ -152,6 +186,8 @@ export const Sidebar = styled.div`
     flex-direction: column;
     border-radius: 15px;
     color: #FFFFFF;
+    box-sizing: border-box;
+    background-color: #171717;
 
 
     h2{
@@ -160,12 +196,6 @@ export const Sidebar = styled.div`
         font-size: 27px;
         font-family: 'Oswald', sans-serif;
     }
-
-
-
-
-    box-sizing: border-box;
-    background-color: #171717;
 `
 
 export const Line = styled.div`
@@ -182,6 +212,7 @@ export const Hashtags = styled.div`
         font-size: 19px;
         font-family: 'Lato', sans-serif;
         font-weight: 700;
+        margin-bottom: 10px;
     }
 
 
