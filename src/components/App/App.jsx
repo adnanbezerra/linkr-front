@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import GlobalStyle from '../assets/styles/GlobalStyle';
+import GlobalStyle from '../../assets/styles/GlobalStyle.js';
 import TimeLine from '../pages/timeline/TimelineScreen';
-import UserContext from './contexts/UserContext';
-import LoginScreen from './pages/LoginScreen/LoginScreen';
-import RegisterScreen from './pages/RegisterScreen/RegisterScreen';
+import UserContext from '../contexts/UserContext.js';
+import LoginScreen from '../pages/LoginScreen/LoginScreen.jsx';
+import RegisterScreen from '../pages/RegisterScreen/RegisterScreen';
 
 function App() {
   return (

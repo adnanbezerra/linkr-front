@@ -1,4 +1,4 @@
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags } from "./TimelineStyle";
+import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags } from "./TimelineStyle.jsx";
 
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 
