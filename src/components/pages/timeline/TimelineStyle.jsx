@@ -149,14 +149,43 @@ export const Sidebar = styled.div`
     width: 300px;
     height: 400px;
     display: flex;
+    flex-direction: column;
     border-radius: 15px;
+    color: #FFFFFF;
+
+
+    h2{
+        width: 100%;
+        padding: 10px;
+        font-size: 27px;
+        font-family: 'Oswald', sans-serif;
+    }
 
 
 
 
+    box-sizing: border-box;
+    background-color: #171717;
+`
+
+export const Line = styled.div`
+    height: 1px;
+    background-color: #484848;
+`
+
+export const Hashtags = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    
+    p{
+        font-size: 19px;
+        font-family: 'Lato', sans-serif;
+        font-weight: 700;
+    }
 
 
-    background-color: purple;
+    box-sizing: border-box;
 `
 
 

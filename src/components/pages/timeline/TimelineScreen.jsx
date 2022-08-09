@@ -1,4 +1,4 @@
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar } from "./TimelineStyle";
+import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, Hashtag } from "./TimelineStyle";
 
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 
@@ -51,7 +51,13 @@ function TimeLine() {
                         </Post>
                     </Posts>
                     <Sidebar>
-                        sidebar
+                        <h2>Trending</h2>
+                        <Line></Line>
+                        <Hashtags>
+
+                            <p># meninoney</p>
+
+                        </Hashtags>
                     </Sidebar>
                 </Panel>
             </Main>
