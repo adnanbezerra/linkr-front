@@ -7,6 +7,9 @@ import { useState } from "react";
 
 function TimeLine() {
 
+    const [urlPreview, setUrlPreview] = useState('')
+    const [description, setDescription] = useState('')
+
     const hashs = [
         { hashtag: 'neymito' },
         { hashtag: 'neymito' },
@@ -96,6 +99,26 @@ function TimeLine() {
         )
     }
 
+    function publish(event) {
+        event.preventDefault();
+        const body = {
+            urlPreview,
+            description
+        }
+
+        const urlEmpty = urlPreview.length === 0
+        const descriptionEmpty = urlPreview.length === 0
+
+        if (urlEmpty || descriptionEmpty) {
+            alert('Data cannot be empty')
+            return
+        }
+
+        console.log(body)
+        setDescription('')
+        setUrlPreview('')
+    }
+
     return (
         <Container>
             <div>
@@ -111,10 +134,9 @@ function TimeLine() {
                             </Perfil>
                             <PostContent>
                                 <h2>What are you going to share today?</h2>
-                                <form>
-                                    <input placeholder="http://..." />
-                                    <textarea placeholder="Awesome article about #javascript">
-                                    </textarea>
+                                <form onSubmit={publish}>
+                                    <input type='text' placeholder="http://..." onChange={(e) => { setUrlPreview(e.target.value) }} value={urlPreview} />
+                                    <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
                                     <button>Publish</button>
                                 </form>
                             </PostContent>
