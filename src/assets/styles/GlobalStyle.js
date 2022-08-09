@@ -24,6 +24,9 @@ article, aside, canvas, details, embed,
 figure, figcaption, footer, header, hgroup, 
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
+	font-family: 'Lato', sans-serif;
+	font-family: 'Oswald', sans-serif;
+	font-family: 'Passion One', cursive;
     margin: 0;
 	padding: 0;
 	border: 0;
