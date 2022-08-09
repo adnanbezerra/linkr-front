@@ -1,8 +1,12 @@
 import styled from "styled-components";
 
+// Fonts
+
+// 
+
 export const Container = styled.div`
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     display: flex;
     justify-content: center;
     position: absolute;
@@ -20,6 +24,10 @@ export const Main = styled.div`
     h1{
         width: 100%;
         margin-bottom: 50px;
+        font-family: 'Oswald', sans-serif;
+        font-size: 43px;
+        color: #FFFFFF;
+        font-weight: 700;
     }
 `
 
@@ -73,12 +81,19 @@ export const Perfil = styled.div`
     flex-direction: column;
     align-items: center;
 
-    p{
+    img{
         width: 50px;
         height: 50px;
-        background-color: yellow;
-        border-radius: 50%; 
-    }   
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 20px;
+    }
+
+    p{
+        width: 100%;
+        text-align: center;
+        margin-top: 5px;
+    }
 `
 
 export const PostContent = styled.div`
@@ -115,6 +130,18 @@ export const PostContent = styled.div`
 
     h2{
         margin-bottom: 10px;
+    }
+
+    h4{
+        width: 100%;
+        background-color: lightblue;
+        margin-bottom: 10px;
+    }
+
+    h3{
+        width: 100%;
+        background-color: red;
+        margin-bottom: 5px;
     }
 `
 
