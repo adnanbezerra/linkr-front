@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
-import { BASE_URL, config } from "../../../mock/data";
+import { BASE_URL } from "../../../mock/data";
 import { Container, LinkrLogo, RegisterButton, RegisterContainer, RegisterForm, RegisterInput, RegisterText, SiteContainer, TextRegister } from "./RegisterScreenStyle";
 
 export default function RegisterScreen() {
