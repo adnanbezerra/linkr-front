@@ -13,14 +13,14 @@ const LinkrLogo = styled.p`
     font-weight: 700;
 `
 
-const LoginForm = styled.form`
+const RegisterForm = styled.form`
     display: flex;
     width: 80%;
     flex-direction: column;
     align-items: center;
 `
 
-const LoginInput = styled.input`
+const RegisterInput = styled.input`
     height: 60px;
     width: 100%;
     border-radius: 5px;
@@ -35,7 +35,7 @@ const LoginInput = styled.input`
     font-weight: 700;
 `
 
-const LoginButton = styled.button`
+const RegisterButton = styled.button`
     background-color: ${props => props.disabled ? "#71a5eb" : "#1877F2"};
     width: 100%;
     height: 60px;
@@ -58,14 +58,14 @@ const RegisterText = styled.p`
     margin-top: 22px;
 `
 
-const TextLogin = styled.div`
+const TextRegister = styled.div`
     font-family: 'Oswald', sans-serif;
     font-size: 43px;
     font-weight: 700;
     width: 40%;
 `
 
-const LoginContainer = styled.div`
+const RegisterContainer = styled.div`
     background-color: #333333;
     height: 100%;
     width: 35%;
@@ -86,4 +86,4 @@ const SiteContainer = styled.div`
     box-sizing: border-box;
 `
 
-export { Container, LoginContainer, SiteContainer, LinkrLogo, TextLogin, LoginButton, LoginInput, RegisterText, LoginForm };
+export { Container, RegisterContainer, SiteContainer, LinkrLogo, TextRegister, RegisterButton, RegisterInput, RegisterText, RegisterForm };
