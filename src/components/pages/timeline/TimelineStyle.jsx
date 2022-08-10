@@ -71,7 +71,7 @@ export const Post = styled.div`
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 20px;
-
+    position: relative;
     box-sizing: border-box;
     background-color: #151515;
 `
@@ -219,7 +219,15 @@ export const Hashtags = styled.div`
     box-sizing: border-box;
 `
 
-
+export const Edit = styled.div`
+    width: 40px;
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 20px;
+`
 
 
 

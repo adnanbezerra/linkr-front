@@ -1,8 +1,8 @@
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags } from "./TimelineStyle.jsx";
-
+import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags,  Edit } from "./TimelineStyle.jsx";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 
-import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
+import { BsTrash, BsFillPencilFill } from 'react-icons/bs';
 import { useState } from "react";
 
 function TimeLine() {
@@ -87,6 +87,14 @@ function TimeLine() {
                     <h3>{item.user} </h3>
                     <p>{item.description}</p>
                     <h3>preview</h3>
+                    <Edit>
+                        <div>
+                            <BsFillPencilFill color="#FFFFFF" size={15} cursor='pointer' />
+                        </div>
+                        <div>
+                            <BsTrash color="#FFFFFF" size={15} cursor='pointer'/>
+                        </div>
+                    </Edit>
                 </PostContent>
             </Post>
         )
