@@ -6,18 +6,18 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     width: 100%;
-    /* height: 100%; */
+    height: 100%;
     display: flex;
     justify-content: center;
     position: absolute;
     background-color: #333333;
+    overflow-y: scroll;
 `
 
 export const Main = styled.div`
     display: flex;
+    height: 100%;
     flex-direction: column;
-
-    
     box-sizing: border-box;
     margin-top: 100px;
 
@@ -32,7 +32,7 @@ export const Main = styled.div`
 `
 
 export const Panel = styled.div`
-    height: 100%;
+    height: auto;
     display: flex;
     justify-content: space-between;
 

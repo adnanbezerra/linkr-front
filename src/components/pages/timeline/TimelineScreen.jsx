@@ -10,6 +10,7 @@ function TimeLine() {
 
     const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
+    const [disable, setDisable] = useState(false)
     const [updatePage, setUpdatePage] = useState(true)
     const [posts, setPosts] = useState([])
 
@@ -76,8 +77,9 @@ function TimeLine() {
         const urlEmpty = url.length === 0
         const descriptionEmpty = url.length === 0
 
-        if (urlEmpty || descriptionEmpty) {
+        if (urlEmpty) {
             alert('Data cannot be empty')
+            setDisable(!disable)
             return
         }
 
@@ -86,10 +88,11 @@ function TimeLine() {
         promise.then((res) => {
             setUpdatePage(!updatePage)
         }).catch((err) => {
-            alert('An error occured while trying to fetch the posts, please refresh the page')
+            alert('Houve um erro ao publicar seu link')
             console.log(err)
         })
 
+        setDisable(!disable)
         setDescription('')
         setUrl('')
     }
@@ -112,11 +115,16 @@ function TimeLine() {
                                 <form onSubmit={publish}>
                                     <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
                                     <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
-                                    <button>Publish</button>
+                                    <button disabled={disable} onClick={() => {
+                                        setDisable(true)
+                                    }}>{disable ? 'Publishing' : 'Publish'}</button>
                                 </form>
                             </PostContent>
                         </NewPost>
-                        {posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })}
+                        {(posts.length === 0) ?
+                            <h1>There are no posts yet</h1> :
+                            posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })
+                        }
                     </Posts>
                     <Sidebar>
                         <h2>Trending</h2>
