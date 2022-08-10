@@ -86,6 +86,7 @@ function TimeLine() {
         promise.then((res) => {
             setUpdatePage(!updatePage)
         }).catch((err) => {
+            alert('An error occured while trying to fetch the posts, please refresh the page')
             console.log(err)
         })
 
