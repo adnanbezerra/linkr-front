@@ -1,12 +1,10 @@
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags,  Edit, PostModal } from "./TimelineStyle.jsx";
+import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags} from "./TimelineStyle.jsx";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
-import Modal from "react-modal";
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
-import { BsTrash, BsFillPencilFill } from 'react-icons/bs';
+import EditPost from "../EditPost/EditPost.jsx";
 import { useState } from "react";
 
 function TimeLine() {
-    const [modalIsOpen, setIsOpen] = useState(false);
     const [urlPreview, setUrlPreview] = useState('')
     const [description, setDescription] = useState('')
     const hashs = [
@@ -70,10 +68,8 @@ function TimeLine() {
     ]
 
     function GetPosts({ item }) {
-        const [isDelete, setDelete] = useState(false)
         const [liked, setLiked] = useState(false)
-        Modal.setAppElement(document.getElementById('root'))
-        
+        const [isDelete, setDelete] = useState(false)
         return (
             <Post>
                 <Perfil>
@@ -87,52 +83,10 @@ function TimeLine() {
                     <h3>{item.user} </h3>
                     <p>{item.description}</p>
                     <h3>preview</h3>
-                    <Edit>
-                        <div>
-                            <BsFillPencilFill color="#FFFFFF" size={18} cursor='pointer' onClick={() => editPost()} />
-                        </div>
-                        <div>
-                            <BsTrash color="#FFFFFF" size={18} cursor='pointer' onClick={() => deletePost()}/>
-                        </div>
-                        <Modal isOpen={modalIsOpen}   aria={{
-    labelledby: "heading",
-    describedby: "full_description"
-  }} style={ {  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    border: 'none',
-    background: 'rgba(255, 255, 255, 0.7)',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-                        }}}>
-                        <PostModal>      
-                            <h2>Are you sure you want <br />to delete this post?</h2>
-                            <div>
-                                <button onClick={closeModal}>No, go back</button>
-                                <button onClick={() => {setDelete(true); closeModal()}}>Yes, delete it</button>
-                            </div>          
-                        </PostModal>
-
-                        </Modal>
-                        
-                    </Edit>
+                    <EditPost setDelete = {setDelete} isDelete = {isDelete} /> 
                 </PostContent>
             </Post>
         )
-    }
-
-    function deletePost() {
-        setIsOpen(true);
-    }
-    
-    function closeModal() {
-        setIsOpen(false);
-    }
-
-    function editPost() {
-        console.log("b")
     }
 
     function GetHashtags({ item }) {
