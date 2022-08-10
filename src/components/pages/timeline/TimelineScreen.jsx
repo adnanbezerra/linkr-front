@@ -3,12 +3,15 @@ import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Side
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from 'axios'
 
 function TimeLine() {
 
-    const [urlPreview, setUrlPreview] = useState('')
+    const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
+    const [updatePage, setUpdatePage] = useState(true)
+    const [posts, setPosts] = useState([])
 
     const hashs = [
         { hashtag: 'neymito' },
@@ -22,53 +25,17 @@ function TimeLine() {
         { hashtag: 'neymito' }
     ]
 
-    const posts = [
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        }
-    ]
+    useEffect(() => {
+
+        const promise = axios.get('http://localhost:5000/timeline')
+
+        promise.then((res) => {
+            setPosts(res.data)
+        }).catch((err) => {
+            console.log(err)
+        })
+
+    }, [updatePage])
 
     function GetPosts({ item }) {
 
@@ -84,7 +51,7 @@ function TimeLine() {
                     <p>115 likes</p>
                 </Perfil>
                 <PostContent>
-                    <h3>{item.user} </h3>
+                    <h3>{item.name} </h3>
                     <p>{item.description}</p>
                     <h3>preview</h3>
                 </PostContent>
@@ -102,28 +69,35 @@ function TimeLine() {
     function publish(event) {
         event.preventDefault();
         const body = {
-            urlPreview,
+            url,
             description
         }
 
-        const urlEmpty = urlPreview.length === 0
-        const descriptionEmpty = urlPreview.length === 0
+        const urlEmpty = url.length === 0
+        const descriptionEmpty = url.length === 0
 
         if (urlEmpty || descriptionEmpty) {
             alert('Data cannot be empty')
             return
         }
 
-        console.log(body)
+        const promise = axios.post('http://localhost:5000/timeline', body)
+
+        promise.then((res) => {
+            setUpdatePage(!updatePage)
+        }).catch((err) => {
+            console.log(err)
+        })
+
         setDescription('')
-        setUrlPreview('')
+        setUrl('')
     }
 
     return (
         <Container>
-            <div>
+            {/* <div>
                 <LinkPreview url="https://github.com/wei/socialify" width="400px" height={100} />
-            </div>
+            </div> */}
             <Main>
                 <h1>timeline</h1>
                 <Panel>
@@ -135,7 +109,7 @@ function TimeLine() {
                             <PostContent>
                                 <h2>What are you going to share today?</h2>
                                 <form onSubmit={publish}>
-                                    <input type='text' placeholder="http://..." onChange={(e) => { setUrlPreview(e.target.value) }} value={urlPreview} />
+                                    <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
                                     <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
                                     <button>Publish</button>
                                 </form>
