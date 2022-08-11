@@ -54,6 +54,8 @@ function TimeLine() {
 
         const [liked, setLiked] = useState(false)
 
+        const url = 'https://medium.com/@pshrmn/a-simple-react-router'
+
         return (
             <Post>
                 <Perfil>
@@ -66,12 +68,12 @@ function TimeLine() {
                 <PostContent>
                     <h3>{item.name} </h3>
                     <p>{item.description}</p>
-                    <Preview>
+                    <Preview onClick={() => { window.open(url, '_blank') }}>
                         <Infos>
                             <h2>Como aplicar o Material UI em um
                                 projeto React</h2>
                             <h3>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</h3>
-                            <h4>https://medium.com/@pshrmn/a-simple-react-router</h4>
+                            <h4>{url}</h4>
                         </Infos>
                         <img src={image} />
                     </Preview>
