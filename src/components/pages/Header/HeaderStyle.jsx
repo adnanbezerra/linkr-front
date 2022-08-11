@@ -1,8 +1,20 @@
 import styled from "styled-components";
 
 const LogoffContainer = styled.div`
-    display: ${props => props.display ? 'sticky' : 'none'};
-
+    display: ${props => props.display ? 'flex' : 'none'};
+    position: fixed;
+    top: 70px;
+    right: 0px;
+    color: white;
+    width: 150px;
+    height: 47px;
+    border-radius: 0px 0px 0 20px;
+    background-color: #171717;
+    justify-content: center;
+    align-items: center;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
 `
 
 const ArrowBox = styled.div`
