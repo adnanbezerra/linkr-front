@@ -91,7 +91,7 @@ function TimeLine() {
                 <PostContent>
                     <h3>{item.name} </h3>
                     <p>{item.description}</p>
-                    <Preview onClick={() => { window.open(item.url, '_blank') } }>
+                    <Preview onClick={() => { window.open(item.url, '_blank') }}>
                         <Infos>
                             <h2>{item.titlePreview}</h2>
                             <h3>{item.descriptionPreview}</h3>
@@ -130,10 +130,15 @@ function TimeLine() {
             return
         }
 
-        const promise = axios.post('http://localhost:5000/timeline', body)
+        const config = {
+            headers: {
+                "Authorization": `Bearer ${verifyUser ? "" : user.token}`
+            }
+        }
+
+        const promise = axios.post('http://localhost:5000/timeline', body, config)
 
         promise.then((res) => {
-            console.log(res.data)
             setUpdatePage(!updatePage)
         }).catch((err) => {
             alert('Houve um erro ao publicar seu link')
