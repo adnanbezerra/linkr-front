@@ -14,12 +14,12 @@ export default function LoginScreen() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (user !== undefined) navigate('/timeline');
+        if (user !== undefined) navigate('/timeline', { replace: true });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        let tokenCookie = getCookieByName("token");
+        const tokenCookie = getCookieByName("token");
         if (tokenCookie) {
             setUser({ token: tokenCookie });
             navigate('/timeline');

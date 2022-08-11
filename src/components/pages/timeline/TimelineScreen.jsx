@@ -6,6 +6,7 @@ import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";
 import axios from 'axios'
 import Header from "../Header/Header";
+import { getCookieByName } from "../../../mock/data";
 
 function TimeLine() {
 
@@ -16,7 +17,7 @@ function TimeLine() {
     const [updatePage, setUpdatePage] = useState(true)
     const [posts, setPosts] = useState([])
 
-    const token = useContext(UserContext)
+    const { user, setUser } = useContext(UserContext)
 
     const hashs = [
         { hashtag: 'neymito' },
@@ -31,10 +32,18 @@ function TimeLine() {
     ]
 
     useEffect(() => {
+        const tokenCookie = getCookieByName('token');
+        if (tokenCookie) {
+            setUser({ token: tokenCookie });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
 
         const config = {
             headers: {
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${user.token}`
             }
         }
 

@@ -21,7 +21,7 @@ export default function RegisterScreen() {
     }, [])
 
     useEffect(() => {
-        let tokenCookie = getCookieByName("token");
+        const tokenCookie = getCookieByName("token");
         if (tokenCookie) {
             setUser({ token: tokenCookie });
             navigate('/timeline');
