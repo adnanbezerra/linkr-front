@@ -46,6 +46,12 @@ export const Posts = styled.div`
     margin: 0 20px 0 0;
     border-radius: 15px;
     position: relative;
+
+    @media(max-width: 650px){
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
 `
 
 export const NewPost = styled.div`
@@ -64,6 +70,10 @@ export const NewPost = styled.div`
         background-color: yellow;
         border-radius: 50%;
     }
+
+    @media(max-width: 650px){
+        border-radius: 0;
+    }
 `
 
 export const Post = styled.div`
@@ -75,6 +85,10 @@ export const Post = styled.div`
     position: relative;
     box-sizing: border-box;
     background-color: #151515;
+
+    @media(max-width: 650px){
+        border-radius: 0;
+    }
 `
 
 export const Perfil = styled.div`
@@ -107,6 +121,7 @@ export const PostContent = styled.div`
     flex-direction: column;
     padding-left: 20px;
     box-sizing: border-box;
+    word-break: break-all;
 
 
     form{
@@ -197,6 +212,10 @@ export const Sidebar = styled.div`
         font-size: 27px;
         font-family: 'Oswald', sans-serif;
     }
+
+    @media(max-width: 650px){
+        display: none;
+    }
 `
 
 export const Line = styled.div`
@@ -233,6 +252,54 @@ justify-content: center;
 align-items: center;
 z-index: 1;
 margin-top: 240px;
+`
+
+export const Preview = styled.div`
+height: 150px;
+display: flex;
+justify-content: space-between;
+border: 1px solid #4D4D4D;
+border-radius: 10px;
+cursor: pointer;
+overflow: hidden;
+box-sizing: border-box;
+
+img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 0 10px 10px 0;
+}
+`
+
+export const Infos = styled.div`
+display: flex;
+width: 100%;
+flex-direction: column;
+justify-content: space-around;
+padding: 20px;
+box-sizing: border-box;
+
+h2{
+    font-size: 16px;
+    color: #CECECE;
+    font-family: 'Lato', sans-serif;
+    word-break: break-all;
+}
+
+h3{
+    font-size: 11px;
+    color: #9B9595;
+    font-family: 'Lato', sans-serif;
+    word-break: break-all;
+}
+
+h4{
+    font-size: 11px;
+    color: #CECECE;
+    font-family: 'Lato', sans-serif;
+    word-break: break-all;
+}
 `
 
 // export const Main = styled.div`

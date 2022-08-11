@@ -1,30 +1,41 @@
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner } from "./TimelineStyle";
+import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from "./TimelineStyle";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import UserContext from '../../contexts/UserContext.js'
-import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";
-import axios from 'axios'
+import axios from 'axios';
+import DeletePost from "../EditPost/DeletePost.jsx";
 import Header from "../Header/Header";
 import { getCookieByName, config, BASE_URL } from "../../../mock/data";
 import { useNavigate, Link } from "react-router-dom";
+import LikePost from "../LikePost/LikePost.jsx";
 
 function TimeLine() {
     const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
     const [disable, setDisable] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [updatePage, setUpdatePage] = useState(true)
-    const [posts, setPosts] = useState([]);
+    const [updatePage, setUpdatePage] = useState(true);
     const [trends, setTrends] = useState([]);
-
+    const [posts, setPosts] = useState([])
+    const image = 'https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg'
+    const [modalIsOpen, setIsOpen] = useState(false);
     const { user, setUser } = useContext(UserContext)
+    const navigate = useNavigate();
+    const verifyUser = user === undefined;
+
+    useEffect(() => {
+        if (verifyUser) {
+            navigate('/', { replace: true });
+        }
+    }, [])
 
 
     useEffect(() => {
         const tokenCookie = getCookieByName('token');
         if (tokenCookie) {
             setUser({ token: tokenCookie });
+            navigate('/timeline', { replace: true });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -33,21 +44,23 @@ function TimeLine() {
 
         const config = {
             headers: {
-                "Authorization": `Bearer ${user.token}`
+                "Authorization": `Bearer ${verifyUser ? "" : user.token}`
             }
         }
 
         const promise = axios.get('http://localhost:5000/timeline')
 
         promise.then((res) => {
+            console.log(res.data)
             setPosts(res.data)
-            setLoading(!loading)
+            setLoading(false)
         }).catch((err) => {
             console.log(err)
         })
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage])
+
 
     //requisição de trends
     useEffect(() => {
@@ -70,22 +83,34 @@ function TimeLine() {
     }
 
     function GetPosts({ item }) {
-        const [liked, setLiked] = useState(false)
-        const [isDelete, setDelete] = useState(false)
+
+        const url = 'https://medium.com/@pshrmn/a-simple-react-router'
+        const [liked, setLiked] = useState(false);
         return (
             <Post>
                 <Perfil>
                     <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
-                    {(!liked) ?
-                        <AiOutlineHeart color="#FFFFFF" size={20} cursor='pointer' onClick={() => setLiked(!liked)} /> :
-                        <AiFillHeart color="red" size={20} cursor='pointer' onClick={() => setLiked(!liked)} />}
+                    <LikePost liked = {liked} setLiked = {setLiked} id = {item.id}/>
+
                     <p>115 likes</p>
                 </Perfil>
                 <PostContent>
                     <h3>{item.name} </h3>
                     <p>{item.description}</p>
                     <h3>preview</h3>
-                    {/*<EditPost setDelete = {setDelete} isDelete = {isDelete} />*/}
+                    <EditPost setDelete = {setDelete} isDelete = {isDelete} />
+
+
+                    <Preview onClick={() => { window.open(item.url, '_blank') } }>
+                        <Infos>
+                            <h2>{item.titlePreview}</h2>
+                            <h3>{item.descriptionPreview}</h3>
+                            <h4>{item.url}</h4>
+                        </Infos>
+                        <img src={item.imagePreview} />
+                    </Preview>
+                    <DeletePost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} setPosts = {setPosts} setLoading = {setLoading} /> 
+
                 </PostContent>
             </Post>
         )
@@ -112,6 +137,7 @@ function TimeLine() {
         const promise = axios.post('http://localhost:5000/timeline', body)
 
         promise.then((res) => {
+            console.log(res.data)
             setUpdatePage(!updatePage)
         }).catch((err) => {
             alert('Houve um erro ao publicar seu link')
@@ -139,7 +165,7 @@ function TimeLine() {
 
     return (
         <Container>
-            <Header />
+            <Header user={verifyUser ? "" : user} />
             {/* <div>
                 <LinkPreview url="https://github.com/wei/socialify" width="400px" height={100} />
             </div> */}
@@ -162,7 +188,7 @@ function TimeLine() {
                                 </form>
                             </PostContent>
                         </NewPost>
-                        {loading ?
+                        {!loading ?
                             <ShowPosts /> :
                             <LoadSpinner>
                                 <Loading />
