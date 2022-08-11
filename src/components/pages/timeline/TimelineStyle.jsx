@@ -6,18 +6,18 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     width: 100%;
-    /* height: 100%; */
+    height: 100%;
     display: flex;
     justify-content: center;
     position: absolute;
     background-color: #333333;
+    overflow-y: scroll;
 `
 
 export const Main = styled.div`
     display: flex;
+    height: 100%;
     flex-direction: column;
-
-    
     box-sizing: border-box;
     margin-top: 100px;
 
@@ -32,7 +32,7 @@ export const Main = styled.div`
 `
 
 export const Panel = styled.div`
-    height: 100%;
+    height: auto;
     display: flex;
     justify-content: space-between;
 
@@ -45,6 +45,7 @@ export const Posts = styled.div`
     flex-direction: column;
     margin: 0 20px 0 0;
     border-radius: 15px;
+    position: relative;
 `
 
 export const NewPost = styled.div`
@@ -219,9 +220,16 @@ export const Hashtags = styled.div`
     box-sizing: border-box;
 `
 
-
-
-
+export const LoadSpinner = styled.div`
+position: absolute;
+width: 100%;
+height: 240px;
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 1;
+margin-top: 240px;
+`
 
 // export const Main = styled.div`
     

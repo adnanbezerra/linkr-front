@@ -1,12 +1,23 @@
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags} from "./TimelineStyle.jsx";
+import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner } from "./TimelineStyle";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
-import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
-import EditPost from "../EditPost/EditPost.jsx";
-import { useState } from "react";
+import UserContext from '../../contexts/UserContext.js'
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
+import { useEffect, useState, useContext } from "react";
+import Loading from "../../Loading/Loading.js";
+import axios from 'axios'
+import Header from "../Header/Header";
+import { getCookieByName } from "../../../mock/data";
 
 function TimeLine() {
-    const [urlPreview, setUrlPreview] = useState('')
+    const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
+    const [disable, setDisable] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [updatePage, setUpdatePage] = useState(true)
+    const [posts, setPosts] = useState([])
+
+    const { user, setUser } = useContext(UserContext)
+
     const hashs = [
         { hashtag: 'neymito' },
         { hashtag: 'neymito' },
@@ -19,53 +30,33 @@ function TimeLine() {
         { hashtag: 'neymito' }
     ]
 
-    const posts = [
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
+    useEffect(() => {
+        const tokenCookie = getCookieByName('token');
+        if (tokenCookie) {
+            setUser({ token: tokenCookie });
         }
-    ]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+
+        const config = {
+            headers: {
+                "Authorization": `Bearer ${user.token}`
+            }
+        }
+
+        const promise = axios.get('http://localhost:5000/timeline')
+
+        promise.then((res) => {
+            setPosts(res.data)
+            setLoading(!loading)
+        }).catch((err) => {
+            console.log(err)
+        })
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [updatePage])
 
     function GetPosts({ item }) {
         const [liked, setLiked] = useState(false)
@@ -80,7 +71,7 @@ function TimeLine() {
                     <p>115 likes</p>
                 </Perfil>
                 <PostContent>
-                    <h3>{item.user} </h3>
+                    <h3>{item.name} </h3>
                     <p>{item.description}</p>
                     <h3>preview</h3>
                     <EditPost setDelete = {setDelete} isDelete = {isDelete} /> 
@@ -99,28 +90,53 @@ function TimeLine() {
     function publish(event) {
         event.preventDefault();
         const body = {
-            urlPreview,
+            url,
             description
         }
 
-        const urlEmpty = urlPreview.length === 0
-        const descriptionEmpty = urlPreview.length === 0
+        const urlEmpty = url.length === 0
+        const descriptionEmpty = url.length === 0
 
-        if (urlEmpty || descriptionEmpty) {
+        if (urlEmpty) {
             alert('Data cannot be empty')
+            setDisable(!disable)
             return
         }
 
-        console.log(body)
+        const promise = axios.post('http://localhost:5000/timeline', body)
+
+        promise.then((res) => {
+            setUpdatePage(!updatePage)
+        }).catch((err) => {
+            alert('Houve um erro ao publicar seu link')
+            console.log(err)
+        })
+
+        setDisable(!disable)
         setDescription('')
-        setUrlPreview('')
+        setUrl('')
+    }
+
+    function ShowPosts() {
+
+        if (posts.length === 0) {
+            return (
+                <h1>There are no posts yet</h1>
+            )
+        }
+        else {
+            return (
+                posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })
+            )
+        }
     }
 
     return (
         <Container>
-            <div>
+            <Header />
+            {/* <div>
                 <LinkPreview url="https://github.com/wei/socialify" width="400px" height={100} />
-            </div>
+            </div> */}
             <Main>
                 <h1>timeline</h1>
                 <Panel>
@@ -132,13 +148,19 @@ function TimeLine() {
                             <PostContent>
                                 <h2>What are you going to share today?</h2>
                                 <form onSubmit={publish}>
-                                    <input type='text' placeholder="http://..." onChange={(e) => { setUrlPreview(e.target.value) }} value={urlPreview} />
+                                    <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
                                     <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
-                                    <button>Publish</button>
+                                    <button disabled={disable} onClick={() => {
+                                        setDisable(true)
+                                    }}>{disable ? 'Publishing' : 'Publish'}</button>
                                 </form>
                             </PostContent>
                         </NewPost>
-                        {posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })}
+                        {loading ?
+                            <ShowPosts /> :
+                            <LoadSpinner>
+                                <Loading />
+                            </LoadSpinner>}
                     </Posts>
                     <Sidebar>
                         <h2>Trending</h2>
