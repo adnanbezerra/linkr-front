@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
-const LogoffBox = styled.div`
-    
+const LogoffContainer = styled.div`
+    display: ${props => props.display ? 'sticky' : 'none'};
+
 `
 
 const ArrowBox = styled.div`
@@ -38,4 +39,4 @@ const LinkrLogo = styled.p`
     }
 `
 
-export { HeaderContainer, LinkrLogo, ArrowBox, LogoffBox }
+export { HeaderContainer, LinkrLogo, ArrowBox, LogoffContainer }

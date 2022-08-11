@@ -5,12 +5,14 @@ import UserContext from "../../contexts/UserContext";
 import { ArrowBox, HeaderContainer, LinkrLogo } from "./HeaderStyle";
 import { BiUserCircle } from 'react-icons/bi';
 import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io'
+import LogoffBox from "../timeline/LogoffBox";
 
 export default function Header() {
 
     const { user, setUser } = useContext(UserContext);
     const [userInfo, setUserInfo] = useState();
     const [arrowDown, setArrowDown] = useState(true);
+    const [displayBox, setDisplayBox] = useState(false);
     const profilePicture = userInfo === undefined ? <BiUserCircle /> : <img src={userInfo.imageUrl} alt="" />;
 
     useEffect(() => {
@@ -36,15 +38,19 @@ export default function Header() {
 
     function clickOnTheArrow() {
         setArrowDown(!arrowDown);
+        setDisplayBox(!displayBox);
     }
 
     return (
-        <HeaderContainer>
-            <LinkrLogo>linkr</LinkrLogo>
-            <ArrowBox onClick={clickOnTheArrow}>
-                {arrowDown ? <IoIosArrowDown /> : <IoIosArrowUp />}
-                {profilePicture}
-            </ArrowBox>
-        </HeaderContainer>
+        <>
+            <HeaderContainer>
+                <LinkrLogo>linkr</LinkrLogo>
+                <ArrowBox onClick={clickOnTheArrow}>
+                    {arrowDown ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                    {profilePicture}
+                </ArrowBox>
+            </HeaderContainer>
+            <LogoffBox displayBox={displayBox} />
+        </>
     )
 }
