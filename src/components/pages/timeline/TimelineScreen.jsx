@@ -8,6 +8,7 @@ import axios from 'axios';
 import EditPost from "../EditPost/EditPost.jsx";
 import Header from "../Header/Header";
 import { getCookieByName } from "../../../mock/data";
+import { useNavigate } from "react-router-dom";
 
 function TimeLine() {
     const [url, setUrl] = useState('')
@@ -21,6 +22,14 @@ function TimeLine() {
 
     const [modalIsOpen, setIsOpen] = useState(false);
     const { user, setUser } = useContext(UserContext)
+    const navigate = useNavigate();
+    const verifyUser = user === undefined;
+
+    useEffect(() => {
+        if (verifyUser) {
+            navigate('/', { replace: true });
+        }
+    }, [])
 
     const hashs = [
         { hashtag: 'neymito' },
@@ -38,6 +47,7 @@ function TimeLine() {
         const tokenCookie = getCookieByName('token');
         if (tokenCookie) {
             setUser({ token: tokenCookie });
+            navigate('/timeline', { replace: true });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -46,7 +56,7 @@ function TimeLine() {
 
         const config = {
             headers: {
-                "Authorization": `Bearer ${user.token}`
+                "Authorization": `Bearer ${verifyUser ? "" : user.token}`
             }
         }
 
@@ -58,7 +68,7 @@ function TimeLine() {
         }).catch((err) => {
             console.log(err)
         })
-        
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage])
 
@@ -90,7 +100,7 @@ function TimeLine() {
                         <img src={image} />
                     </Preview>
 
-                    <EditPost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} /> 
+                    <EditPost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />
 
                 </PostContent>
             </Post>
@@ -150,7 +160,7 @@ function TimeLine() {
 
     return (
         <Container>
-            <Header />
+            <Header user={verifyUser ? "" : user} />
             {/* <div>
                 <LinkPreview url="https://github.com/wei/socialify" width="400px" height={100} />
             </div> */}
