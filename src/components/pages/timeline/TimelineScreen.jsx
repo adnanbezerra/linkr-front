@@ -7,7 +7,7 @@ import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
 import EditPost from "../EditPost/EditPost.jsx";
 import Header from "../Header/Header";
-import { getCookieByName } from "../../../mock/data";
+import { BASE_URL, getCookieByName } from "../../../mock/data";
 import { useNavigate } from "react-router-dom";
 
 function TimeLine() {
@@ -29,6 +29,7 @@ function TimeLine() {
         if (verifyUser) {
             navigate('/', { replace: true });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const hashs = [
@@ -54,13 +55,7 @@ function TimeLine() {
 
     useEffect(() => {
 
-        const config = {
-            headers: {
-                "Authorization": `Bearer ${verifyUser ? "" : user.token}`
-            }
-        }
-
-        const promise = axios.get('http://localhost:5000/timeline')
+        const promise = axios.get(`${BASE_URL}/timeline`)
 
         promise.then((res) => {
             setPosts(res.data)
@@ -97,7 +92,7 @@ function TimeLine() {
                             <h3>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</h3>
                             <h4>{url}</h4>
                         </Infos>
-                        <img src={image} />
+                        <img src={image} alt="" />
                     </Preview>
 
                     <EditPost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />

@@ -1,13 +1,13 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
-import { BASE_URL, config, getCookieByName } from "../../../mock/data";
-import UserContext from "../../contexts/UserContext";
-import { ArrowBox, HeaderContainer, LinkrLogo } from "./HeaderStyle";
+import { useEffect, useState } from "react";
+import { BASE_URL, config } from "../../../mock/data";
+import { ArrowBox, Debounce, HeaderContainer, LinkrLogo } from "./HeaderStyle";
 import { BiUserCircle } from 'react-icons/bi';
 import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io'
 import LogoffBox from "../timeline/LogoffBox";
+import {DebounceInput} from 'react-debounce-input';
 
-export default function Header({user}) {
+export default function Header({ user }) {
 
     const [userInfo, setUserInfo] = useState();
     const [arrowDown, setArrowDown] = useState(true);
@@ -17,19 +17,11 @@ export default function Header({user}) {
 
     const profilePicture = userInfo === undefined ? <BiUserCircle /> : <img src={verifyUser ? "" : userInfo.imageUrl} alt="" />;
 
-    // useEffect(() => {
-    //     const tokenCookie = getCookieByName('token');
-    //     if (tokenCookie) {
-    //         setUser({ token: tokenCookie });
-    //     }
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, []);
-
     useEffect(() => {
         const token = config(verifyUser ? "" : user.token);
 
         axios.get(`${BASE_URL}/user/me`, token)
-            .catch(response => {
+            .then(response => {
                 setUserInfo(response.data);
             })
             .catch(error => {
@@ -43,10 +35,19 @@ export default function Header({user}) {
         setDisplayBox(!displayBox);
     }
 
+    function handleNewSearch(text) {
+
+    }
+
     return (
         <>
             <HeaderContainer>
                 <LinkrLogo>linkr</LinkrLogo>
+                <Debounce
+                    minLength={2}
+                    debouceTimeout={300}
+                    onChange={e => handleNewSearch(e.target.value)}
+                />
                 <ArrowBox onClick={clickOnTheArrow}>
                     {arrowDown ? <IoIosArrowDown /> : <IoIosArrowUp />}
                     {profilePicture}
