@@ -220,7 +220,16 @@ export const Hashtags = styled.div`
     box-sizing: border-box;
 `
 
-
+export const LoadSpinner = styled.div`
+position: absolute;
+width: 100%;
+height: 240px;
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 1;
+margin-top: 240px;
+`
 
 
 

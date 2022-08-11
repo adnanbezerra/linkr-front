@@ -1,4 +1,4 @@
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags } from "./TimelineStyle";
+import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner } from "./TimelineStyle";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import UserContext from '../../contexts/UserContext.js'
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
@@ -132,7 +132,9 @@ function TimeLine() {
                         </NewPost>
                         {loading ?
                             '' :
-                            <Loading />}
+                            <LoadSpinner>
+                                <Loading />
+                            </LoadSpinner>}
                         {(posts.length === 0) ?
                             <h1>There are no posts yet</h1> :
                             posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })
