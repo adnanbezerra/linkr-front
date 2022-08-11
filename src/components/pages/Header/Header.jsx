@@ -2,13 +2,15 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { BASE_URL, config } from "../../../mock/data";
 import UserContext from "../../contexts/UserContext";
-import { HeaderContainer, LinkrLogo } from "./HeaderStyle";
+import { ArrowBox, HeaderContainer, LinkrLogo } from "./HeaderStyle";
 import { BiUserCircle } from 'react-icons/bi';
+import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io'
 
 export default function Header() {
 
     const { user } = useContext(UserContext);
     const [userInfo, setUserInfo] = useState();
+    const [arrowDown, setArrowDown] = useState(true);
     const profilePicture = userInfo === undefined ? <BiUserCircle /> : <img src={userInfo.imageUrl} alt="" />;
 
     useEffect(() => {
@@ -24,10 +26,17 @@ export default function Header() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    function clickOnTheArrow() {
+        setArrowDown(!arrowDown);
+    }
+
     return (
         <HeaderContainer>
             <LinkrLogo>linkr</LinkrLogo>
-            {profilePicture}
+            <ArrowBox onClick={clickOnTheArrow}>
+                {arrowDown ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                {profilePicture}
+            </ArrowBox>
         </HeaderContainer>
     )
 }

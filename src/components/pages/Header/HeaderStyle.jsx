@@ -1,5 +1,13 @@
 import styled from "styled-components";
 
+const LogoffBox = styled.div`
+    
+`
+
+const ArrowBox = styled.div`
+    cursor: pointer;
+`
+
 const HeaderContainer = styled.div`
     height: 72px;
     width: 100%;
@@ -9,9 +17,15 @@ const HeaderContainer = styled.div`
     color: white;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     padding: 0 28px;
     box-sizing: border-box;
+
+    font-size: 50px;
+
+    img {
+
+    }
 `
 
 const LinkrLogo = styled.p`
@@ -24,4 +38,4 @@ const LinkrLogo = styled.p`
     }
 `
 
-export { HeaderContainer, LinkrLogo }
+export { HeaderContainer, LinkrLogo, ArrowBox, LogoffBox }
