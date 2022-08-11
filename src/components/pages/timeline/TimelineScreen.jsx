@@ -31,11 +31,11 @@ function TimeLine() {
 
     useEffect(() => {
 
-        const config = {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        }
+        // const config = {
+        //     headers: {
+        //         "Authorization": `Bearer ${token}`
+        //     }
+        // }
 
         const promise = axios.get('http://localhost:5000/timeline')
 
