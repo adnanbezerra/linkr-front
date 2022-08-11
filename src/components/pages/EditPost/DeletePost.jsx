@@ -1,21 +1,15 @@
 import { BsTrash, BsFillPencilFill } from 'react-icons/bs';
-import { Edit, PostModal } from "./EditPostStyle.jsx";
+import { Edit, PostModal } from "./DeletePostStyle.jsx";
 import Modal from "react-modal";
 import axios from 'axios';
-import { LoadSpinner } from '../timeline/TimelineStyle.jsx';
-import Loading from '../../Loading/Loading.js'
-import { useState } from 'react';
 import { config, BASE_URL } from '../../../mock/data.js';
 import { useContext } from 'react';
 import UserContext from '../../contexts/UserContext.js';
 
-export default function EditPost({ id, modalIsOpen, setIsOpen, setPosts }) {
+export default function DeletePost({ id, modalIsOpen, setIsOpen, setPosts, setLoading }) {
     const { user } = useContext(UserContext);
     Modal.setAppElement(document.getElementById('root'));
-
-    const [loading, setLoading] = useState(false);
     function deletePost() {
-        console.log(id)
         setLoading(true)
         const promise = axios.delete(`${BASE_URL}/post/${id}`, config(user.token));
         promise
@@ -25,7 +19,6 @@ export default function EditPost({ id, modalIsOpen, setIsOpen, setPosts }) {
                 setPosts(res.data)
             })
             .catch((err) => {
-                console.log(err)
                 setIsOpen(false);
                 setLoading(false)
                 alert(
@@ -60,11 +53,6 @@ export default function EditPost({ id, modalIsOpen, setIsOpen, setPosts }) {
                         transform: 'translate(-50%, -50%)',
                     }
                 }}>
-                {
-                    loading ?
-                        <LoadSpinner>
-                            <Loading />
-                        </LoadSpinner> :
                         <PostModal>
                             <h2>Are you sure you want <br />to delete this post?</h2>
                             <div>
@@ -72,10 +60,10 @@ export default function EditPost({ id, modalIsOpen, setIsOpen, setPosts }) {
                                 <button onClick={() => deletePost()}>Yes, delete it</button>
                             </div>
                         </PostModal>
-                }
 
             </Modal>
-
+        
         </Edit>
-    )
+       
+        )
 }

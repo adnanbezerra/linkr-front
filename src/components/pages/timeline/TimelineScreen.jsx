@@ -1,13 +1,13 @@
 import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner } from "./TimelineStyle";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import UserContext from '../../contexts/UserContext.js'
-import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
-import EditPost from "../EditPost/EditPost.jsx";
+import DeletePost from "../EditPost/DeletePost.jsx";
 import Header from "../Header/Header";
 import { getCookieByName } from "../../../mock/data";
+import LikePost from "../LikePost/LikePost.jsx";
 
 function TimeLine() {
     const [url, setUrl] = useState('')
@@ -51,7 +51,7 @@ function TimeLine() {
 
         promise.then((res) => {
             setPosts(res.data)
-            setLoading(!loading)
+            setLoading(false)
         }).catch((err) => {
             console.log(err)
         })
@@ -59,22 +59,21 @@ function TimeLine() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage])
 
+
     function GetPosts({ item }) {
         const [liked, setLiked] = useState(false);
         return (
             <Post>
                 <Perfil>
                     <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
-                    {(!liked) ?
-                        <AiOutlineHeart color="#FFFFFF" size={20} cursor='pointer' onClick={() => setLiked(!liked)} /> :
-                        <AiFillHeart color="red" size={20} cursor='pointer' onClick={() => setLiked(!liked)} />}
+                    <LikePost liked = {liked} setLiked = {setLiked} id = {item.id}/>
                     <p>115 likes</p>
                 </Perfil>
                 <PostContent>
                     <h3>{item.name} </h3>
                     <p>{item.description}</p>
                     <h3>preview</h3>
-                    <EditPost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} setPosts = {setPosts} /> 
+                    <DeletePost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} setPosts = {setPosts} setLoading = {setLoading} /> 
                 </PostContent>
             </Post>
         )
@@ -156,7 +155,7 @@ function TimeLine() {
                                 </form>
                             </PostContent>
                         </NewPost>
-                        {loading ?
+                        {!loading ?
                             <ShowPosts /> :
                             <LoadSpinner>
                                 <Loading />
