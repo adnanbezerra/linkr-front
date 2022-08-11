@@ -15,7 +15,7 @@ function TimeLine() {
     const [updatePage, setUpdatePage] = useState(true)
     const [posts, setPosts] = useState([])
 
-    const token = useContext(UserContext)
+    // const { user } = useContext(UserContext)
 
     const hashs = [
         { hashtag: 'neymito' },
