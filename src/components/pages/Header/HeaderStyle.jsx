@@ -1,9 +1,5 @@
 import styled from "styled-components";
 
-const Debounce = styled.DebounceInput`
-    height: 45px;
-`
-
 const LogoffContainer = styled.div`
     display: ${props => props.display ? 'flex' : 'none'};
     position: fixed;
@@ -65,4 +61,4 @@ const LinkrLogo = styled.p`
     }
 `
 
-export { HeaderContainer, LinkrLogo, ArrowBox, LogoffContainer, Debounce }
+export { HeaderContainer, LinkrLogo, ArrowBox, LogoffContainer }

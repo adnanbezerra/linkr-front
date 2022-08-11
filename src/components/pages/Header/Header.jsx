@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { BASE_URL, config } from "../../../mock/data";
-import { ArrowBox, Debounce, HeaderContainer, LinkrLogo } from "./HeaderStyle";
+import { ArrowBox, HeaderContainer, LinkrLogo } from "./HeaderStyle";
 import { BiUserCircle } from 'react-icons/bi';
 import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io'
 import LogoffBox from "../timeline/LogoffBox";
-import {DebounceInput} from 'react-debounce-input';
+import { DebounceInput } from 'react-debounce-input';
 
 export default function Header({ user }) {
 
@@ -36,14 +36,14 @@ export default function Header({ user }) {
     }
 
     function handleNewSearch(text) {
-
+        
     }
 
     return (
         <>
             <HeaderContainer>
                 <LinkrLogo>linkr</LinkrLogo>
-                <Debounce
+                <DebounceInput
                     minLength={2}
                     debouceTimeout={300}
                     onChange={e => handleNewSearch(e.target.value)}
