@@ -45,6 +45,7 @@ export const Posts = styled.div`
     flex-direction: column;
     margin: 0 20px 0 0;
     border-radius: 15px;
+    position: relative;
 `
 
 export const NewPost = styled.div`
@@ -218,8 +219,6 @@ export const Hashtags = styled.div`
 
     box-sizing: border-box;
 `
-
-
 
 
 

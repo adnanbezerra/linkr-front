@@ -3,6 +3,7 @@ import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import UserContext from '../../contexts/UserContext.js'
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import { useEffect, useState, useContext } from "react";
+import Loading from "../../Loading/Loading.js";
 import axios from 'axios'
 
 function TimeLine() {
@@ -10,6 +11,7 @@ function TimeLine() {
     const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
     const [disable, setDisable] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [updatePage, setUpdatePage] = useState(true)
     const [posts, setPosts] = useState([])
 
@@ -27,17 +29,13 @@ function TimeLine() {
         { hashtag: 'neymito' }
     ]
 
-    const urlMetadata = require('url-metadata')
-
     useEffect(() => {
 
-        urlMetadata('http://bit.ly/2ePIrDy').then(
-            function (metadata) { // success handler
-                console.log(metadata)
-            },
-            function (error) { // failure handler
-                console.log(error)
-            })
+        const config = {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }
 
         const promise = axios.get('http://localhost:5000/timeline')
 
@@ -132,6 +130,9 @@ function TimeLine() {
                                 </form>
                             </PostContent>
                         </NewPost>
+                        {loading ?
+                            '' :
+                            <Loading />}
                         {(posts.length === 0) ?
                             <h1>There are no posts yet</h1> :
                             posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })
