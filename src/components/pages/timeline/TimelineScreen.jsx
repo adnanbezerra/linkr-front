@@ -41,6 +41,7 @@ function TimeLine() {
 
         promise.then((res) => {
             setPosts(res.data)
+            setLoading(!loading)
         }).catch((err) => {
             console.log(err)
         })
