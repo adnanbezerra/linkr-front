@@ -1,24 +1,27 @@
 import { BsTrash, BsFillPencilFill } from 'react-icons/bs';
-import { useState } from 'react';
 import { Edit, PostModal } from "./EditPostStyle.jsx";
 import Modal from "react-modal";
 import axios from 'axios';
+import { LoadSpinner } from '../timeline/TimelineStyle.jsx';
+import Loading from '../../Loading/Loading.js'
+import { useState } from 'react';
 import { config, BASE_URL } from '../../../mock/data.js';
 
-export default function EditPost({ setDelete, isDelete, id }) {
-
-    const [modalIsOpen, setIsOpen] = useState(false);
-    Modal.setAppElement(document.getElementById('root'))
-
+export default function EditPost({ id, modalIsOpen, setIsOpen }) {
+    Modal.setAppElement(document.getElementById('root'));
+    const [loading, setLoading] = useState(false);
     function deletePost() {
+        setLoading(true)
         setIsOpen(true);
         const promise = axios.delete(`${BASE_URL}/posts/${id}`, config);
         promise
             .then((res) => {
-                setModalIsOpen(false);
+                setIsOpen(false);
+                setLoading(false)
             })
             .catch((err) => {
-                setModalIsOpen(false);
+                setIsOpen(false);
+                setLoading(false)
                 alert(
                     "An error occured while trying to delete the post, please try again later",
                 );
@@ -29,6 +32,11 @@ export default function EditPost({ setDelete, isDelete, id }) {
         console.log("b")
     }
     return (
+        loading? 
+        <LoadSpinner>
+            <Loading />
+        </LoadSpinner>
+        :
         <Edit>
             <div>
                 <BsFillPencilFill color="#FFFFFF" size={18} cursor='pointer' onClick={() => editPost()} />
@@ -54,8 +62,8 @@ export default function EditPost({ setDelete, isDelete, id }) {
                 <PostModal>
                     <h2>Are you sure you want <br />to delete this post?</h2>
                     <div>
-                        <button onClick={() => setModalIsOpen(false)}>No, go back</button>
-                        <button onClick={() => {deletePost}}>Yes, delete it</button>
+                        <button onClick={() => setIsOpen(false)}>No, go back</button>
+                        <button onClick={() => {deletePost()}}>Yes, delete it</button>
                     </div>
                 </PostModal>
 

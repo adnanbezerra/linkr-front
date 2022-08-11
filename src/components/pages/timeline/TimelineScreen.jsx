@@ -3,7 +3,7 @@ import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import UserContext from '../../contexts/UserContext.js'
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import { useEffect, useState, useContext } from "react";
-import Loading from "../../Loading/Loading.sjs";
+import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
 import EditPost from "../EditPost/EditPost.jsx";
 import Header from "../Header/Header";
@@ -16,7 +16,7 @@ function TimeLine() {
     const [loading, setLoading] = useState(false)
     const [updatePage, setUpdatePage] = useState(true)
     const [posts, setPosts] = useState([])
-
+    const [modalIsOpen, setIsOpen] = useState(false);
     const { user, setUser } = useContext(UserContext)
 
     const hashs = [
@@ -60,8 +60,8 @@ function TimeLine() {
     }, [updatePage])
 
     function GetPosts({ item }) {
-        const [liked, setLiked] = useState(false)
-        const [isDelete, setDelete] = useState(false)
+        const [liked, setLiked] = useState(false);
+        
         return (
             <Post>
                 <Perfil>
@@ -75,7 +75,7 @@ function TimeLine() {
                     <h3>{item.name} </h3>
                     <p>{item.description}</p>
                     <h3>preview</h3>
-                    <EditPost setDelete = {setDelete} isDelete = {isDelete} /> 
+                    <EditPost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} /> 
                 </PostContent>
             </Post>
         )
