@@ -16,7 +16,7 @@ function TimeLine() {
     const [loading, setLoading] = useState(false)
     const [updatePage, setUpdatePage] = useState(true)
     const [posts, setPosts] = useState([])
-    const [modalIsOpen, setIsOpen] = useState(false);
+    const [modalIsOpen, setIsOpen] = useState();
     const { user, setUser } = useContext(UserContext)
 
     const hashs = [
@@ -61,7 +61,6 @@ function TimeLine() {
 
     function GetPosts({ item }) {
         const [liked, setLiked] = useState(false);
-        
         return (
             <Post>
                 <Perfil>
@@ -75,7 +74,7 @@ function TimeLine() {
                     <h3>{item.name} </h3>
                     <p>{item.description}</p>
                     <h3>preview</h3>
-                    <EditPost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} /> 
+                    <EditPost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} setPosts = {setPosts} /> 
                 </PostContent>
             </Post>
         )
