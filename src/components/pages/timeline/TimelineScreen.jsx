@@ -1,79 +1,77 @@
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags } from "./TimelineStyle";
-
+import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner } from "./TimelineStyle";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
-
+import UserContext from '../../contexts/UserContext.js'
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
-import { useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import Loading from "../../Loading/Loading.js";
+import axios from 'axios'
+import Header from "../Header/Header";
+import { getCookieByName, config, BASE_URL } from "../../../mock/data";
+import { useNavigate, Link } from "react-router-dom";
 
 function TimeLine() {
-
-    const [urlPreview, setUrlPreview] = useState('')
+    const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
+    const [disable, setDisable] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [updatePage, setUpdatePage] = useState(true)
+    const [posts, setPosts] = useState([]);
+    const [trends, setTrends] = useState([]);
 
-    const hashs = [
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' }
-    ]
+    const { user, setUser } = useContext(UserContext)
 
-    const posts = [
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
-        },
-        {
-            user: 'neymitinho',
-            description: 'olaolaoala',
-            urlPreview: 'dlfsdjkhfhds'
+
+    useEffect(() => {
+        const tokenCookie = getCookieByName('token');
+        if (tokenCookie) {
+            setUser({ token: tokenCookie });
         }
-    ]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+
+        const config = {
+            headers: {
+                "Authorization": `Bearer ${user.token}`
+            }
+        }
+
+        const promise = axios.get('http://localhost:5000/timeline')
+
+        promise.then((res) => {
+            setPosts(res.data)
+            setLoading(!loading)
+        }).catch((err) => {
+            console.log(err)
+        })
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [updatePage])
+
+    //requisição de trends
+    useEffect(() => {
+        const trends = axios.get(`${BASE_URL}/trends`, config(user.token));
+        trends.then((r) => {
+            setTrends(r.data);
+        }).catch((err) => {
+            console.log(err)
+        })
+    }, []);
+
+    function GetHashtags({ item }) {
+
+        return (
+            <Link to={`/hashtag/${item.name}`}>
+                <p># {item.name}</p>
+            </Link>
+
+        )
+    }
 
     function GetPosts({ item }) {
-
         const [liked, setLiked] = useState(false)
-
+        const [isDelete, setDelete] = useState(false)
         return (
             <Post>
                 <Perfil>
@@ -84,46 +82,67 @@ function TimeLine() {
                     <p>115 likes</p>
                 </Perfil>
                 <PostContent>
-                    <h3>{item.user} </h3>
+                    <h3>{item.name} </h3>
                     <p>{item.description}</p>
                     <h3>preview</h3>
+                    {/*<EditPost setDelete = {setDelete} isDelete = {isDelete} />*/}
                 </PostContent>
             </Post>
         )
     }
 
-    function GetHashtags({ item }) {
 
-        return (
-            <p># {item.hashtag}</p>
-        )
-    }
 
     function publish(event) {
         event.preventDefault();
         const body = {
-            urlPreview,
+            url,
             description
         }
 
-        const urlEmpty = urlPreview.length === 0
-        const descriptionEmpty = urlPreview.length === 0
+        const urlEmpty = url.length === 0
+        const descriptionEmpty = url.length === 0
 
-        if (urlEmpty || descriptionEmpty) {
+        if (urlEmpty) {
             alert('Data cannot be empty')
+            setDisable(!disable)
             return
         }
 
-        console.log(body)
+        const promise = axios.post('http://localhost:5000/timeline', body)
+
+        promise.then((res) => {
+            setUpdatePage(!updatePage)
+        }).catch((err) => {
+            alert('Houve um erro ao publicar seu link')
+            console.log(err)
+        })
+
+        setDisable(!disable)
         setDescription('')
-        setUrlPreview('')
+        setUrl('')
+    }
+
+    function ShowPosts() {
+
+        if (posts.length === 0) {
+            return (
+                <h1>There are no posts yet</h1>
+            )
+        }
+        else {
+            return (
+                posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })
+            )
+        }
     }
 
     return (
         <Container>
-            <div>
+            <Header />
+            {/* <div>
                 <LinkPreview url="https://github.com/wei/socialify" width="400px" height={100} />
-            </div>
+            </div> */}
             <Main>
                 <h1>timeline</h1>
                 <Panel>
@@ -135,19 +154,25 @@ function TimeLine() {
                             <PostContent>
                                 <h2>What are you going to share today?</h2>
                                 <form onSubmit={publish}>
-                                    <input type='text' placeholder="http://..." onChange={(e) => { setUrlPreview(e.target.value) }} value={urlPreview} />
+                                    <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
                                     <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
-                                    <button>Publish</button>
+                                    <button disabled={disable} onClick={() => {
+                                        setDisable(true)
+                                    }}>{disable ? 'Publishing' : 'Publish'}</button>
                                 </form>
                             </PostContent>
                         </NewPost>
-                        {posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })}
+                        {loading ?
+                            <ShowPosts /> :
+                            <LoadSpinner>
+                                <Loading />
+                            </LoadSpinner>}
                     </Posts>
                     <Sidebar>
-                        <h2>Trending</h2>
+                        <h2>Trendings</h2>
                         <Line></Line>
                         <Hashtags>
-                            {hashs.map((item, index) => { return (<GetHashtags key={index} item={item} />) })}
+                            {trends.length === 0 ? 'No trends at the moment' : trends.map((item, index) => { return (<GetHashtags key={index} item={item} />) })}
                         </Hashtags>
                     </Sidebar>
                 </Panel>
