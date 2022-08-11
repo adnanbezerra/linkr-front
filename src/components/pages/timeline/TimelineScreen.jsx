@@ -5,6 +5,8 @@ import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";
 import axios from 'axios'
+import Header from "../Header/Header";
+import { getCookieByName } from "../../../mock/data";
 
 function TimeLine() {
 
@@ -15,7 +17,7 @@ function TimeLine() {
     const [updatePage, setUpdatePage] = useState(true)
     const [posts, setPosts] = useState([])
 
-    // const { user } = useContext(UserContext)
+    const { user, setUser } = useContext(UserContext)
 
     const hashs = [
         { hashtag: 'neymito' },
@@ -30,12 +32,20 @@ function TimeLine() {
     ]
 
     useEffect(() => {
+        const tokenCookie = getCookieByName('token');
+        if (tokenCookie) {
+            setUser({ token: tokenCookie });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-        // const config = {
-        //     headers: {
-        //         "Authorization": `Bearer ${token}`
-        //     }
-        // }
+    useEffect(() => {
+
+        const config = {
+            headers: {
+                "Authorization": `Bearer ${user.token}`
+            }
+        }
 
         const promise = axios.get('http://localhost:5000/timeline')
 
@@ -123,6 +133,7 @@ function TimeLine() {
 
     return (
         <Container>
+            <Header />
             {/* <div>
                 <LinkPreview url="https://github.com/wei/socialify" width="400px" height={100} />
             </div> */}

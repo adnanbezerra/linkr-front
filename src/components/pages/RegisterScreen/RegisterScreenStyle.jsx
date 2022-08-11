@@ -5,12 +5,20 @@ const Container = styled.div`
     width: 100%;
     height: 100%;
     color: #FFFFFF;
+
+    @media(max-width: 650px) {
+        flex-direction: column;        
+    }
 `
 
 const LinkrLogo = styled.p`
     font-family: 'Passion One', cursive;
     font-size: 106px;
     font-weight: 700;
+
+    @media(max-width: 650px) {
+        font-size: 76px;
+    }
 `
 
 const RegisterForm = styled.form`
@@ -18,6 +26,10 @@ const RegisterForm = styled.form`
     width: 80%;
     flex-direction: column;
     align-items: center;
+
+    @media(max-width: 650px) {
+        width: 90%;
+    }
 `
 
 const RegisterInput = styled.input`
@@ -33,6 +45,11 @@ const RegisterInput = styled.input`
     font-family: 'Oswald', sans-serif;
     font-size: 27px;
     font-weight: 700;
+
+    @media(max-width: 650px) {
+        font-size: 22px;
+        height: 55px;
+    }
 `
 
 const RegisterButton = styled.button`
@@ -50,12 +67,20 @@ const RegisterButton = styled.button`
     &:hover {
        cursor: pointer; 
     }
+
+    @media(max-width: 650px) {
+        font-size: 22px;
+    }
 `
 
 const RegisterText = styled.p`
     font-size: 20px;
     font-weight: 400px;
     margin-top: 22px;
+
+    @media(max-width: 650px) {
+        font-size: 17px;
+    }
 `
 
 const TextRegister = styled.div`
@@ -63,6 +88,11 @@ const TextRegister = styled.div`
     font-size: 43px;
     font-weight: 700;
     width: 40%;
+
+    @media(max-width: 650px) {
+        width: 100%;
+        font-size: 23px;
+    }
 `
 
 const RegisterContainer = styled.div`
@@ -73,6 +103,14 @@ const RegisterContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
+    @media(max-width: 650px) {
+        width: 100%;
+        height: 70%;
+        justify-content: flex-start;
+        padding-top: 40px;
+        box-sizing: border-box;
+    }
 `
 
 const SiteContainer = styled.div`
@@ -84,6 +122,15 @@ const SiteContainer = styled.div`
     justify-content: center;
     padding-left: 5%;
     box-sizing: border-box;
+
+    @media(max-width: 650px) {
+        width: 100%;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        height: 30%;
+        align-items: center;
+        text-align: center;
+        padding: 0 5%;
+    }
 `
 
 export { Container, RegisterContainer, SiteContainer, LinkrLogo, TextRegister, RegisterButton, RegisterInput, RegisterText, RegisterForm };
