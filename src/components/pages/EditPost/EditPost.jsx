@@ -2,15 +2,17 @@ import { BsTrash, BsFillPencilFill } from 'react-icons/bs';
 import { useState } from 'react';
 import { Edit, PostModal } from "./EditPostStyle.jsx";
 import Modal from "react-modal";
+import axios from 'axios';
+import { config, BASE_URL } from '../../../mock/data.js';
 
-export default function EditPost({ setDelete, isDelete }) {
+export default function EditPost({ setDelete, isDelete, id }) {
 
     const [modalIsOpen, setIsOpen] = useState(false);
     Modal.setAppElement(document.getElementById('root'))
 
     function deletePost() {
         setIsOpen(true);
-        const promise = axios.delete(`${url}/posts/${id}`, config);
+        const promise = axios.delete(`${BASE_URL}/posts/${id}`, config);
         promise
             .then((res) => {
                 setModalIsOpen(false);

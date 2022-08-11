@@ -3,8 +3,9 @@ import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import UserContext from '../../contexts/UserContext.js'
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import { useEffect, useState, useContext } from "react";
-import Loading from "../../Loading/Loading.js";
-import axios from 'axios'
+import Loading from "../../Loading/Loading.sjs";
+import axios from 'axios';
+import EditPost from "../EditPost/EditPost.jsx";
 import Header from "../Header/Header";
 import { getCookieByName } from "../../../mock/data";
 
