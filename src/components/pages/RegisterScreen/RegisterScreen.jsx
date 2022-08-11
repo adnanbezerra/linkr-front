@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
-import { BASE_URL, getCookieByName } from "../../../mock/data";
+import { BASE_URL, getCookieByName } from "../../../mock/data.js";
 import UserContext from "../../contexts/UserContext";
-import { Container, LinkrLogo, RegisterButton, RegisterContainer, RegisterForm, RegisterInput, RegisterText, SiteContainer, TextRegister } from "./RegisterScreenStyle";
+import { Container, LinkrLogo, RegisterButton, RegisterContainer, RegisterForm, RegisterInput, RegisterText, SiteContainer, TextRegister } from "./RegisterScreenStyle.jsx";
 
 export default function RegisterScreen() {
 

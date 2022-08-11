@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
-import { BASE_URL, getCookieByName } from "../../../mock/data";
+import { BASE_URL, getCookieByName } from "../../../mock/data.js";
 import UserContext from "../../contexts/UserContext";
-import { Container, LinkrLogo, LoginButton, LoginContainer, LoginForm, LoginInput, RegisterText, SiteContainer, TextLogin } from "./LoginScreenStyle";
+import { Container, LinkrLogo, LoginButton, LoginContainer, LoginForm, LoginInput, RegisterText, SiteContainer, TextLogin } from "./LoginScreenStyle.jsx";
 
 export default function LoginScreen() {
 

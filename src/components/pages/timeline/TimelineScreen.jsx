@@ -9,7 +9,6 @@ import Header from "../Header/Header";
 import { getCookieByName } from "../../../mock/data";
 
 function TimeLine() {
-
     const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
     const [disable, setDisable] = useState(false)
@@ -60,9 +59,8 @@ function TimeLine() {
     }, [updatePage])
 
     function GetPosts({ item }) {
-
         const [liked, setLiked] = useState(false)
-
+        const [isDelete, setDelete] = useState(false)
         return (
             <Post>
                 <Perfil>
@@ -76,6 +74,7 @@ function TimeLine() {
                     <h3>{item.name} </h3>
                     <p>{item.description}</p>
                     <h3>preview</h3>
+                    <EditPost setDelete = {setDelete} isDelete = {isDelete} /> 
                 </PostContent>
             </Post>
         )

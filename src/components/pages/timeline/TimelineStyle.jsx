@@ -72,7 +72,7 @@ export const Post = styled.div`
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 20px;
-
+    position: relative;
     box-sizing: border-box;
     background-color: #151515;
 `
@@ -230,8 +230,6 @@ align-items: center;
 z-index: 1;
 margin-top: 240px;
 `
-
-
 
 // export const Main = styled.div`
     
