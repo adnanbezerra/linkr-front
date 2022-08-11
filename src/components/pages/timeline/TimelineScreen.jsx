@@ -1,9 +1,8 @@
 import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags } from "./TimelineStyle";
-
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
-
+import UserContext from '../../contexts/UserContext.js'
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from 'axios'
 
 function TimeLine() {
@@ -13,6 +12,8 @@ function TimeLine() {
     const [disable, setDisable] = useState(false)
     const [updatePage, setUpdatePage] = useState(true)
     const [posts, setPosts] = useState([])
+
+    const token = useContext(UserContext)
 
     const hashs = [
         { hashtag: 'neymito' },
@@ -26,7 +27,17 @@ function TimeLine() {
         { hashtag: 'neymito' }
     ]
 
+    const urlMetadata = require('url-metadata')
+
     useEffect(() => {
+
+        urlMetadata('http://bit.ly/2ePIrDy').then(
+            function (metadata) { // success handler
+                console.log(metadata)
+            },
+            function (error) { // failure handler
+                console.log(error)
+            })
 
         const promise = axios.get('http://localhost:5000/timeline')
 
