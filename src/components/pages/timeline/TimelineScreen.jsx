@@ -55,7 +55,8 @@ function TimeLine() {
         }).catch((err) => {
             console.log(err)
         })
-
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage])
 
     function GetPosts({ item }) {

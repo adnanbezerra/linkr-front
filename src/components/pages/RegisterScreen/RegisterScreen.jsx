@@ -33,7 +33,7 @@ export default function RegisterScreen() {
         event.preventDefault();
 
         setDisabledButton(true);
-        const RegisterInfo = { email, password };
+        const RegisterInfo = { email, password, name, imageUrl };
 
         axios.post(`${BASE_URL}/signup`, RegisterInfo)
             .then(reponse => {
