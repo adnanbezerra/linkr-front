@@ -15,6 +15,10 @@ const LogoffContainer = styled.div`
     font-size: 17px;
     font-weight: 700;
     cursor: pointer;
+
+    @media(max-width: 650px) {
+        width: 130px;
+    }
 `
 
 const ArrowBox = styled.div`
@@ -34,10 +38,16 @@ const HeaderContainer = styled.div`
     padding: 0 28px;
     box-sizing: border-box;
 
-    font-size: 50px;
+    font-size: 45px;
 
     img {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+    }
 
+    @media(max-width: 650px) {
+        padding: 0 17px;
     }
 `
 
