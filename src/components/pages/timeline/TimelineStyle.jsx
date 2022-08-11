@@ -82,6 +82,7 @@ export const Post = styled.div`
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 20px;
+    position: relative;
     box-sizing: border-box;
     background-color: #151515;
 
@@ -296,7 +297,6 @@ h4{
     word-break: break-all;
 }
 `
-
 
 // export const Main = styled.div`
     

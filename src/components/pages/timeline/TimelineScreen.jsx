@@ -4,10 +4,12 @@ import UserContext from '../../contexts/UserContext.js'
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";
-import axios from 'axios'
+import axios from 'axios';
+import EditPost from "../EditPost/EditPost.jsx";
+import Header from "../Header/Header";
+import { getCookieByName } from "../../../mock/data";
 
 function TimeLine() {
-
     const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
     const [disable, setDisable] = useState(false)
@@ -17,7 +19,8 @@ function TimeLine() {
 
     const image = 'https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg'
 
-    // const { user } = useContext(UserContext)
+    const [modalIsOpen, setIsOpen] = useState(false);
+    const { user, setUser } = useContext(UserContext)
 
     const hashs = [
         { hashtag: 'neymito' },
@@ -32,12 +35,20 @@ function TimeLine() {
     ]
 
     useEffect(() => {
+        const tokenCookie = getCookieByName('token');
+        if (tokenCookie) {
+            setUser({ token: tokenCookie });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-        // const config = {
-        //     headers: {
-        //         "Authorization": `Bearer ${token}`
-        //     }
-        // }
+    useEffect(() => {
+
+        const config = {
+            headers: {
+                "Authorization": `Bearer ${user.token}`
+            }
+        }
 
         const promise = axios.get('http://localhost:5000/timeline')
 
@@ -47,7 +58,8 @@ function TimeLine() {
         }).catch((err) => {
             console.log(err)
         })
-
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage])
 
     function GetPosts({ item }) {
@@ -77,6 +89,9 @@ function TimeLine() {
                         </Infos>
                         <img src={image} />
                     </Preview>
+
+                    <EditPost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} /> 
+
                 </PostContent>
             </Post>
         )
@@ -135,6 +150,7 @@ function TimeLine() {
 
     return (
         <Container>
+            <Header />
             {/* <div>
                 <LinkPreview url="https://github.com/wei/socialify" width="400px" height={100} />
             </div> */}
