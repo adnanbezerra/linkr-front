@@ -51,6 +51,7 @@ function TimeLine() {
 
         promise.then((res) => {
             setPosts(res.data)
+            setLoading(!loading)
         }).catch((err) => {
             console.log(err)
         })
@@ -116,6 +117,20 @@ function TimeLine() {
         setUrl('')
     }
 
+    function ShowPosts() {
+
+        if (posts.length === 0) {
+            return (
+                <h1>There are no posts yet</h1>
+            )
+        }
+        else {
+            return (
+                posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })
+            )
+        }
+    }
+
     return (
         <Container>
             <Header />
@@ -142,14 +157,10 @@ function TimeLine() {
                             </PostContent>
                         </NewPost>
                         {loading ?
-                            '' :
+                            <ShowPosts /> :
                             <LoadSpinner>
                                 <Loading />
                             </LoadSpinner>}
-                        {(posts.length === 0) ?
-                            <h1>There are no posts yet</h1> :
-                            posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })
-                        }
                     </Posts>
                     <Sidebar>
                         <h2>Trending</h2>
