@@ -1,4 +1,4 @@
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner } from "./TimelineStyle";
+import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from "./TimelineStyle";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import UserContext from '../../contexts/UserContext.js'
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
@@ -14,6 +14,8 @@ function TimeLine() {
     const [loading, setLoading] = useState(false)
     const [updatePage, setUpdatePage] = useState(true)
     const [posts, setPosts] = useState([])
+
+    const image = 'https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg'
 
     // const { user } = useContext(UserContext)
 
@@ -31,11 +33,11 @@ function TimeLine() {
 
     useEffect(() => {
 
-        const config = {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        }
+        // const config = {
+        //     headers: {
+        //         "Authorization": `Bearer ${token}`
+        //     }
+        // }
 
         const promise = axios.get('http://localhost:5000/timeline')
 
@@ -55,7 +57,7 @@ function TimeLine() {
         return (
             <Post>
                 <Perfil>
-                    <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
+                    <img src={image} alt="" />
                     {(!liked) ?
                         <AiOutlineHeart color="#FFFFFF" size={20} cursor='pointer' onClick={() => setLiked(!liked)} /> :
                         <AiFillHeart color="red" size={20} cursor='pointer' onClick={() => setLiked(!liked)} />}
@@ -64,7 +66,15 @@ function TimeLine() {
                 <PostContent>
                     <h3>{item.name} </h3>
                     <p>{item.description}</p>
-                    <h3>preview</h3>
+                    <Preview>
+                        <Infos>
+                            <h2>Como aplicar o Material UI em um
+                                projeto React</h2>
+                            <h3>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</h3>
+                            <h4>https://medium.com/@pshrmn/a-simple-react-router</h4>
+                        </Infos>
+                        <img src={image} />
+                    </Preview>
                 </PostContent>
             </Post>
         )
