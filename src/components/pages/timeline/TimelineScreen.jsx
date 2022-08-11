@@ -6,6 +6,7 @@ import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";
 import axios from 'axios'
 import Header from "../Header/Header";
+import { getCookieByName } from "../../../mock/data";
 
 function TimeLine() {
 
@@ -16,7 +17,7 @@ function TimeLine() {
     const [updatePage, setUpdatePage] = useState(true)
     const [posts, setPosts] = useState([])
 
-    const token = useContext(UserContext)
+    const { user, setUser } = useContext(UserContext)
 
     const hashs = [
         { hashtag: 'neymito' },
@@ -31,10 +32,18 @@ function TimeLine() {
     ]
 
     useEffect(() => {
+        const tokenCookie = getCookieByName('token');
+        if (tokenCookie) {
+            setUser({ token: tokenCookie });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
 
         const config = {
             headers: {
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${user.token}`
             }
         }
 
@@ -42,6 +51,7 @@ function TimeLine() {
 
         promise.then((res) => {
             setPosts(res.data)
+            setLoading(!loading)
         }).catch((err) => {
             console.log(err)
         })
@@ -107,6 +117,20 @@ function TimeLine() {
         setUrl('')
     }
 
+    function ShowPosts() {
+
+        if (posts.length === 0) {
+            return (
+                <h1>There are no posts yet</h1>
+            )
+        }
+        else {
+            return (
+                posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })
+            )
+        }
+    }
+
     return (
         <Container>
             <Header />
@@ -133,14 +157,10 @@ function TimeLine() {
                             </PostContent>
                         </NewPost>
                         {loading ?
-                            '' :
+                            <ShowPosts /> :
                             <LoadSpinner>
                                 <Loading />
                             </LoadSpinner>}
-                        {(posts.length === 0) ?
-                            <h1>There are no posts yet</h1> :
-                            posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })
-                        }
                     </Posts>
                     <Sidebar>
                         <h2>Trending</h2>
