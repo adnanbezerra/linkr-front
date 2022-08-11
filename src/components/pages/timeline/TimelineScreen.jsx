@@ -1,14 +1,15 @@
 import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from "./TimelineStyle";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import UserContext from '../../contexts/UserContext.js'
-import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
-import EditPost from "../EditPost/EditPost.jsx";
+import DeletePost from "../EditPost/DeletePost.jsx";
 import Header from "../Header/Header";
 import { getCookieByName } from "../../../mock/data";
+import LikePost from "../LikePost/LikePost.jsx";
 import { useNavigate } from "react-router-dom";
+
 
 function TimeLine() {
     const [url, setUrl] = useState('')
@@ -17,9 +18,7 @@ function TimeLine() {
     const [loading, setLoading] = useState(false)
     const [updatePage, setUpdatePage] = useState(true)
     const [posts, setPosts] = useState([])
-
     const image = 'https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg'
-
     const [modalIsOpen, setIsOpen] = useState(false);
     const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate();
@@ -65,7 +64,7 @@ function TimeLine() {
         promise.then((res) => {
             console.log(res.data)
             setPosts(res.data)
-            setLoading(!loading)
+            setLoading(false)
         }).catch((err) => {
             console.log(err)
         })
@@ -73,25 +72,24 @@ function TimeLine() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage])
 
+
     function GetPosts({ item }) {
 
-        const [liked, setLiked] = useState(false)
-
         const url = 'https://medium.com/@pshrmn/a-simple-react-router'
-
+        const [liked, setLiked] = useState(false);
         return (
             <Post>
                 <Perfil>
-                    <img src={image} alt="" />
-                    {(!liked) ?
-                        <AiOutlineHeart color="#FFFFFF" size={20} cursor='pointer' onClick={() => setLiked(!liked)} /> :
-                        <AiFillHeart color="red" size={20} cursor='pointer' onClick={() => setLiked(!liked)} />}
+                    <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
+                    <LikePost liked = {liked} setLiked = {setLiked} id = {item.id}/>
+
                     <p>115 likes</p>
                 </Perfil>
                 <PostContent>
                     <h3>{item.name} </h3>
                     <p>{item.description}</p>
-                    <Preview onClick={() => { window.open(item.url, '_blank') }}>
+
+                    <Preview onClick={() => { window.open(item.url, '_blank') } }>
                         <Infos>
                             <h2>{item.titlePreview}</h2>
                             <h3>{item.descriptionPreview}</h3>
@@ -99,9 +97,7 @@ function TimeLine() {
                         </Infos>
                         <img src={item.imagePreview} />
                     </Preview>
-
-                    <EditPost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />
-
+                    <DeletePost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} setPosts = {setPosts} setLoading = {setLoading} /> 
                 </PostContent>
             </Post>
         )
@@ -189,7 +185,7 @@ function TimeLine() {
                                 </form>
                             </PostContent>
                         </NewPost>
-                        {loading ?
+                        {!loading ?
                             <ShowPosts /> :
                             <LoadSpinner>
                                 <Loading />
