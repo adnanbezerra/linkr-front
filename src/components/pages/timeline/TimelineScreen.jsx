@@ -63,6 +63,7 @@ function TimeLine() {
         const promise = axios.get('http://localhost:5000/timeline')
 
         promise.then((res) => {
+            console.log(res.data)
             setPosts(res.data)
             setLoading(!loading)
         }).catch((err) => {
@@ -90,14 +91,13 @@ function TimeLine() {
                 <PostContent>
                     <h3>{item.name} </h3>
                     <p>{item.description}</p>
-                    <Preview onClick={() => { window.open(url, '_blank') }}>
+                    <Preview onClick={() => { window.open(item.url, '_blank') } }>
                         <Infos>
-                            <h2>Como aplicar o Material UI em um
-                                projeto React</h2>
-                            <h3>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</h3>
-                            <h4>{url}</h4>
+                            <h2>{item.titlePreview}</h2>
+                            <h3>{item.descriptionPreview}</h3>
+                            <h4>{item.url}</h4>
                         </Infos>
-                        <img src={image} />
+                        <img src={item.imagePreview} />
                     </Preview>
 
                     <EditPost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />
@@ -133,6 +133,7 @@ function TimeLine() {
         const promise = axios.post('http://localhost:5000/timeline', body)
 
         promise.then((res) => {
+            console.log(res.data)
             setUpdatePage(!updatePage)
         }).catch((err) => {
             alert('Houve um erro ao publicar seu link')
