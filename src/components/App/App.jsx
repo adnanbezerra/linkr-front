@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import GlobalStyle from '../../assets/styles/GlobalStyle';
 import UserContext from '../contexts/UserContext';
@@ -6,8 +7,11 @@ import RegisterScreen from '../pages/RegisterScreen/RegisterScreen';
 import TimeLine from '../pages/timeline/TimelineScreen';
 
 function App() {
+
+  const [user, setUser] = useState();
+
   return (
-    <UserContext.Provider>
+    <UserContext.Provider value={{user, setUser}}>
       <GlobalStyle />
 
       <BrowserRouter>

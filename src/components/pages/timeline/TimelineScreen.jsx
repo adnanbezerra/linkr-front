@@ -5,6 +5,7 @@ import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import { useEffect, useState } from "react";
 import axios from 'axios'
+import Header from "../Header/Header";
 
 function TimeLine() {
 
@@ -95,6 +96,7 @@ function TimeLine() {
 
     return (
         <Container>
+            <Header />
             {/* <div>
                 <LinkPreview url="https://github.com/wei/socialify" width="400px" height={100} />
             </div> */}
