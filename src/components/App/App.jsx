@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import PostsWithHashTag from '../pages/HashTag\'sPostsScreen/HashTag\'sPostsScreen.jsx';
+import HashTagPage from '../pages/HashTag\'sPostsScreen/HashTag\'sPostsScreen.jsx';
 import GlobalStyle from '../../assets/styles/GlobalStyle';
 import LoginScreen from '../pages/LoginScreen/LoginScreen';
 import RegisterScreen from '../pages/RegisterScreen/RegisterScreen';
 import TimeLine from '../pages/timeline/TimelineScreen';
 import UserContext from '../contexts/UserContext.js';
-import Test from '../pages/test.jsx';
 
 function App() {
 
@@ -21,7 +20,7 @@ function App() {
           <Route path={'/'} element={<LoginScreen />} />
           <Route path={'/sign-up'} element={<RegisterScreen />} />
           <Route path={'/timeline'} element={<TimeLine />} />
-          <Route path={'/hashtag/:hashtag'} element={<PostsWithHashTag />} />
+          <Route path={'/hashtag/:hashtag'} element={<HashTagPage/>} />
         </Routes>
       </BrowserRouter >
     </UserContext.Provider>
