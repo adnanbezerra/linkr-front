@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { BASE_URL, config } from "../../../mock/data";
-import { ArrowBox, HeaderContainer, LinkrLogo, SearchAndResults, SearchBox, SearchResults, SearchBoxMobile, Icon } from "./HeaderStyle";
+import { ArrowBox, HeaderContainer, LinkrLogo, SearchAndResults, SearchBox, SearchResults, SearchBoxMobile } from "./HeaderStyle";
 import { BiUserCircle } from 'react-icons/bi';
 import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io'
 import LogoffBox from "../timeline/LogoffBox";

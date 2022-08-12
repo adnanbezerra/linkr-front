@@ -1,23 +1,22 @@
 import { BsTrash, BsFillPencilFill } from 'react-icons/bs';
-import { Edit, PostModal } from "./EditPostStyle.jsx";
+import { Edit, PostModal } from "./DeletePostStyle.jsx";
 import Modal from "react-modal";
 import axios from 'axios';
-import { LoadSpinner } from '../timeline/TimelineStyle.jsx';
-import Loading from '../../Loading/Loading.js'
-import { useState } from 'react';
 import { config, BASE_URL } from '../../../mock/data.js';
+import { useContext } from 'react';
+import UserContext from '../../contexts/UserContext.js';
 
-export default function EditPost({ id, modalIsOpen, setIsOpen }) {
+export default function DeletePost({ id, modalIsOpen, setIsOpen, setPosts, setLoading }) {
+    const { user } = useContext(UserContext);
     Modal.setAppElement(document.getElementById('root'));
-    const [loading, setLoading] = useState(false);
     function deletePost() {
         setLoading(true)
-        setIsOpen(true);
-        const promise = axios.delete(`${BASE_URL}/posts/${id}`, config);
+        const promise = axios.delete(`${BASE_URL}/post/${id}`, config(user.token));
         promise
             .then((res) => {
-                setIsOpen(false);
+                setIsOpen(false)
                 setLoading(false)
+                setPosts(res.data)
             })
             .catch((err) => {
                 setIsOpen(false);
@@ -32,17 +31,12 @@ export default function EditPost({ id, modalIsOpen, setIsOpen }) {
         console.log("b")
     }
     return (
-        loading? 
-        <LoadSpinner>
-            <Loading />
-        </LoadSpinner>
-        :
         <Edit>
             <div>
                 <BsFillPencilFill color="#FFFFFF" size={18} cursor='pointer' onClick={() => editPost()} />
             </div>
             <div>
-                <BsTrash color="#FFFFFF" size={18} cursor='pointer' onClick={() => deletePost()} />
+                <BsTrash color="#FFFFFF" size={18} cursor='pointer' onClick={() => setIsOpen(true)} />
             </div>
             <Modal isOpen={modalIsOpen}
                 style={{
@@ -59,16 +53,17 @@ export default function EditPost({ id, modalIsOpen, setIsOpen }) {
                         transform: 'translate(-50%, -50%)',
                     }
                 }}>
-                <PostModal>
-                    <h2>Are you sure you want <br />to delete this post?</h2>
-                    <div>
-                        <button onClick={() => setIsOpen(false)}>No, go back</button>
-                        <button onClick={() => {deletePost()}}>Yes, delete it</button>
-                    </div>
-                </PostModal>
+                        <PostModal>
+                            <h2>Are you sure you want <br />to delete this post?</h2>
+                            <div>
+                                <button onClick={() => setIsOpen(false)}>No, go back</button>
+                                <button onClick={() => deletePost()}>Yes, delete it</button>
+                            </div>
+                        </PostModal>
 
             </Modal>
-
+        
         </Edit>
-    )
+       
+        )
 }

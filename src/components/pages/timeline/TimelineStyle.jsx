@@ -47,6 +47,10 @@ export const Posts = styled.div`
     border-radius: 15px;
     position: relative;
 
+    @media(max-width: 980px){
+        margin: 0;
+    }
+
     @media(max-width: 650px){
         width: 100%;
         margin: 0;
@@ -203,6 +207,8 @@ export const Sidebar = styled.div`
     color: #FFFFFF;
     box-sizing: border-box;
     background-color: #171717;
+    position: sticky;
+    top: 193px;
 
 
     h2{
@@ -212,7 +218,7 @@ export const Sidebar = styled.div`
         font-family: 'Oswald', sans-serif;
     }
 
-    @media(max-width: 650px){
+    @media(max-width: 980px){
         display: none;
     }
 `
