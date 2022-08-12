@@ -68,15 +68,12 @@ function TimeLine() {
 
 
     function GetPosts({ item }) {
-
-        const [liked, setLiked] = useState(false);
+        const url = 'https://medium.com/@pshrmn/a-simple-react-router'
         return (
             <Post>
                 <Perfil>
-                    <img src={item.imageUrl} alt="" />
-                    <LikePost liked={liked} setLiked={setLiked} id={item.id} />
-
-                    <p>115 likes</p>
+                    <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
+                    <LikePost id = {item.id}/>
                 </Perfil>
                 <PostContent>
                     <h3>{item.name} </h3>
