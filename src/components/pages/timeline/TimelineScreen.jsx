@@ -84,7 +84,7 @@ function TimeLine() {
                 </Perfil>
                 <PostContent>
                     <h3>{item.name} </h3>
-                    <p>{item.description}</p>
+                    {/* <p>{item.description}</p> */}
 
                     <Preview onClick={() => { window.open(item.url, '_blank') } }>
                         <Infos>
