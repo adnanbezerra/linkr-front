@@ -126,10 +126,15 @@ function TimeLine() {
             return
         }
 
-        const promise = axios.post('http://localhost:5000/timeline', body)
+        const config = {
+            headers: {
+                "Authorization": `Bearer ${verifyUser ? "" : user.token}`
+            }
+        }
+
+        const promise = axios.post('http://localhost:5000/timeline', body, config)
 
         promise.then((res) => {
-            console.log(res.data)
             setUpdatePage(!updatePage)
         }).catch((err) => {
             alert('Houve um erro ao publicar seu link')
