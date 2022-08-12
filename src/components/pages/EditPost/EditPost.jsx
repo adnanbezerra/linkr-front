@@ -1,39 +1,39 @@
 import { BsTrash, BsFillPencilFill } from 'react-icons/bs';
-import { Edit, PostModal } from "./DeletePostStyle.jsx";
+import { Edit, PostModal } from "./EditPostStyle.jsx";
 import Modal from "react-modal";
 import axios from 'axios';
 import { config, BASE_URL } from '../../../mock/data.js';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import UserContext from '../../contexts/UserContext.js';
+import Loading from "../../Loading/Loading.js";
 
-export default function DeletePost({ id, modalIsOpen, setIsOpen, setPosts, setLoading }) {
+export default function EditPost({ id, modalIsOpen, setIsOpen, setPosts }) {
     const { user } = useContext(UserContext);
+    const [loading, setLoading] = useState(false)
     Modal.setAppElement(document.getElementById('root'));
     function deletePost() {
         setLoading(true)
         const promise = axios.delete(`${BASE_URL}/post/${id}`, config(user.token));
         promise
             .then((res) => {
-                setIsOpen(false)
-                setLoading(false)
+                setTimeout(() =>  setLoading(false), 1000)
+                setTimeout( () => setIsOpen(false), 2000)
                 setPosts(res.data)
             })
             .catch((err) => {
-                setIsOpen(false);
-                setLoading(false)
-                alert(
-                    "An error occured while trying to delete the post, please try again later",
-                );
+                console.log(err)
+   
+                setTimeout( () => {setLoading(false); alert(
+                    err
+                )}, 1000)
+                setTimeout( () => setIsOpen(false), 2000)  
             });
     }
 
-    function editPost() {
-        console.log("b")
-    }
     return (
         <Edit>
             <div>
-                <BsFillPencilFill color="#FFFFFF" size={18} cursor='pointer' onClick={() => editPost()} />
+                <BsFillPencilFill color="#FFFFFF" size={18} cursor='pointer' onClick={() => ''} />
             </div>
             <div>
                 <BsTrash color="#FFFFFF" size={18} cursor='pointer' onClick={() => setIsOpen(true)} />
@@ -53,6 +53,12 @@ export default function DeletePost({ id, modalIsOpen, setIsOpen, setPosts, setLo
                         transform: 'translate(-50%, -50%)',
                     }
                 }}>
+                {
+                    loading ?
+                        <PostModal>
+                            <Loading />
+                        </PostModal>
+                        :
                         <PostModal>
                             <h2>Are you sure you want <br />to delete this post?</h2>
                             <div>
@@ -61,9 +67,11 @@ export default function DeletePost({ id, modalIsOpen, setIsOpen, setPosts, setLo
                             </div>
                         </PostModal>
 
+                }
+
             </Modal>
-        
+
         </Edit>
-       
-        )
+
+    )
 }

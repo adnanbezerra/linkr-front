@@ -4,7 +4,7 @@ import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
-import DeletePost from "../EditPost/DeletePost.jsx";
+import EditPost from "../EditPost/EditPost.jsx";
 import Header from "../Header/Header";
 import { getCookieByName } from "../../../mock/data";
 import LikePost from "../LikePost/LikePost.jsx";
@@ -94,7 +94,7 @@ function TimeLine() {
                         </Infos>
                         <img src={item.imagePreview} />
                     </Preview>
-                    <DeletePost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} setPosts = {setPosts} setLoading = {setLoading} /> 
+                    <EditPost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} setPosts = {setPosts} /> 
                 </PostContent>
             </Post>
         )
