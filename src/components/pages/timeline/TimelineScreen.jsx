@@ -9,6 +9,7 @@ import Header from "../Header/Header";
 import { getCookieByName, config, BASE_URL } from "../../../mock/data";
 import { useNavigate, Link } from "react-router-dom";
 import LikePost from "../LikePost/LikePost.jsx";
+import { ReactTagify } from "react-tagify";
 
 function TimeLine() {
     const [url, setUrl] = useState('')
@@ -23,6 +24,8 @@ function TimeLine() {
     const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate();
     const verifyUser = user === undefined;
+
+
 
     useEffect(() => {
         if (verifyUser) {
@@ -72,6 +75,7 @@ function TimeLine() {
         })
     }, []);
 
+
     function GetHashtags({ item }) {
 
         return (
@@ -83,6 +87,28 @@ function TimeLine() {
     }
 
     function GetPosts({ item }) {
+        //variaveis para uso na biblioteca tagify
+        const tagStyle = {
+            fontWeight: 900,
+            color: 'white',
+            cursor: 'pointer'
+        }
+        const [contentString,setContentString] = useState(item.description);
+        //
+
+        //requisição de hashtags por post
+        useEffect(() => {
+            axios.get(`${BASE_URL}/hashtags/${item.id}`, config(user.token)).then((r) => {
+                let hashs = '';
+                for(let i=0;i<r.data.length;i++){
+                    hashs+=' #'+r.data[i].name;
+                }
+                setContentString(contentString+hashs);
+            }).catch((err) => {
+                console.log(err)
+            })
+        }, []);
+        //
 
         const url = 'https://medium.com/@pshrmn/a-simple-react-router'
         const [liked, setLiked] = useState(false);
@@ -90,26 +116,34 @@ function TimeLine() {
             <Post>
                 <Perfil>
                     <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
-                    <LikePost liked = {liked} setLiked = {setLiked} id = {item.id}/>
+                    <LikePost liked={liked} setLiked={setLiked} id={item.id} />
 
                     <p>115 likes</p>
                 </Perfil>
                 <PostContent>
                     <h3>{item.name} </h3>
-                    <p>{item.description}</p>
-                    <h3>preview</h3>
-                    <EditPost setDelete = {setDelete} isDelete = {isDelete} />
+                    {/*o item.description foi incorporado no contentString*/}
+                    <ReactTagify
+                        tagStyle={tagStyle}
+                        tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1,tag.length)}`)}>
+                        <p>
+                            {contentString}
+                        </p>
+                    </ReactTagify>
+                    
+                    {/*<EditPost setDelete = {setDelete} isDelete = {isDelete} />*/}
 
 
-                    <Preview onClick={() => { window.open(item.url, '_blank') } }>
+                    <Preview onClick={() => { window.open(item.url, '_blank') }}>
                         <Infos>
                             <h2>{item.titlePreview}</h2>
+
                             <h3>{item.descriptionPreview}</h3>
                             <h4>{item.url}</h4>
                         </Infos>
                         <img src={item.imagePreview} />
                     </Preview>
-                    <DeletePost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} setPosts = {setPosts} setLoading = {setLoading} /> 
+                    <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setLoading={setLoading} />
 
                 </PostContent>
             </Post>
