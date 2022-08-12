@@ -92,7 +92,7 @@ function TimeLine() {
                             <h3>{item.descriptionPreview}</h3>
                             <h4>{item.url}</h4>
                         </Infos>
-                        <img src={item.imagePreview} />
+                        <img src={item.imagePreview} alt="" />
                     </Preview>
 
                     <EditPost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />

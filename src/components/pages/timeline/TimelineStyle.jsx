@@ -123,7 +123,6 @@ export const PostContent = styled.div`
     box-sizing: border-box;
     word-break: break-all;
 
-
     form{
         width: 100%;
         display: flex;
