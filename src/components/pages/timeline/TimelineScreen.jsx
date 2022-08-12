@@ -158,9 +158,6 @@ function TimeLine() {
     return (
         <Container>
             <Header user={verifyUser ? "" : user} />
-            {/* <div>
-                <LinkPreview url="https://github.com/wei/socialify" width="400px" height={100} />
-            </div> */}
             <Main>
                 <h1>timeline</h1>
                 <Panel>
@@ -180,7 +177,7 @@ function TimeLine() {
                                 </form>
                             </PostContent>
                         </NewPost>
-                        {!loading ?
+                        {!loading ? 
                             <ShowPosts /> :
                             <LoadSpinner>
                                 <Loading />
