@@ -19,7 +19,6 @@ function TimeLine() {
     const [updatePage, setUpdatePage] = useState(true);
     const [trends, setTrends] = useState([]);
     const [posts, setPosts] = useState([])
-    const image = 'https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg'
     const [modalIsOpen, setIsOpen] = useState(false);
     const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate();
@@ -111,14 +110,11 @@ function TimeLine() {
         //
 
         const url = 'https://medium.com/@pshrmn/a-simple-react-router'
-        const [liked, setLiked] = useState(false);
         return (
             <Post>
                 <Perfil>
                     <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
-                    <LikePost liked={liked} setLiked={setLiked} id={item.id} />
-
-                    <p>115 likes</p>
+                    <LikePost id = {item.id}/>
                 </Perfil>
                 <PostContent>
                     <h3>{item.name} </h3>
@@ -130,21 +126,16 @@ function TimeLine() {
                             {contentString}
                         </p>
                     </ReactTagify>
-                    
-                    {/*<EditPost setDelete = {setDelete} isDelete = {isDelete} />*/}
-
 
                     <Preview onClick={() => { window.open(item.url, '_blank') }}>
                         <Infos>
                             <h2>{item.titlePreview}</h2>
-
                             <h3>{item.descriptionPreview}</h3>
                             <h4>{item.url}</h4>
                         </Infos>
                         <img src={item.imagePreview} />
                     </Preview>
                     <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setLoading={setLoading} />
-
                 </PostContent>
             </Post>
         )
@@ -159,6 +150,8 @@ function TimeLine() {
             description
         }
 
+        console.log('postei')
+
         const urlEmpty = url.length === 0
         const descriptionEmpty = url.length === 0
 
@@ -168,10 +161,9 @@ function TimeLine() {
             return
         }
 
-        const promise = axios.post('http://localhost:5000/timeline', body)
+        const promise = axios.post('http://localhost:5000/timeline', body, config(user.token))
 
         promise.then((res) => {
-            console.log(res.data)
             setUpdatePage(!updatePage)
         }).catch((err) => {
             alert('Houve um erro ao publicar seu link')
@@ -200,9 +192,6 @@ function TimeLine() {
     return (
         <Container>
             <Header user={verifyUser ? "" : user} />
-            {/* <div>
-                <LinkPreview url="https://github.com/wei/socialify" width="400px" height={100} />
-            </div> */}
             <Main>
                 <h1>timeline</h1>
                 <Panel>
@@ -222,7 +211,7 @@ function TimeLine() {
                                 </form>
                             </PostContent>
                         </NewPost>
-                        {!loading ?
+                        {!loading ? 
                             <ShowPosts /> :
                             <LoadSpinner>
                                 <Loading />
