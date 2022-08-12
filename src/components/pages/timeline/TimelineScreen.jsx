@@ -8,6 +8,7 @@ import DeletePost from "../EditPost/DeletePost.jsx";
 import Header from "../Header/Header";
 import { getCookieByName } from "../../../mock/data";
 import LikePost from "../LikePost/LikePost.jsx";
+import { config, BASE_URL } from '../../../mock/data.js';
 import { useNavigate } from "react-router-dom";
 
 
@@ -18,7 +19,6 @@ function TimeLine() {
     const [loading, setLoading] = useState(false)
     const [updatePage, setUpdatePage] = useState(true)
     const [posts, setPosts] = useState([])
-    const image = 'https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg'
     const [modalIsOpen, setIsOpen] = useState(false);
     const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate();
@@ -75,13 +75,12 @@ function TimeLine() {
 
     function GetPosts({ item }) {
 
-        const url = 'https://medium.com/@pshrmn/a-simple-react-router'
         const [liked, setLiked] = useState(false);
         return (
             <Post>
                 <Perfil>
-                    <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
-                    <LikePost liked = {liked} setLiked = {setLiked} id = {item.id}/>
+                    <img src={item.imageUrl} alt="" />
+                    <LikePost liked={liked} setLiked={setLiked} id={item.id} />
 
                     <p>115 likes</p>
                 </Perfil>
@@ -89,7 +88,7 @@ function TimeLine() {
                     <h3>{item.name} </h3>
                     <p>{item.description}</p>
 
-                    <Preview onClick={() => { window.open(item.url, '_blank') } }>
+                    <Preview onClick={() => { window.open(item.url, '_blank') }}>
                         <Infos>
                             <h2>{item.titlePreview}</h2>
                             <h3>{item.descriptionPreview}</h3>
@@ -97,7 +96,7 @@ function TimeLine() {
                         </Infos>
                         <img src={item.imagePreview} />
                     </Preview>
-                    <DeletePost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} setPosts = {setPosts} setLoading = {setLoading} /> 
+                    <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setLoading={setLoading} />
                 </PostContent>
             </Post>
         )
@@ -117,6 +116,8 @@ function TimeLine() {
             description
         }
 
+        console.log('postei')
+
         const urlEmpty = url.length === 0
         const descriptionEmpty = url.length === 0
 
@@ -126,13 +127,7 @@ function TimeLine() {
             return
         }
 
-        const config = {
-            headers: {
-                "Authorization": `Bearer ${verifyUser ? "" : user.token}`
-            }
-        }
-
-        const promise = axios.post('http://localhost:5000/timeline', body, config)
+        const promise = axios.post('http://localhost:5000/timeline', body, config(user.token))
 
         promise.then((res) => {
             setUpdatePage(!updatePage)
