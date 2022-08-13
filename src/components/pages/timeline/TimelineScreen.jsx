@@ -24,30 +24,34 @@ function TimeLine() {
     const navigate = useNavigate();
     const verifyUser = user === undefined;
 
-    const [userInfo] = useState(getUserInfo());
+    const [userInfo, setUserInfo] = useState();
 
-    const profilePicture = userInfo === undefined ? <BiUserCircle /> : <img src={verifyUser ? "" : userInfo.imageUrl} alt="" />;
+    // const profilePicture = userInfo === undefined ? <BiUserCircle /> : <img src={verifyUser ? "" : userInfo.imageUrl} alt="" />;
 
     useEffect(() => {
+        const tokenCookie = getCookieByName('token');
+        if (tokenCookie) {
+            setUser({ token: tokenCookie });
+        }
         if (verifyUser) {
             navigate('/', { replace: true });
+        } else {
+            getUserInfo();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     function getUserInfo() {
-        const token = config(verifyUser ? "" : user.token);
-        let data;
+        const userToken = verifyUser ? "" : user.token;
+        const token = config(userToken);
 
         axios.get(`${BASE_URL}/user/me`, token)
             .then(response => {
-                data = response.data;
+                setUserInfo(response.data);
             })
             .catch(error => {
                 console.error(error);
             })
-
-        return data;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     };
 
@@ -64,24 +68,13 @@ function TimeLine() {
     ]
 
     useEffect(() => {
-        const tokenCookie = getCookieByName('token');
-        if (tokenCookie) {
-            setUser({ token: tokenCookie });
-            navigate('/timeline', { replace: true });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-
         const promise = axios.get(`${BASE_URL}/timeline`)
 
         promise.then((res) => {
-            console.log(res.data)
             setPosts(res.data)
             setLoading(false)
         }).catch((err) => {
-            console.log(err)
+            console.error(err)
         })
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,8 +121,6 @@ function TimeLine() {
             description
         }
 
-        console.log('postei')
-
         const urlEmpty = url.length === 0
         const descriptionEmpty = url.length === 0
 
@@ -145,7 +136,7 @@ function TimeLine() {
             setUpdatePage(!updatePage)
         }).catch((err) => {
             alert('Houve um erro ao publicar seu link')
-            console.log(err)
+            console.error(err)
         })
 
         setDisable(!disable)
@@ -181,7 +172,7 @@ function TimeLine() {
                             <Posts>
                                 <NewPost>
                                     <Perfil>
-                                        {profilePicture}
+                                        <img src={userInfo === undefined ? "" : userInfo.imageUrl} alt="" />
                                     </Perfil>
                                     <PostContent>
                                         <h2>What are you going to share today?</h2>
