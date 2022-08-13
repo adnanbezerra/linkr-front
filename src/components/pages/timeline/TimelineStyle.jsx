@@ -4,6 +4,14 @@ import styled from "styled-components";
 
 // 
 
+export const TimelineTitle = styled.p`
+    margin-bottom: 50px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 43px;
+    color: #FFFFFF;
+    font-weight: 700;
+`
+
 export const Container = styled.div`
     width: 100%;
     height: 100%;
@@ -12,6 +20,7 @@ export const Container = styled.div`
     position: absolute;
     background-color: #333333;
     overflow-y: scroll;
+    flex-direction: column;
 `
 
 export const Main = styled.div`
@@ -29,14 +38,22 @@ export const Main = styled.div`
         color: #FFFFFF;
         font-weight: 700;
     }
+
+    @media(max-width: 650px) {
+        margin-top: 19px;
+    }
 `
 
 export const Panel = styled.div`
     height: auto;
     display: flex;
-    justify-content: space-between;
-
+    justify-content: center;
+    flex-direction: column;
     box-sizing: border-box;
+    width: 100%;
+    align-items: center;
+
+    text-align: left;
 `
 
 export const Posts = styled.div`
@@ -99,6 +116,7 @@ export const Perfil = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-size: 50px;
 
     img{
         width: 50px;
@@ -126,7 +144,6 @@ export const PostContent = styled.div`
     padding-left: 20px;
     box-sizing: border-box;
     word-break: break-all;
-
 
     form{
         width: 100%;
