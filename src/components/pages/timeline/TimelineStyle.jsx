@@ -156,6 +156,7 @@ export const PostContent = styled.div`
         font-family: 'Lato', sans-serif;
         font-weight: 300;
         padding: 10px;
+        margin-bottom: 10px;
     }
 
     button{

@@ -1,10 +1,11 @@
 import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from "./TimelineStyle";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import UserContext from '../../contexts/UserContext.js'
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
 import EditPost from "../EditPost/EditPost.jsx";
+import DeletePost from "../EditPost/DeletePost.jsx"
 import Header from "../Header/Header";
 import { getCookieByName } from "../../../mock/data";
 import LikePost from "../LikePost/LikePost.jsx";
@@ -59,7 +60,7 @@ function TimeLine() {
             }
         }
 
-        const promise = axios.get('http://localhost:5000/timeline')
+        const promise = axios.get('http://localhost:5000/timeline', config)
 
         promise.then((res) => {
             console.log(res.data)
@@ -72,21 +73,20 @@ function TimeLine() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage])
 
-
     function GetPosts({ item }) {
-
         const url = 'https://medium.com/@pshrmn/a-simple-react-router'
+        const [message, setMessage] = useState(item.description)
+        const [editMode, setEditMode] = useState(false)
         return (
             <Post>
                 <Perfil>
                     <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
-                    <LikePost id = {item.id}/>
+                    <LikePost id={item.id} />
                 </Perfil>
                 <PostContent>
                     <h3>{item.name} </h3>
-                    {/* <p>{item.description}</p> */}
-
-                    <Preview onClick={() => { window.open(item.url, '_blank') } }>
+                    <EditPost description={item.description} editMode = {editMode} setEditMode = {setEditMode}  message = {message} setMessage = {setMessage} id={item.id} setPosts = {setPosts}/>
+                    <Preview onClick={() => { window.open(item.url, '_blank') }}>
                         <Infos>
                             <h2>{item.titlePreview}</h2>
                             <h3>{item.descriptionPreview}</h3>
@@ -94,7 +94,12 @@ function TimeLine() {
                         </Infos>
                         <img src={item.imagePreview} />
                     </Preview>
-                    <EditPost id = {item.id} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} setPosts = {setPosts} /> 
+                    {
+                        item.isMyPost === 'true' ?
+                            <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode = {setEditMode} editMode = { editMode}/> :
+                            ''
+                    }
+
                 </PostContent>
             </Post>
         )
