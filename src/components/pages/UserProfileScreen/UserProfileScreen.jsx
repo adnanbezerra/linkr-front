@@ -1,4 +1,4 @@
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from ".//HashTag'sPostsScreenStyle.jsx";
+import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from ".//UserProfileScreenStyle.jsx";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
@@ -12,7 +12,7 @@ import LikePost from "../LikePost/LikePost.jsx";
 import { ReactTagify } from "react-tagify";
 
 export default function HashTagPage() {
-    const { hashtag } = useParams();
+    const {hashtag} = useParams();
     const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
     const [disable, setDisable] = useState(false)
@@ -46,7 +46,7 @@ export default function HashTagPage() {
     //requisição de posts com a hashtag
     useEffect(() => {
 
-
+        
 
         const promise = axios.get(`${BASE_URL}/posts/${hashtag}`, config(user.token));
 
@@ -90,35 +90,36 @@ export default function HashTagPage() {
             color: 'white',
             cursor: 'pointer'
         }
-        const [contentString, setContentString] = useState(item.description);
+        const [contentString,setContentString] = useState(item.description);
         //
 
         //requisição de hashtags por post
         useEffect(() => {
             axios.get(`${BASE_URL}/hashtags/${item.id}`, config(user.token)).then((r) => {
                 let hashs = '';
-                for (let i = 0; i < r.data.length; i++) {
-                    hashs += ' #' + r.data[i].name;
+                for(let i=0;i<r.data.length;i++){
+                    hashs+=' #'+r.data[i].name;
                 }
-                setContentString(contentString + hashs);
+                setContentString(contentString+hashs);
             }).catch((err) => {
                 console.log(err)
             })
         }, []);
         //
+
         const url = 'https://medium.com/@pshrmn/a-simple-react-router'
         return (
             <Post>
                 <Perfil>
-                    <img src={item.imageUrl} alt={item.name} />
-                    <LikePost id={item.id} />
+                    <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
+                    <LikePost id = {item.id}/>
                 </Perfil>
                 <PostContent>
                     <h3>{item.name} </h3>
                     {/*o item.description foi incorporado no contentString*/}
                     <ReactTagify
                         tagStyle={tagStyle}
-                        tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1, tag.length)}`)}>
+                        tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1,tag.length)}`)}>
                         <p>
                             {contentString}
                         </p>
@@ -159,7 +160,7 @@ export default function HashTagPage() {
                 <h1># {hashtag}</h1>
                 <Panel>
                     <Posts>
-                        {!loading ?
+                        {!loading ? 
                             <ShowPosts /> :
                             <LoadSpinner>
                                 <Loading />

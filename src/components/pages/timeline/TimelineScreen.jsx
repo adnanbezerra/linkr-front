@@ -113,7 +113,7 @@ function TimeLine() {
         return (
             <Post>
                 <Perfil>
-                    <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
+                    <img src={item.imageUrl} alt={item.name} />
                     <LikePost id = {item.id}/>
                 </Perfil>
                 <PostContent>
