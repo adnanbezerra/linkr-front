@@ -1,5 +1,5 @@
+
 import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos, TimelineTitle } from "./TimelineStyle";
-import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";
@@ -13,7 +13,7 @@ import { BiUserCircle } from 'react-icons/bi';
 import SearchBox from "../SearchBox/SearchBox";
 
 function TimeLine() {
-    const [url, setUrl] = useState('')
+    const [url, setUrl] = useState('') 
     const [description, setDescription] = useState('')
     const [disable, setDisable] = useState(false)
     const [loading, setLoading] = useState(false)
