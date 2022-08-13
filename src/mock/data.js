@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5000';
+const BASE_URL = 'https://linkr-project-17.herokuapp.com/';
 
 function config(token) {
     return {
