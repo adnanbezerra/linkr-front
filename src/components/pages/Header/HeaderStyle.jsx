@@ -22,6 +22,7 @@ const LogoffContainer = styled.div`
 `
 
 const ArrowBox = styled.div`
+    display: flex;
     cursor: pointer;
 `
 
@@ -39,10 +40,11 @@ const HeaderContainer = styled.div`
     box-sizing: border-box;
 
     font-size: 45px;
+    z-index: 2;
 
     img {
-        width: 45px;
-        height: 45px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
     }
 

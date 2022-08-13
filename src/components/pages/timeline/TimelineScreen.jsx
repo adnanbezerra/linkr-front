@@ -1,4 +1,4 @@
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from "./TimelineStyle";
+import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos, TimelineTitle } from "./TimelineStyle";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
@@ -6,11 +6,11 @@ import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
 import DeletePost from "../EditPost/DeletePost.jsx";
 import Header from "../Header/Header";
-import { getCookieByName } from "../../../mock/data";
+import { config, BASE_URL, getCookieByName } from "../../../mock/data";
 import LikePost from "../LikePost/LikePost.jsx";
-import { config, BASE_URL } from '../../../mock/data.js';
 import { useNavigate } from "react-router-dom";
-
+import { BiUserCircle } from 'react-icons/bi';
+import SearchBox from "../SearchBox/SearchBox";
 
 function TimeLine() {
     const [url, setUrl] = useState('')
@@ -24,11 +24,32 @@ function TimeLine() {
     const navigate = useNavigate();
     const verifyUser = user === undefined;
 
+    const [userInfo] = useState(getUserInfo());
+
+    const profilePicture = userInfo === undefined ? <BiUserCircle /> : <img src={verifyUser ? "" : userInfo.imageUrl} alt="" />;
+
     useEffect(() => {
         if (verifyUser) {
             navigate('/', { replace: true });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    function getUserInfo() {
+        const token = config(verifyUser ? "" : user.token);
+        let data;
+
+        axios.get(`${BASE_URL}/user/me`, token)
+            .then(response => {
+                data = response.data;
+            })
+            .catch(error => {
+                console.error(error);
+            })
+
+        return data;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
 
     const hashs = [
         { hashtag: 'neymito' },
@@ -53,13 +74,7 @@ function TimeLine() {
 
     useEffect(() => {
 
-        const config = {
-            headers: {
-                "Authorization": `Bearer ${verifyUser ? "" : user.token}`
-            }
-        }
-
-        const promise = axios.get('http://localhost:5000/timeline')
+        const promise = axios.get(`${BASE_URL}/timeline`)
 
         promise.then((res) => {
             console.log(res.data)
@@ -79,7 +94,7 @@ function TimeLine() {
             <Post>
                 <Perfil>
                     <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
-                    <LikePost id = {item.id}/>
+                    <LikePost id={item.id} />
                 </Perfil>
                 <PostContent>
                     <h3>{item.name} </h3>
@@ -91,7 +106,7 @@ function TimeLine() {
                             <h3>{item.descriptionPreview}</h3>
                             <h4>{item.url}</h4>
                         </Infos>
-                        <img src={item.imagePreview} />
+                        <img src={item.imagePreview} alt="" />
                     </Preview>
                     <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setLoading={setLoading} />
                 </PostContent>
@@ -154,39 +169,46 @@ function TimeLine() {
 
     return (
         <Container>
-            <Header user={verifyUser ? "" : user} />
+            <Header userInfo={verifyUser ? "" : userInfo} />
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <SearchBox />
+            </div>
             <Main>
-                <h1>timeline</h1>
                 <Panel>
-                    <Posts>
-                        <NewPost>
-                            <Perfil>
-                                <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
-                            </Perfil>
-                            <PostContent>
-                                <h2>What are you going to share today?</h2>
-                                <form onSubmit={publish}>
-                                    <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
-                                    <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
-                                    <button disabled={disable} onClick={() => {
-                                        setDisable(true)
-                                    }}>{disable ? 'Publishing' : 'Publish'}</button>
-                                </form>
-                            </PostContent>
-                        </NewPost>
-                        {!loading ? 
-                            <ShowPosts /> :
-                            <LoadSpinner>
-                                <Loading />
-                            </LoadSpinner>}
-                    </Posts>
-                    <Sidebar>
-                        <h2>Trending</h2>
-                        <Line></Line>
-                        <Hashtags>
-                            {hashs.map((item, index) => { return (<GetHashtags key={index} item={item} />) })}
-                        </Hashtags>
-                    </Sidebar>
+                    <div>
+                        <TimelineTitle>timeline</TimelineTitle>
+                        <div style={{ display: 'flex', width: '100%' }}>
+                            <Posts>
+                                <NewPost>
+                                    <Perfil>
+                                        {profilePicture}
+                                    </Perfil>
+                                    <PostContent>
+                                        <h2>What are you going to share today?</h2>
+                                        <form onSubmit={publish}>
+                                            <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
+                                            <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
+                                            <button disabled={disable} onClick={() => {
+                                                setDisable(true)
+                                            }}>{disable ? 'Publishing' : 'Publish'}</button>
+                                        </form>
+                                    </PostContent>
+                                </NewPost>
+                                {!loading ?
+                                    <ShowPosts /> :
+                                    <LoadSpinner>
+                                        <Loading />
+                                    </LoadSpinner>}
+                            </Posts>
+                            <Sidebar>
+                                <h2>Trending</h2>
+                                <Line></Line>
+                                <Hashtags>
+                                    {hashs.map((item, index) => { return (<GetHashtags key={index} item={item} />) })}
+                                </Hashtags>
+                            </Sidebar>
+                        </div>
+                    </div>
                 </Panel>
             </Main>
         </Container>
