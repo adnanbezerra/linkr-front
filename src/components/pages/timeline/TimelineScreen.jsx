@@ -63,7 +63,6 @@ function TimeLine() {
         const promise = axios.get('http://localhost:5000/timeline', config)
 
         promise.then((res) => {
-            console.log(res.data)
             setPosts(res.data)
             setLoading(false)
         }).catch((err) => {
@@ -95,9 +94,9 @@ function TimeLine() {
                         <img src={item.imagePreview} />
                     </Preview>
                     {
-                        item.isMyPost === 'true' ?
+                        item.isMyPost === "true" ?
                             <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode = {setEditMode} editMode = { editMode}/> :
-                            ''
+                            ``
                     }
 
                 </PostContent>

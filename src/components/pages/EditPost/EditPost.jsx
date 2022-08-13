@@ -1,28 +1,32 @@
 import axios from "axios";
 import { BASE_URL, config } from "../../../mock/data";
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import UserContext from '../../contexts/UserContext.js';
 
 export default function EditPost({description, editMode, setEditMode, message , setMessage, id, setPosts}) {
     const descriptionRef = useRef(null)
+    const [disabled, setDisabled] = useState(false)
+    const { user } = useContext(UserContext);
     useEffect(() => {
         if (editMode) {
           descriptionRef.current.focus();
         }
       }, [editMode]);
 
-    const { user } = useContext(UserContext);
+    
     function sendEditedPost() {
-        const request = axios.put(`${BASE_URL}/post/${id}`, message, config(user.token))
+        const request = axios.patch(`${BASE_URL}/post/${id}`, { message }, config(user.token))
         request
-            .then((res) => setPosts(res.data))
-            .catch((res) => console.log(res))
+            .then((res) => { setPosts(res.data); console.log(res.data); setDisabled(false)})
+            .catch((res) => {console.log(res); setDisabled(false)})
     }
 
 
     function editPost(e) {
         if (e.keyCode === 13) {
+            setDisabled(true)
             sendEditedPost()
+            
 
         } else if (e.keyCode === 27) {
           setMessage(message);
@@ -38,7 +42,7 @@ export default function EditPost({description, editMode, setEditMode, message , 
                     onChange={(e) => setMessage(e.target.value)}
                     ref={descriptionRef}
                     onKeyDown={editPost}
-                    disabled={''}> asdasd </textarea> : <p>{description}</p>
+                    disabled={disabled}> asdasd </textarea> : <p>{description}</p>
             }
         </>
     )
