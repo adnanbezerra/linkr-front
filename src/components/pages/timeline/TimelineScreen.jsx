@@ -13,7 +13,7 @@ import { BiUserCircle } from 'react-icons/bi';
 import SearchBox from "../SearchBox/SearchBox";
 
 function TimeLine() {
-    const [url, setUrl] = useState('') 
+    const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
     const [disable, setDisable] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -86,7 +86,7 @@ function TimeLine() {
         return (
             <Post>
                 <Perfil>
-                    <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
+                    <img src={item.imageUrl} alt="" />
                     <LikePost id={item.id} />
                 </Perfil>
                 <PostContent>
@@ -130,7 +130,9 @@ function TimeLine() {
             return
         }
 
-        const promise = axios.post('http://localhost:5000/timeline', body, config(user.token))
+        console.log(user.token)
+
+        const promise = axios.post(`${BASE_URL}/timeline`, body, config(user.token))
 
         promise.then((res) => {
             setUpdatePage(!updatePage)
