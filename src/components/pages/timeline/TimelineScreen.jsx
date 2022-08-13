@@ -130,8 +130,6 @@ function TimeLine() {
             return
         }
 
-        console.log(user.token)
-
         const promise = axios.post(`${BASE_URL}/timeline`, body, config(user.token))
 
         promise.then((res) => {
