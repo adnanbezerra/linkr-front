@@ -15,13 +15,13 @@ export const SearchContainerMobile = styled.div`
     align-items: center;
     margin-top: 82px;
     width: 95%;
+    padding: 0 15px;
 
     input {
         outline: none;
         width: 90%;
         border: 0;
         height: 43px;
-        padding-left: 15px;
         border-radius: 8px;
     }
 
@@ -78,10 +78,10 @@ export const SearchContainer = styled.div`
     font-size: 30px;
 
     position: fixed;
-    top: 20px;
+    top: 13px;
     right: 32.3%;
 
-    padding: 0 15px;
+    padding-left: 15px;
     box-sizing: border-box;
 
     input {

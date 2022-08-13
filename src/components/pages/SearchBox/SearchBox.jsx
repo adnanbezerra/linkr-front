@@ -12,7 +12,10 @@ export default function SearchBox() {
     const navigate = useNavigate();
 
     function handleNewSearch(text) {
-        axios.get(`${BASE_URL}/users/${text}`)
+
+        if(text.length < 3) setUsersResults([]);
+
+        axios.get(`${BASE_URL}/user/${text}`)
             .then(response => {
                 setUsersResults(response.data);
             })
