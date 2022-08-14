@@ -69,16 +69,7 @@ function TimeLine() {
     ]
 
     useEffect(() => {
-
-        const config = {
-            headers: {
-                "Authorization": `Bearer ${verifyUser ? "" : user.token}`
-            }
-        }
-
-        const promise = axios.get(`${BASE_URL}/timeline`, config)
-
-
+        const promise = axios.get(`${BASE_URL}/timeline`, config(user.token))
         promise.then((res) => {
             setPosts(res.data)
             setLoading(false)
@@ -89,42 +80,7 @@ function TimeLine() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage])
 
-    function GetPosts({ item }) {
-        const url = 'https://medium.com/@pshrmn/a-simple-react-router'
-        const [message, setMessage] = useState(item.description)
-        const [editMode, setEditMode] = useState(false)
-        return (
-            <Post>
-                <Perfil>
-                    <img src={item.imageUrl} alt="" />
-                    <LikePost id={item.id} />
-                </Perfil>
-                <PostContent>
-                    <h3>{item.name} </h3>
-
-                    <EditPost description={item.description} editMode = {editMode} setEditMode = {setEditMode}  message = {message} setMessage = {setMessage} id={item.id} setPosts = {setPosts}/>
-                    <Preview onClick={() => { window.open(item.url, '_blank') }}>
-                        <Infos>
-                            <h2>{item.titlePreview}</h2>
-                            <h3>{item.descriptionPreview}</h3>
-                            <h4>{item.url}</h4>
-                        </Infos>
-                        <img src={item.imagePreview} alt="" />
-                    </Preview>
-
-                    {
-                        item.isMyPost === "true" ?
-                            <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode = {setEditMode} editMode = { editMode}/> :
-                            ``
-                    }
-
-                </PostContent>
-            </Post>
-        )
-    }
-
     function GetHashtags({ item }) {
-
         return (
             <p># {item.hashtag}</p>
         )
@@ -160,20 +116,6 @@ function TimeLine() {
         setUrl('')
     }
 
-    function ShowPosts() {
-
-        if (posts.length === 0) {
-            return (
-                <h1>There are no posts yet</h1>
-            )
-        }
-        else {
-            return (
-                posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })
-            )
-        }
-    }
-
     return (
         <Container>
             <Header userInfo={verifyUser ? "" : userInfo} />
@@ -184,28 +126,13 @@ function TimeLine() {
                 <Panel>
                     <div>
                         <TimelineTitle>timeline</TimelineTitle>
-                        <div style={{ display: 'flex', width: '100%' }}>
+                        <div style={{ display: 'flex', width: '100%' }}>    
                             <Posts>
-                                <NewPost>
-                                    <Perfil>
-                                        <img src={userInfo === undefined ? "" : userInfo.imageUrl} alt="" />
-                                    </Perfil>
-                                    <PostContent>
-                                        <h2>What are you going to share today?</h2>
-                                        <form onSubmit={publish}>
-                                            <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
-                                            <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
-                                            <button disabled={disable} onClick={() => {
-                                                setDisable(true)
-                                            }}>{disable ? 'Publishing' : 'Publish'}</button>
-                                        </form>
-                                    </PostContent>
-                                </NewPost>
-                                {!loading ?
-                                    <ShowPosts /> :
-                                    <LoadSpinner>
-                                        <Loading />
-                                    </LoadSpinner>}
+                                <CreateNewPost userInfo={userInfo} publish={publish} setUrl={setUrl} url={url} setDescription={setDescription} description={description} disable={disable} setDisable={setDisable} />
+                                {
+                                posts.length === 0? <h1>There are no posts yet</h1> :
+                                posts.map((item, index) => { return (<GetPosts key={index} item={item} loading = {loading} setPosts = {setPosts} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} />) })
+                                }
                             </Posts>
                             <Sidebar>
                                 <h2>Trending</h2>
@@ -222,4 +149,64 @@ function TimeLine() {
     )
 }
 
+function CreateNewPost({ userInfo, publish, setUrl, url, setDescription, description, disable, setDisable }) {
+    return (
+        <NewPost>
+            <Perfil>
+                <img src={userInfo === undefined ? "" : userInfo.imageUrl} alt="" />
+            </Perfil>
+            <PostContent>
+                <h2>What are you going to share today?</h2>
+                <form onSubmit={publish}>
+                    <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
+                    <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
+                    <button disabled={disable} onClick={() => {
+                        setDisable(true)
+                    }}>{disable ? 'Publishing' : 'Publish'}</button>
+                </form>
+            </PostContent>
+        </NewPost>
+    )
+}
+function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen }) {
+    const url = 'https://medium.com/@pshrmn/a-simple-react-router'
+    const [message, setMessage] = useState(item.description)
+    const [editMode, setEditMode] = useState(false)
+    return (
+        <>
+            {loading ?
+                <LoadSpinner>
+                    <Loading />
+                </LoadSpinner> :
+                <Post>
+                    <Perfil>
+                        <img src={item.imageUrl} alt="" />
+                        <LikePost id={item.id} />
+                    </Perfil>
+                    <PostContent>
+                        <h3>{item.name} </h3>
+
+                        <EditPost description={item.description} editMode={editMode} setEditMode={setEditMode} message={message} setMessage={setMessage} id={item.id} setPosts={setPosts} />
+                        <Preview onClick={() => { window.open(item.url, '_blank') }}>
+                            <Infos>
+                                <h2>{item.titlePreview}</h2>
+                                <h3>{item.descriptionPreview}</h3>
+                                <h4>{item.url}</h4>
+                            </Infos>
+                            <img src={item.imagePreview} alt="" />
+                        </Preview>
+
+                        {
+                            item.isMyPost === "true" ?
+                                <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode={setEditMode} editMode={editMode} /> :
+                                ``
+                        }
+
+                    </PostContent>
+                </Post>
+            }
+
+        </>
+    )
+}
 export default TimeLine;
