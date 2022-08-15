@@ -163,12 +163,12 @@ function TimeLine() {
                 <Panel>
                     <div>
                         <TimelineTitle>timeline</TimelineTitle>
-                        <div style={{ display: 'flex', width: '100%' }}>    
+                        <div style={{ display: 'flex', width: '100%' }}>
                             <Posts>
                                 <CreateNewPost userInfo={userInfo} publish={publish} setUrl={setUrl} url={url} setDescription={setDescription} description={description} disable={disable} setDisable={setDisable} />
                                 {
-                                posts.length === 0? <h1>There are no posts yet</h1> :
-                                posts.map((item, index) => { return (<GetPosts key={index} item={item} loading = {loading} setPosts = {setPosts} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} />) })
+                                    posts.length === 0 ? <h1>There are no posts yet</h1> :
+                                        posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />) })
                                 }
                             </Posts>
                             <Sidebar>
