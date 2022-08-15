@@ -108,13 +108,14 @@ function TimeLine() {
     function publish(event) {
 
         event.preventDefault();
+
+        setDisable(!disable)
         const body = {
             url,
             description
         }
 
         const urlEmpty = url.length === 0
-        const descriptionEmpty = url.length === 0
 
         if (urlEmpty) {
             alert('Data cannot be empty')
@@ -239,4 +240,5 @@ function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navigate })
         </>
     )
 }
+
 export default TimeLine;
