@@ -11,6 +11,7 @@ import { getCookieByName, config, BASE_URL } from "../../../mock/data";
 import { useNavigate, Link } from "react-router-dom";
 import LikePost from "../LikePost/LikePost.jsx";
 import { ReactTagify } from "react-tagify";
+import SearchBox from '../SearchBox/SearchBox.jsx'
 
 
 function TimeLine() {
@@ -66,8 +67,6 @@ function TimeLine() {
         { hashtag: 'neymito' }
     ]
 
-    useEffect(() => {
-        const promise = axios.get(`${BASE_URL}/timeline`, config(user.token))
     useEffect(() => {
         const tokenCookie = getCookieByName('token');
         if (tokenCookie) {
@@ -247,6 +246,7 @@ function CreateNewPost({ userInfo, publish, setUrl, url, setDescription, descrip
         </NewPost>
     )
 }
+
 function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen }) {
     const url = 'https://medium.com/@pshrmn/a-simple-react-router'
     const [message, setMessage] = useState(item.description)
