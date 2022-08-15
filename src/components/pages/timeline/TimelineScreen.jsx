@@ -182,7 +182,7 @@ function TimeLine() {
         <Container>
             <Header userInfo={verifyUser ? "" : userInfo} />
             <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <SearchBox />
+                <SearchBox setUpdatePage={setUpdatePage} updatePage={updatePage} />
             </div>
             <Main>
                 <Panel>
