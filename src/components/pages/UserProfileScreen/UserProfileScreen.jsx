@@ -9,6 +9,7 @@ import { getCookieByName, config, BASE_URL } from "../../../mock/data";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import LikePost from "../LikePost/LikePost.jsx";
 import { ReactTagify } from "react-tagify";
+import SearchBox from "../SearchBox/SearchBox.jsx";
 
 export default function UserPage() {
     const { id } = useParams();
@@ -178,6 +179,9 @@ export default function UserPage() {
     return (
         <Container>
             <Header user={verifyUser ? "" : user} />
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <SearchBox setUpdatePage={setUpdatePage} updatePage={updatePage} />
+            </div>
             <Main>
                 <div>
                     <img src={userData === undefined ? '' :userData.imageUrl} alt={userData === undefined ? '' :userData.name} />

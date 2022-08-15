@@ -7,12 +7,12 @@ import axios from 'axios';
 import EditPost from "../EditPost/EditPost.jsx";
 import DeletePost from "../EditPost/DeletePost.jsx"
 import Header from "../Header/Header";
-import { getCookieByName, config, BASE_URL } from "../../../mock/data";
-import { useNavigate, Link } from "react-router-dom";
+import { config, BASE_URL, getCookieByName } from "../../../mock/data";
 import LikePost from "../LikePost/LikePost.jsx";
+import { useNavigate, Link } from "react-router-dom";
+import { BiUserCircle } from 'react-icons/bi';
+import SearchBox from "../SearchBox/SearchBox";
 import { ReactTagify } from "react-tagify";
-import SearchBox from '../SearchBox/SearchBox.jsx'
-
 
 function TimeLine() {
     const [url, setUrl] = useState('')
@@ -26,7 +26,10 @@ function TimeLine() {
     const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate();
     const verifyUser = user === undefined;
+
     const [userInfo, setUserInfo] = useState();
+
+    // const profilePicture = userInfo === undefined ? <BiUserCircle /> : <img src={verifyUser ? "" : userInfo.imageUrl} alt="" />;
 
     useEffect(() => {
         const tokenCookie = getCookieByName('token');
@@ -68,15 +71,6 @@ function TimeLine() {
     ]
 
     useEffect(() => {
-        const tokenCookie = getCookieByName('token');
-        if (tokenCookie) {
-            setUser({ token: tokenCookie });
-            navigate('/timeline', { replace: true });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
 
         const config = {
             headers: {
@@ -84,7 +78,7 @@ function TimeLine() {
             }
         }
 
-        const promise = axios.get(`${BASE_URL}/timeline`, config)
+        const promise = axios.get(`${BASE_URL}/timeline`)
         promise.then((res) => {
             setPosts(res.data)
             setLoading(false)
@@ -122,6 +116,47 @@ function TimeLine() {
         )
     }
 
+    function GetPosts({ item }) {
+        //variaveis para uso na biblioteca tagify
+        const tagStyle = {
+            fontWeight: 900,
+            color: 'white',
+            cursor: 'pointer'
+        }
+
+
+        const url = 'https://medium.com/@pshrmn/a-simple-react-router'
+        return (
+            <Post>
+                <Perfil>
+                    <img src={item.imageUrl} alt={item.name} />
+                    <LikePost id={item.id} />
+                </Perfil>
+                <PostContent>
+                    <h3 onClick={()=>navigate(`/user/${item.userId}`)}>{item.name} </h3>
+                    {/*o item.description foi incorporado no contentString*/}
+                    <ReactTagify
+                        tagStyle={tagStyle}
+                        tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1, tag.length)}`)}>
+                        <p>
+                            {item.description}
+                        </p>
+                    </ReactTagify>
+
+                    <Preview onClick={() => { window.open(item.url, '_blank') }}>
+                        <Infos>
+                            <h2>{item.titlePreview}</h2>
+                            <h3>{item.descriptionPreview}</h3>
+                            <h4>{item.url}</h4>
+                        </Infos>
+                        <img src={item.imagePreview} />
+                    </Preview>
+                    <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setLoading={setLoading} />
+                </PostContent>
+            </Post>
+        )
+    }
+
     function publish(event) {
 
         event.preventDefault();
@@ -129,6 +164,7 @@ function TimeLine() {
             url,
             description
         }
+
         const urlEmpty = url.length === 0
         const descriptionEmpty = url.length === 0
 
@@ -136,7 +172,6 @@ function TimeLine() {
             alert('Data cannot be empty')
             return;
         }
-        setDisable(true);
 
         const promise = axios.post(`${BASE_URL}/timeline`, body, config(user.token))
 
@@ -148,8 +183,7 @@ function TimeLine() {
             setUrl('')
         }).catch((err) => {
             alert('Houve um erro ao publicar seu link')
-            setDisable(false)
-            console.log(err)
+            console.error(err)
         })
     }
 
@@ -157,18 +191,18 @@ function TimeLine() {
         <Container>
             <Header userInfo={verifyUser ? "" : userInfo} />
             <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <SearchBox />
+                <SearchBox setUpdatePage={setUpdatePage} updatePage={updatePage} />
             </div>
             <Main>
                 <Panel>
                     <div>
                         <TimelineTitle>timeline</TimelineTitle>
-                        <div style={{ display: 'flex', width: '100%' }}>    
+                        <div style={{ display: 'flex', width: '100%' }}>
                             <Posts>
                                 <CreateNewPost userInfo={userInfo} publish={publish} setUrl={setUrl} url={url} setDescription={setDescription} description={description} disable={disable} setDisable={setDisable} />
                                 {
-                                posts.length === 0? <h1>There are no posts yet</h1> :
-                                posts.map((item, index) => { return (<GetPosts key={index} item={item} loading = {loading} setPosts = {setPosts} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} />) })
+                                    posts.length === 0 ? <h1>There are no posts yet</h1> :
+                                        posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />) })
                                 }
                             </Posts>
                             <Sidebar>
@@ -185,7 +219,6 @@ function TimeLine() {
         </Container>
     )
 }
-
 function CreateNewPost({ userInfo, publish, setUrl, url, setDescription, description, disable, setDisable }) {
     return (
         <NewPost>
