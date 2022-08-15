@@ -7,7 +7,6 @@ import axios from 'axios';
 import EditPost from "../EditPost/EditPost.jsx";
 import DeletePost from "../EditPost/DeletePost.jsx"
 import Header from "../Header/Header";
-import { useNavigate } from "react-router-dom";
 import { getCookieByName, config, BASE_URL } from "../../../mock/data";
 import { useNavigate, Link } from "react-router-dom";
 import LikePost from "../LikePost/LikePost.jsx";
