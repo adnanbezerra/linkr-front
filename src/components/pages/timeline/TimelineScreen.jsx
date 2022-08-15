@@ -90,7 +90,7 @@ function TimeLine() {
     }, [updatePage])
 
     function GetPosts({ item }) {
-        const url = 'https://medium.com/@pshrmn/a-simple-react-router'
+
         const [message, setMessage] = useState(item.description)
         const [editMode, setEditMode] = useState(false)
         return (
@@ -102,7 +102,7 @@ function TimeLine() {
                 <PostContent>
                     <h3>{item.name} </h3>
 
-                    <EditPost description={item.description} editMode = {editMode} setEditMode = {setEditMode}  message = {message} setMessage = {setMessage} id={item.id} setPosts = {setPosts}/>
+                    <EditPost description={item.description} editMode={editMode} setEditMode={setEditMode} message={message} setMessage={setMessage} id={item.id} setPosts={setPosts} />
                     <Preview onClick={() => { window.open(item.url, '_blank') }}>
                         <Infos>
                             <h2>{item.titlePreview}</h2>
@@ -114,7 +114,7 @@ function TimeLine() {
 
                     {
                         item.isMyPost === "true" ?
-                            <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode = {setEditMode} editMode = { editMode}/> :
+                            <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode={setEditMode} editMode={editMode} /> :
                             ``
                     }
 
@@ -132,17 +132,19 @@ function TimeLine() {
 
     function publish(event) {
         event.preventDefault();
+
+        setDisable(!disable)
         const body = {
             url,
             description
         }
 
         const urlEmpty = url.length === 0
-        const descriptionEmpty = url.length === 0
 
         if (urlEmpty) {
             alert('Data cannot be empty')
             setDisable(!disable)
+            setDisable(false)
             return
         }
 
@@ -155,7 +157,7 @@ function TimeLine() {
             console.error(err)
         })
 
-        setDisable(!disable)
+        setDisable(false)
         setDescription('')
         setUrl('')
     }
@@ -195,9 +197,7 @@ function TimeLine() {
                                         <form onSubmit={publish}>
                                             <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
                                             <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
-                                            <button disabled={disable} onClick={() => {
-                                                setDisable(true)
-                                            }}>{disable ? 'Publishing' : 'Publish'}</button>
+                                            <button disabled={disable}>{disable ? 'Publishing' : 'Publish'}</button>
                                         </form>
                                     </PostContent>
                                 </NewPost>
