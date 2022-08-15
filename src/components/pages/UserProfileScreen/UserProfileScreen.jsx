@@ -1,5 +1,4 @@
 import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from ".//UserProfileScreenStyle.jsx";
-import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";

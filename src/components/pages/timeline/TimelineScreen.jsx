@@ -100,8 +100,6 @@ function TimeLine() {
 
 
         const url = 'https://medium.com/@pshrmn/a-simple-react-router'
-        const [message, setMessage] = useState(item.description)
-        const [editMode, setEditMode] = useState(false)
         return (
             <Post>
                 <Perfil>
@@ -111,28 +109,19 @@ function TimeLine() {
                 <PostContent>
                     <h3>{item.name} </h3>
 
-                    <EditPost description={item.description} editMode = {editMode} setEditMode = {setEditMode}  message = {message} setMessage = {setMessage} id={item.id} setPosts = {setPosts}/>
                     <Preview onClick={() => { window.open(item.url, '_blank') }}>
                         <Infos>
                             <h2>{item.titlePreview}</h2>
                             <h3>{item.descriptionPreview}</h3>
                             <h4>{item.url}</h4>
                         </Infos>
-                        <img src={item.imagePreview} alt="" />
+                        <img src={item.imagePreview} />
                     </Preview>
-
-                    {
-                        item.isMyPost === "true" ?
-                            <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode = {setEditMode} editMode = { editMode}/> :
-                            ``
-                    }
-
+                    <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setLoading={setLoading} />
                 </PostContent>
             </Post>
         )
     }
-
-
 
     function publish(event) {
 
@@ -164,20 +153,6 @@ function TimeLine() {
         })
     }
 
-    function ShowPosts() {
-
-        if (posts.length === 0) {
-            return (
-                <h1>There are no posts yet</h1>
-            )
-        }
-        else {
-            return (
-                posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })
-            )
-        }
-    }
-
     return (
         <Container>
             <Header userInfo={verifyUser ? "" : userInfo} />
@@ -188,28 +163,13 @@ function TimeLine() {
                 <Panel>
                     <div>
                         <TimelineTitle>timeline</TimelineTitle>
-                        <div style={{ display: 'flex', width: '100%' }}>
+                        <div style={{ display: 'flex', width: '100%' }}>    
                             <Posts>
-                                <NewPost>
-                                    <Perfil>
-                                        <img src={userInfo === undefined ? "" : userInfo.imageUrl} alt="" />
-                                    </Perfil>
-                                    <PostContent>
-                                        <h2>What are you going to share today?</h2>
-                                        <form onSubmit={publish}>
-                                            <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
-                                            <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
-                                            <button disabled={disable} onClick={() => {
-                                                setDisable(true)
-                                            }}>{disable ? 'Publishing' : 'Publish'}</button>
-                                        </form>
-                                    </PostContent>
-                                </NewPost>
-                                {!loading ?
-                                    <ShowPosts /> :
-                                    <LoadSpinner>
-                                        <Loading />
-                                    </LoadSpinner>}
+                                <CreateNewPost userInfo={userInfo} publish={publish} setUrl={setUrl} url={url} setDescription={setDescription} description={description} disable={disable} setDisable={setDisable} />
+                                {
+                                posts.length === 0? <h1>There are no posts yet</h1> :
+                                posts.map((item, index) => { return (<GetPosts key={index} item={item} loading = {loading} setPosts = {setPosts} modalIsOpen = {modalIsOpen} setIsOpen = {setIsOpen} />) })
+                                }
                             </Posts>
                             <Sidebar>
                                 <h2>Trending</h2>
@@ -225,5 +185,4 @@ function TimeLine() {
         </Container>
     )
 }
-
 export default TimeLine;
