@@ -18,7 +18,8 @@ function TimeLine() {
     const [description, setDescription] = useState('')
     const [disable, setDisable] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [updatePage, setUpdatePage] = useState(true)
+    const [updatePage, setUpdatePage] = useState(true);
+    const [trends, setTrends] = useState([]);
     const [posts, setPosts] = useState([])
     const [modalIsOpen, setIsOpen] = useState(false);
     const { user, setUser } = useContext(UserContext)
@@ -90,6 +91,14 @@ function TimeLine() {
     }, [updatePage])
 
     function GetPosts({ item }) {
+        //variaveis para uso na biblioteca tagify
+        const tagStyle = {
+            fontWeight: 900,
+            color: 'white',
+            cursor: 'pointer'
+        }
+
+
         const url = 'https://medium.com/@pshrmn/a-simple-react-router'
         const [message, setMessage] = useState(item.description)
         const [editMode, setEditMode] = useState(false)
@@ -123,14 +132,10 @@ function TimeLine() {
         )
     }
 
-    function GetHashtags({ item }) {
 
-        return (
-            <p># {item.hashtag}</p>
-        )
-    }
 
     function publish(event) {
+
         event.preventDefault();
         const body = {
             url,
@@ -142,22 +147,21 @@ function TimeLine() {
 
         if (urlEmpty) {
             alert('Data cannot be empty')
-            setDisable(!disable)
-            return
+            return;
         }
 
         const promise = axios.post(`${BASE_URL}/timeline`, body, config(user.token))
 
         promise.then((res) => {
+            console.log('postei')
             setUpdatePage(!updatePage)
+            setDisable(false)
+            setDescription('')
+            setUrl('')
         }).catch((err) => {
             alert('Houve um erro ao publicar seu link')
             console.error(err)
         })
-
-        setDisable(!disable)
-        setDescription('')
-        setUrl('')
     }
 
     function ShowPosts() {
