@@ -50,7 +50,7 @@ function TimeLine() {
             }
         }
 
-        const promise = axios.get('http://localhost:5000/timeline')
+        const promise = axios.get(`${BASE_URL}/timeline`)
 
         promise.then((res) => {
             console.log(res.data)
@@ -72,7 +72,7 @@ function TimeLine() {
         }).catch((err) => {
             console.log(err)
         })
-    }, []);
+    }, [updatePage]);
 
 
     function GetHashtags({ item }) {
@@ -92,38 +92,23 @@ function TimeLine() {
             color: 'white',
             cursor: 'pointer'
         }
-        const [contentString,setContentString] = useState(item.description);
-        //
 
-        //requisição de hashtags por post
-        useEffect(() => {
-            axios.get(`${BASE_URL}/hashtags/${item.id}`, config(user.token)).then((r) => {
-                let hashs = '';
-                for(let i=0;i<r.data.length;i++){
-                    hashs+=' #'+r.data[i].name;
-                }
-                setContentString(contentString+hashs);
-            }).catch((err) => {
-                console.log(err)
-            })
-        }, []);
-        //
 
         const url = 'https://medium.com/@pshrmn/a-simple-react-router'
         return (
             <Post>
                 <Perfil>
                     <img src={item.imageUrl} alt={item.name} />
-                    <LikePost id = {item.id}/>
+                    <LikePost id={item.id} />
                 </Perfil>
                 <PostContent>
-                    <h3>{item.name} </h3>
+                    <h3 onClick={()=>navigate(`/user/${item.userId}`)}>{item.name} </h3>
                     {/*o item.description foi incorporado no contentString*/}
                     <ReactTagify
                         tagStyle={tagStyle}
-                        tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1,tag.length)}`)}>
+                        tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1, tag.length)}`)}>
                         <p>
-                            {contentString}
+                            {item.description}
                         </p>
                     </ReactTagify>
 
@@ -144,35 +129,33 @@ function TimeLine() {
 
 
     function publish(event) {
+
         event.preventDefault();
         const body = {
             url,
             description
         }
-
-        console.log('postei')
-
         const urlEmpty = url.length === 0
         const descriptionEmpty = url.length === 0
 
         if (urlEmpty) {
             alert('Data cannot be empty')
-            setDisable(!disable)
-            return
+            return;
         }
-
-        const promise = axios.post('http://localhost:5000/timeline', body, config(user.token))
+        setDisable(true);
+        const promise = axios.post(`${BASE_URL}/timeline`, body, config(user.token))
 
         promise.then((res) => {
+            console.log('postei')
             setUpdatePage(!updatePage)
+            setDisable(false)
+            setDescription('')
+            setUrl('')
         }).catch((err) => {
             alert('Houve um erro ao publicar seu link')
+            setDisable(false)
             console.log(err)
         })
-
-        setDisable(!disable)
-        setDescription('')
-        setUrl('')
     }
 
     function ShowPosts() {
@@ -205,13 +188,12 @@ function TimeLine() {
                                 <form onSubmit={publish}>
                                     <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
                                     <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
-                                    <button disabled={disable} onClick={() => {
-                                        setDisable(true)
-                                    }}>{disable ? 'Publishing' : 'Publish'}</button>
+                                    <button type={"submit"} disabled={disable}
+                                    >{disable ? 'Publishing' : 'Publish'}</button>
                                 </form>
                             </PostContent>
                         </NewPost>
-                        {!loading ? 
+                        {!loading ?
                             <ShowPosts /> :
                             <LoadSpinner>
                                 <Loading />
