@@ -20,7 +20,27 @@ export const Main = styled.div`
     flex-direction: column;
     box-sizing: border-box;
     margin-top: 100px;
-
+    > *:nth-child(1){
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        img{
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 40px;
+        }
+        h1{
+            width: 100%;
+            margin-bottom: 50px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 43px;
+            color: #FFFFFF;
+            font-weight: 700;
+            padding-left: 20px;
+        }
+    }
     h1{
         width: 100%;
         margin-bottom: 50px;
@@ -305,3 +325,4 @@ h4{
 // export const Main = styled.div`
     
 // `
+

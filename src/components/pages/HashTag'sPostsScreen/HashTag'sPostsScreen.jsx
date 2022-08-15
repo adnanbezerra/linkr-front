@@ -72,7 +72,7 @@ export default function HashTagPage() {
         }).catch((err) => {
             console.log(err)
         })
-    }, []);
+    }, [updatePage]);
 
 
     function GetHashtags({ item, updatePage }) {
@@ -116,7 +116,7 @@ export default function HashTagPage() {
                     <LikePost id={item.id} />
                 </Perfil>
                 <PostContent>
-                    <h3>{item.name} </h3>
+                    <h3  onClick={()=>navigate(`/user/${item.userId}`)}>{item.name} </h3>
                     {/*o item.description foi incorporado no contentString*/}
                     <ReactTagify
                         tagStyle={tagStyle}

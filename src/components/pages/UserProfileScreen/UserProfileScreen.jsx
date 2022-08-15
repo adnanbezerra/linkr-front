@@ -11,8 +11,8 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 import LikePost from "../LikePost/LikePost.jsx";
 import { ReactTagify } from "react-tagify";
 
-export default function HashTagPage() {
-    const {hashtag} = useParams();
+export default function UserPage() {
+    const { id } = useParams();
     const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
     const [disable, setDisable] = useState(false)
@@ -22,8 +22,10 @@ export default function HashTagPage() {
     const [posts, setPosts] = useState([])
     const [modalIsOpen, setIsOpen] = useState(false);
     const { user, setUser } = useContext(UserContext)
+    const [userData, setUserData] = useState(undefined);
     const navigate = useNavigate();
     const verifyUser = user === undefined;
+
 
 
 
@@ -38,17 +40,33 @@ export default function HashTagPage() {
         const tokenCookie = getCookieByName('token');
         if (tokenCookie) {
             setUser({ token: tokenCookie });
-            navigate(`/hashtag/${hashtag}`, { replace: true });
+            navigate(`/user/${id}`, { replace: true });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    //requisição de posts com a hashtag
+    //requisição de dados do usuario
     useEffect(() => {
 
-        
 
-        const promise = axios.get(`${BASE_URL}/posts/${hashtag}`, config(user.token));
+        const promise = axios.get(`${BASE_URL}/user/${id}`, config(user.token));
+
+        promise.then((res) => {
+            console.log(res.data)
+            setUserData(res.data)
+            setLoading(false)
+        }).catch((err) => {
+            console.log(err)
+        })
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [updatePage]);
+
+    //requisição de posts com o id usuario
+    useEffect(() => {
+
+
+        const promise = axios.get(`${BASE_URL}/UserPosts/${id}`, config(user.token));
 
         promise.then((res) => {
             console.log(res.data)
@@ -59,7 +77,7 @@ export default function HashTagPage() {
         })
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [updatePage])
+    }, [updatePage]);
 
 
     //requisição de trends
@@ -70,56 +88,61 @@ export default function HashTagPage() {
         }).catch((err) => {
             console.log(err)
         })
-    }, []);
+    }, [updatePage]);
 
 
-    function GetHashtags({ item }) {
+    function GetHashtags({ item, updatePage }) {
 
         return (
-            <Link to={`/hashtag/${item.name}`}>
+            <Link to={`/hashtag/${item.name}`} onClick={() => setUpdatePage(!updatePage)}>
                 <p># {item.name}</p>
             </Link>
 
         )
     }
 
-    function GetPosts({ item }) {
+    function GetPosts({ item, updatePage }) {
         //variaveis para uso na biblioteca tagify
         const tagStyle = {
             fontWeight: 900,
             color: 'white',
             cursor: 'pointer'
         }
-        const [contentString,setContentString] = useState(item.description);
+        const [contentString, setContentString] = useState(item.description);
         //
 
         //requisição de hashtags por post
         useEffect(() => {
             axios.get(`${BASE_URL}/hashtags/${item.id}`, config(user.token)).then((r) => {
                 let hashs = '';
-                for(let i=0;i<r.data.length;i++){
-                    hashs+=' #'+r.data[i].name;
+                for (let i = 0; i < r.data.length; i++) {
+                    hashs += ' #' + r.data[i].name;
                 }
-                setContentString(contentString+hashs);
+                setContentString(contentString + hashs);
             }).catch((err) => {
                 console.log(err)
             })
         }, []);
         //
-
         const url = 'https://medium.com/@pshrmn/a-simple-react-router'
         return (
             <Post>
                 <Perfil>
-                    <img src="https://rd1.com.br/wp-content/uploads/2022/08/20220805-neymargol-300x300.jpg" alt="" />
-                    <LikePost id = {item.id}/>
+                    <img src={item.imageUrl} alt={item.name} />
+                    <LikePost id={item.id} />
                 </Perfil>
                 <PostContent>
-                    <h3>{item.name} </h3>
+                    <h3 onClick={() => {
+                        navigate(`/user/${item.userId}`);
+                        setUpdatePage(!updatePage);
+                    }}>{item.name} </h3>
                     {/*o item.description foi incorporado no contentString*/}
                     <ReactTagify
                         tagStyle={tagStyle}
-                        tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1,tag.length)}`)}>
+                        tagClicked={(tag) => {
+                            navigate(`/hashtag/${tag.substring(1, tag.length)}`);
+                            setUpdatePage(!updatePage);
+                        }}>
                         <p>
                             {contentString}
                         </p>
@@ -148,7 +171,7 @@ export default function HashTagPage() {
         }
         else {
             return (
-                posts.map((item, index) => { return (<GetPosts key={index} item={item} />) })
+                posts.map((item, index) => { return (<GetPosts key={index} item={item} updatePage={updatePage} />) })
             )
         }
     }
@@ -157,10 +180,13 @@ export default function HashTagPage() {
         <Container>
             <Header user={verifyUser ? "" : user} />
             <Main>
-                <h1># {hashtag}</h1>
+                <div>
+                    <img src={userData === undefined ? '' :userData.imageUrl} alt={userData === undefined ? '' :userData.name} />
+                    <h1>{userData === undefined ? '' : `${userData.name}'s posts`}</h1>
+                </div>
                 <Panel>
                     <Posts>
-                        {!loading ? 
+                        {!loading ?
                             <ShowPosts /> :
                             <LoadSpinner>
                                 <Loading />
@@ -170,7 +196,7 @@ export default function HashTagPage() {
                         <h2>Trendings</h2>
                         <Line></Line>
                         <Hashtags>
-                            {trends.length === 0 ? 'No trends at the moment' : trends.map((item, index) => { return (<GetHashtags key={index} item={item} />) })}
+                            {trends.length === 0 ? 'No trends at the moment' : trends.map((item, index) => { return (<GetHashtags key={index} item={item} updatePage={updatePage} />) })}
                         </Hashtags>
                     </Sidebar>
                 </Panel>

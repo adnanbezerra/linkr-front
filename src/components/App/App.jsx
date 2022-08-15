@@ -6,6 +6,7 @@ import LoginScreen from '../pages/LoginScreen/LoginScreen';
 import RegisterScreen from '../pages/RegisterScreen/RegisterScreen';
 import TimeLine from '../pages/timeline/TimelineScreen';
 import UserContext from '../contexts/UserContext.js';
+import UserPage from '../pages/UserProfileScreen/UserProfileScreen.jsx';
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
           <Route path={'/sign-up'} element={<RegisterScreen />} />
           <Route path={'/timeline'} element={<TimeLine />} />
           <Route path={'/hashtag/:hashtag'} element={<HashTagPage/>} />
+          <Route path={'/user/:id'} element={<UserPage/>}/>
         </Routes>
       </BrowserRouter >
     </UserContext.Provider>
