@@ -84,7 +84,7 @@ function TimeLine() {
             }
         }
 
-        const promise = axios.get(`${BASE_URL}/timeline`)
+        const promise = axios.get(`${BASE_URL}/timeline`, config)
         promise.then((res) => {
             setPosts(res.data)
             setLoading(false)
@@ -119,47 +119,6 @@ function TimeLine() {
                 <p># {item.name}</p>
             </Link>
 
-        )
-    }
-
-    function GetPosts({ item }) {
-        //variaveis para uso na biblioteca tagify
-        const tagStyle = {
-            fontWeight: 900,
-            color: 'white',
-            cursor: 'pointer'
-        }
-
-
-        const url = 'https://medium.com/@pshrmn/a-simple-react-router'
-        return (
-            <Post>
-                <Perfil>
-                    <img src={item.imageUrl} alt={item.name} />
-                    <LikePost id={item.id} />
-                </Perfil>
-                <PostContent>
-                    <h3 onClick={()=>navigate(`/user/${item.userId}`)}>{item.name} </h3>
-                    {/*o item.description foi incorporado no contentString*/}
-                    <ReactTagify
-                        tagStyle={tagStyle}
-                        tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1, tag.length)}`)}>
-                        <p>
-                            {item.description}
-                        </p>
-                    </ReactTagify>
-
-                    <Preview onClick={() => { window.open(item.url, '_blank') }}>
-                        <Infos>
-                            <h2>{item.titlePreview}</h2>
-                            <h3>{item.descriptionPreview}</h3>
-                            <h4>{item.url}</h4>
-                        </Infos>
-                        <img src={item.imagePreview} />
-                    </Preview>
-                    <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setLoading={setLoading} />
-                </PostContent>
-            </Post>
         )
     }
 
