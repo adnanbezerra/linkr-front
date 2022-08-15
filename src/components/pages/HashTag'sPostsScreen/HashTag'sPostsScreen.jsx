@@ -25,7 +25,7 @@ export default function HashTagPage() {
     const verifyUser = user === undefined;
 
 
-    
+
 
 
 
@@ -48,8 +48,7 @@ export default function HashTagPage() {
     //requisição de posts com a hashtag
     useEffect(() => {
 
-
-        const promise = axios.get(`${BASE_URL}/posts/${hashtag}`, config(user.token));
+        const promise = axios.get(`${BASE_URL}/posts/#${hashtag}`, config(user.token));
 
         promise.then((res) => {
             console.log(res.data)
@@ -76,9 +75,11 @@ export default function HashTagPage() {
 
     function GetHashtags({ item, updatePage }) {
 
+        let name = (item.name).replace('#', '')
+
         return (
-            <Link to={`/hashtag/${item.name}`}onClick={()=>setUpdatePage(!updatePage)}>
-                <p># {item.name}</p>
+            <Link to={`/hashtag/${name}`} onClick={() => setUpdatePage(!updatePage)}>
+                <p> {item.name}</p>
             </Link>
 
         )
@@ -115,7 +116,7 @@ export default function HashTagPage() {
                     <LikePost id={item.id} />
                 </Perfil>
                 <PostContent>
-                    <h3  onClick={()=>navigate(`/user/${item.userId}`)}>{item.name} </h3>
+                    <h3 onClick={() => navigate(`/user/${item.userId}`)}>{item.name} </h3>
                     {/*o item.description foi incorporado no contentString*/}
                     <ReactTagify
                         tagStyle={tagStyle}
@@ -151,7 +152,7 @@ export default function HashTagPage() {
         }
         else {
             return (
-                posts.map((item, index) => { return (<GetPosts key={index} item={item} updatePage={updatePage}/>) })
+                posts.map((item, index) => { return (<GetPosts key={index} item={item} updatePage={updatePage} />) })
             )
         }
     }
@@ -173,7 +174,7 @@ export default function HashTagPage() {
                         <h2>Trendings</h2>
                         <Line></Line>
                         <Hashtags>
-                            {trends.length === 0 ? 'No trends at the moment' : trends.map((item, index) => { return (<GetHashtags key={index} item={item} updatePage={updatePage}/>) })}
+                            {trends.length === 0 ? 'No trends at the moment' : trends.map((item, index) => { return (<GetHashtags key={index} item={item} updatePage={updatePage} />) })}
                         </Hashtags>
                     </Sidebar>
                 </Panel>
