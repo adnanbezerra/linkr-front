@@ -25,6 +25,7 @@ font-size: 34px;
 padding: 20px;
 justify-content: center;
 text-align: center;
+align-items: center;
 box-sizing: border-box;
 background-color: rgba(51, 51, 51, 1);
 && button:last-child {
