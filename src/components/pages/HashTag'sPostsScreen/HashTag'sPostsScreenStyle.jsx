@@ -4,14 +4,6 @@ import styled from "styled-components";
 
 // 
 
-export const TimelineTitle = styled.p`
-    margin-bottom: 50px;
-    font-family: 'Oswald', sans-serif;
-    font-size: 43px;
-    color: #FFFFFF;
-    font-weight: 700;
-`
-
 export const Container = styled.div`
     width: 100%;
     height: 100%;
@@ -20,7 +12,6 @@ export const Container = styled.div`
     position: absolute;
     background-color: #333333;
     overflow-y: scroll;
-    flex-direction: column;
 `
 
 export const Main = styled.div`
@@ -38,22 +29,14 @@ export const Main = styled.div`
         color: #FFFFFF;
         font-weight: 700;
     }
-
-    @media(max-width: 650px) {
-        margin-top: 19px;
-    }
 `
 
 export const Panel = styled.div`
     height: auto;
     display: flex;
-    justify-content: center;
-    flex-direction: column;
-    box-sizing: border-box;
-    width: 100%;
-    align-items: center;
+    justify-content: space-between;
 
-    text-align: left;
+    box-sizing: border-box;
 `
 
 export const Posts = styled.div`
@@ -63,10 +46,6 @@ export const Posts = styled.div`
     margin: 0 20px 0 0;
     border-radius: 15px;
     position: relative;
-
-    @media(max-width: 980px){
-        margin: 0;
-    }
 
     @media(max-width: 650px){
         width: 100%;
@@ -116,7 +95,6 @@ export const Perfil = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-size: 50px;
 
     img{
         width: 50px;
@@ -144,6 +122,7 @@ export const PostContent = styled.div`
     padding-left: 20px;
     box-sizing: border-box;
     word-break: break-all;
+
 
     form{
         width: 100%;
@@ -177,7 +156,6 @@ export const PostContent = styled.div`
         font-family: 'Lato', sans-serif;
         font-weight: 300;
         padding: 10px;
-        margin-bottom: 10px;
     }
 
     button{
@@ -226,8 +204,6 @@ export const Sidebar = styled.div`
     color: #FFFFFF;
     box-sizing: border-box;
     background-color: #171717;
-    position: sticky;
-    top: 193px;
 
 
     h2{
@@ -237,7 +213,7 @@ export const Sidebar = styled.div`
         font-family: 'Oswald', sans-serif;
     }
 
-    @media(max-width: 980px){
+    @media(max-width: 650px){
         display: none;
     }
 `

@@ -7,27 +7,26 @@ import axios from 'axios';
 import EditPost from "../EditPost/EditPost.jsx";
 import DeletePost from "../EditPost/DeletePost.jsx"
 import Header from "../Header/Header";
-import { config, BASE_URL, getCookieByName } from "../../../mock/data";
-import LikePost from "../LikePost/LikePost.jsx";
 import { useNavigate } from "react-router-dom";
-import { BiUserCircle } from 'react-icons/bi';
-import SearchBox from "../SearchBox/SearchBox";
+import { getCookieByName, config, BASE_URL } from "../../../mock/data";
+import { useNavigate, Link } from "react-router-dom";
+import LikePost from "../LikePost/LikePost.jsx";
+import { ReactTagify } from "react-tagify";
+
 
 function TimeLine() {
     const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
     const [disable, setDisable] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [updatePage, setUpdatePage] = useState(true)
+    const [updatePage, setUpdatePage] = useState(true);
+    const [trends, setTrends] = useState([]);
     const [posts, setPosts] = useState([])
     const [modalIsOpen, setIsOpen] = useState(false);
     const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate();
     const verifyUser = user === undefined;
-
     const [userInfo, setUserInfo] = useState();
-
-    // const profilePicture = userInfo === undefined ? <BiUserCircle /> : <img src={verifyUser ? "" : userInfo.imageUrl} alt="" />;
 
     useEffect(() => {
         const tokenCookie = getCookieByName('token');
@@ -70,6 +69,24 @@ function TimeLine() {
 
     useEffect(() => {
         const promise = axios.get(`${BASE_URL}/timeline`, config(user.token))
+    useEffect(() => {
+        const tokenCookie = getCookieByName('token');
+        if (tokenCookie) {
+            setUser({ token: tokenCookie });
+            navigate('/timeline', { replace: true });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+
+        const config = {
+            headers: {
+                "Authorization": `Bearer ${verifyUser ? "" : user.token}`
+            }
+        }
+
+        const promise = axios.get(`${BASE_URL}/timeline`)
         promise.then((res) => {
             setPosts(res.data)
             setLoading(false)
@@ -86,34 +103,97 @@ function TimeLine() {
         )
     }
 
+    //requisição de trends
+    useEffect(() => {
+        const trends = axios.get(`${BASE_URL}/trends`, config(user.token));
+        trends.then((r) => {
+            setTrends(r.data);
+        }).catch((err) => {
+            console.log(err)
+        })
+    }, [updatePage]);
+
+
+    function GetHashtags({ item }) {
+
+        return (
+            <Link to={`/hashtag/${item.name}`}>
+                <p># {item.name}</p>
+            </Link>
+
+        )
+    }
+
+    function GetPosts({ item }) {
+        //variaveis para uso na biblioteca tagify
+        const tagStyle = {
+            fontWeight: 900,
+            color: 'white',
+            cursor: 'pointer'
+        }
+
+
+        const url = 'https://medium.com/@pshrmn/a-simple-react-router'
+        return (
+            <Post>
+                <Perfil>
+                    <img src={item.imageUrl} alt={item.name} />
+                    <LikePost id={item.id} />
+                </Perfil>
+                <PostContent>
+                    <h3 onClick={()=>navigate(`/user/${item.userId}`)}>{item.name} </h3>
+                    {/*o item.description foi incorporado no contentString*/}
+                    <ReactTagify
+                        tagStyle={tagStyle}
+                        tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1, tag.length)}`)}>
+                        <p>
+                            {item.description}
+                        </p>
+                    </ReactTagify>
+
+                    <Preview onClick={() => { window.open(item.url, '_blank') }}>
+                        <Infos>
+                            <h2>{item.titlePreview}</h2>
+                            <h3>{item.descriptionPreview}</h3>
+                            <h4>{item.url}</h4>
+                        </Infos>
+                        <img src={item.imagePreview} />
+                    </Preview>
+                    <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setLoading={setLoading} />
+                </PostContent>
+            </Post>
+        )
+    }
+
     function publish(event) {
+
         event.preventDefault();
         const body = {
             url,
             description
         }
-
         const urlEmpty = url.length === 0
         const descriptionEmpty = url.length === 0
 
         if (urlEmpty) {
             alert('Data cannot be empty')
-            setDisable(!disable)
-            return
+            return;
         }
+        setDisable(true);
 
         const promise = axios.post(`${BASE_URL}/timeline`, body, config(user.token))
 
         promise.then((res) => {
+            console.log('postei')
             setUpdatePage(!updatePage)
+            setDisable(false)
+            setDescription('')
+            setUrl('')
         }).catch((err) => {
             alert('Houve um erro ao publicar seu link')
-            console.error(err)
+            setDisable(false)
+            console.log(err)
         })
-
-        setDisable(!disable)
-        setDescription('')
-        setUrl('')
     }
 
     return (
