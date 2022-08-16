@@ -1,21 +1,18 @@
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from ".//UserProfileScreenStyle.jsx";
+import { Container, Main, Panel, Posts, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from ".//UserProfileScreenStyle.jsx";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
 import DeletePost from "../EditPost/DeletePost.jsx";
-import Header from "../Header/Header";
+import Header from "../../templates/Header/Header";
 import { getCookieByName, config, BASE_URL } from "../../../mock/data";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import LikePost from "../LikePost/LikePost.jsx";
 import { ReactTagify } from "react-tagify";
-import SearchBox from "../SearchBox/SearchBox.jsx";
+import SearchBox from "../../templates/SearchBox/SearchBox.jsx";
 
 export default function UserPage() {
     const { id } = useParams();
-    const [url, setUrl] = useState('')
-    const [description, setDescription] = useState('')
-    const [disable, setDisable] = useState(false)
     const [loading, setLoading] = useState(false)
     const [updatePage, setUpdatePage] = useState(true);
     const [trends, setTrends] = useState([]);
@@ -25,15 +22,36 @@ export default function UserPage() {
     const [userData, setUserData] = useState(undefined);
     const navigate = useNavigate();
     const verifyUser = user === undefined;
-
-
+    const [userInfo, setUserInfo] = useState();
 
 
     useEffect(() => {
+        const tokenCookie = getCookieByName('token');
+        if (tokenCookie) {
+            setUser({ token: tokenCookie });
+            navigate(`/user/${id}`, { replace: true });
+        }
         if (verifyUser) {
             navigate('/', { replace: true });
+        } else {
+            getUserInfo();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    function getUserInfo() {
+        const userToken = verifyUser ? "" : user.token;
+        const token = config(userToken);
+
+        axios.get(`${BASE_URL}/user/me`, token)
+            .then(response => {
+                setUserInfo(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
 
 
     useEffect(() => {
@@ -88,6 +106,8 @@ export default function UserPage() {
         }).catch((err) => {
             console.log(err)
         })
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage]);
 
 
@@ -124,9 +144,10 @@ export default function UserPage() {
             }).catch((err) => {
                 console.log(err)
             })
+
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, []);
         //
-        const url = 'https://medium.com/@pshrmn/a-simple-react-router'
         return (
             <Post>
                 <Perfil>
@@ -156,7 +177,7 @@ export default function UserPage() {
                             <h3>{item.descriptionPreview}</h3>
                             <h4>{item.url}</h4>
                         </Infos>
-                        <img src={item.imagePreview} />
+                        <img src={item.imagePreview} alt="" />
                     </Preview>
                     <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setLoading={setLoading} />
                 </PostContent>
@@ -180,10 +201,8 @@ export default function UserPage() {
 
     return (
         <Container>
-            <Header user={verifyUser ? "" : user} />
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <SearchBox setUpdatePage={setUpdatePage} updatePage={updatePage} />
-            </div>
+            <Header userInfo={verifyUser ? "" : userInfo} />
+            <SearchBox setUpdatePage={setUpdatePage} updatePage={updatePage} />
             <Main>
                 <div>
                     <img src={userData === undefined ? '' : userData.imageUrl} alt={userData === undefined ? '' : userData.name} />

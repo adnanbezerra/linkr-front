@@ -1,17 +1,12 @@
-
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos, TimelineTitle } from "./TimelineStyle";
+import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle } from "./TimelineStyle";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
-import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
-import EditPost from "../EditPost/EditPost.jsx";
-import DeletePost from "../EditPost/DeletePost.jsx"
-import Header from "../Header/Header";
+import Header from "../../templates/Header/Header";
 import { config, BASE_URL, getCookieByName } from "../../../mock/data";
-import LikePost from "../LikePost/LikePost.jsx";
 import { useNavigate, Link } from "react-router-dom";
-import SearchBox from "../SearchBox/SearchBox";
-import { ReactTagify } from "react-tagify";
+import SearchBox from "../../templates/SearchBox/SearchBox";
+import { CreateNewPost, GetPosts } from "./auxiliaryFunctions";
 
 function TimeLine() {
     const [url, setUrl] = useState('')
@@ -27,8 +22,6 @@ function TimeLine() {
     const verifyUser = user === undefined;
 
     const [userInfo, setUserInfo] = useState();
-
-    // const profilePicture = userInfo === undefined ? <BiUserCircle /> : <img src={verifyUser ? "" : userInfo.imageUrl} alt="" />;
 
     useEffect(() => {
         const tokenCookie = getCookieByName('token');
@@ -58,8 +51,9 @@ function TimeLine() {
     };
 
     useEffect(() => {
+        const header = verifyUser ? "" : config(user.token);
 
-        const promise = axios.get(`${BASE_URL}/timeline`, config(user.token))
+        const promise = axios.get(`${BASE_URL}/timeline`, header)
         promise.then((res) => {
             setPosts(res.data)
             setLoading(false)
@@ -72,7 +66,8 @@ function TimeLine() {
 
     //requisição de trends
     useEffect(() => {
-        const trends = axios.get(`${BASE_URL}/trends`, config(user.token));
+        const header = verifyUser ? "" : config(user.token);
+        const trends = axios.get(`${BASE_URL}/trends`, header);
         trends.then((r) => {
             setTrends(r.data);
         }).catch((err) => {
@@ -112,7 +107,8 @@ function TimeLine() {
             return;
         }
 
-        const promise = axios.post(`${BASE_URL}/timeline`, body, config(user.token))
+        const header = verifyUser ? "" : config(user.token);
+        const promise = axios.post(`${BASE_URL}/timeline`, body, header)
 
         promise.then((res) => {
             console.log('postei')
@@ -129,9 +125,7 @@ function TimeLine() {
     return (
         <Container>
             <Header userInfo={verifyUser ? "" : userInfo} />
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <SearchBox setUpdatePage={setUpdatePage} updatePage={updatePage} />
-            </div>
+            <SearchBox setUpdatePage={setUpdatePage} updatePage={updatePage} />
             <Main>
                 <Panel>
                     <div>
@@ -156,78 +150,6 @@ function TimeLine() {
                 </Panel>
             </Main>
         </Container>
-    )
-}
-function CreateNewPost({ userInfo, publish, setUrl, url, setDescription, description, disable, setDisable }) {
-    return (
-        <NewPost>
-            <Perfil>
-                <img src={userInfo === undefined ? "" : userInfo.imageUrl} alt="" />
-            </Perfil>
-            <PostContent>
-                <h2>What are you going to share today?</h2>
-                <form onSubmit={publish}>
-                    <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
-                    <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
-                    <button disabled={disable} onClick={() => {
-                        setDisable(true)
-                    }}>{disable ? 'Publishing' : 'Publish'}</button>
-                </form>
-            </PostContent>
-        </NewPost>
-    )
-}
-
-function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navigate }) {
-
-    const [message, setMessage] = useState(item.description);
-    const [editMode, setEditMode] = useState(false);
-
-    //variaveis para uso na biblioteca tagify
-    const tagStyle = {
-        fontWeight: 900,
-        color: 'white',
-        cursor: 'pointer'
-    }
-
-    return (
-        <>
-            {
-                loading ?
-                    <LoadSpinner>
-                        < Loading />
-                    </LoadSpinner > :
-                    <Post>
-                        <Perfil>
-                            <img src={item.imageUrl} alt={item.name} />
-                            <LikePost id={item.id} />
-                        </Perfil>
-                        <PostContent>
-                            <h3 onClick={() => navigate(`/user/${item.userId}`)}>{item.name} </h3>
-                            {/*o item.description foi incorporado no contentString*/}
-                            {/* <ReactTagify
-                                tagStyle={tagStyle}
-                                tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1, tag.length)}`)}> */}
-                            <EditPost description={item.description} editMode={editMode} setEditMode={setEditMode} message={message} setMessage={setMessage} id={item.id} setPosts={setPosts} />
-                            {/* </ReactTagify> */}
-
-                            <Preview onClick={() => { window.open(item.url, '_blank') }}>
-                                <Infos>
-                                    <h2>{item.titlePreview}</h2>
-                                    <h3>{item.descriptionPreview}</h3>
-                                    <h4>{item.url}</h4>
-                                </Infos>
-                                <img src={item.imagePreview} alt="" />
-                            </Preview>
-                            {
-                                item.isMyPost === "true" ?
-                                    <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode={setEditMode} editMode={editMode} /> :
-                                    ``
-                            }
-                        </PostContent>
-                    </Post>
-            }
-        </>
     )
 }
 

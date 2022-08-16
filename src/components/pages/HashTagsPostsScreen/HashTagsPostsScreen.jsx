@@ -1,20 +1,18 @@
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from ".//HashTag'sPostsScreenStyle.jsx";
+import { Container, Main, Panel, Posts, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from "./HashTagsPostsScreenStyle.jsx";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
 import DeletePost from "../EditPost/DeletePost.jsx";
-import Header from "../Header/Header";
+import Header from "../../templates/Header/Header";
 import { getCookieByName, config, BASE_URL } from "../../../mock/data";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import LikePost from "../LikePost/LikePost.jsx";
 import { ReactTagify } from "react-tagify";
+import SearchBox from "../../templates/SearchBox/SearchBox.jsx";
 
 export default function HashTagPage() {
     const { hashtag } = useParams();
-    const [url, setUrl] = useState('')
-    const [description, setDescription] = useState('')
-    const [disable, setDisable] = useState(false)
     const [loading, setLoading] = useState(false)
     const [updatePage, setUpdatePage] = useState(true);
     const [trends, setTrends] = useState([]);
@@ -23,18 +21,7 @@ export default function HashTagPage() {
     const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate();
     const verifyUser = user === undefined;
-
-
-
-
-
-
-    useEffect(() => {
-        if (verifyUser) {
-            navigate('/', { replace: true });
-        }
-    }, [])
-
+    const [userInfo, setUserInfo] = useState();
 
     useEffect(() => {
         const tokenCookie = getCookieByName('token');
@@ -42,8 +29,27 @@ export default function HashTagPage() {
             setUser({ token: tokenCookie });
             navigate(`/hashtag/${hashtag}`, { replace: true });
         }
+        if (verifyUser) {
+            navigate('/', { replace: true });
+        } else {
+            getUserInfo();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [])
+
+    function getUserInfo() {
+        const userToken = verifyUser ? "" : user.token;
+        const token = config(userToken);
+    
+        axios.get(`${BASE_URL}/user/me`, token)
+            .then(response => {
+                setUserInfo(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
 
     //requisição de posts com a hashtag
     useEffect(() => {
@@ -70,6 +76,8 @@ export default function HashTagPage() {
         }).catch((err) => {
             console.log(err)
         })
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage]);
 
 
@@ -106,9 +114,11 @@ export default function HashTagPage() {
             }).catch((err) => {
                 console.log(err)
             })
+
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, []);
         //
-        const url = 'https://medium.com/@pshrmn/a-simple-react-router'
+        
         return (
             <Post>
                 <Perfil>
@@ -135,7 +145,7 @@ export default function HashTagPage() {
                             <h3>{item.descriptionPreview}</h3>
                             <h4>{item.url}</h4>
                         </Infos>
-                        <img src={item.imagePreview} />
+                        <img src={item.imagePreview} alt="" />
                     </Preview>
                     <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setLoading={setLoading} />
                 </PostContent>
@@ -159,7 +169,8 @@ export default function HashTagPage() {
 
     return (
         <Container>
-            <Header user={verifyUser ? "" : user} />
+            <Header userInfo={verifyUser ? "" : userInfo} />
+            <SearchBox setUpdatePage={setUpdatePage} updatePage={updatePage} />
             <Main>
                 <h1># {hashtag}</h1>
                 <Panel>
