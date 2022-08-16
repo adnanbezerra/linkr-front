@@ -1,4 +1,4 @@
-import { Container, Main, Panel, Posts, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos, Follow } from ".//UserProfileScreenStyle.jsx";
+import { Container, Main, Panel, Posts, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from ".//UserProfileScreenStyle.jsx";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";
@@ -75,6 +75,7 @@ export default function UserPage() {
         promise.then((res) => {
             console.log(res.data)
             setUserData(res.data)
+            setFollower(res.data.following)
             setLoading(false)
         }).catch((err) => {
             console.log(err)
@@ -112,7 +113,6 @@ export default function UserPage() {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage]);
-
 
     function GetHashtags({ item, updatePage }) {
 
@@ -210,7 +210,9 @@ export default function UserPage() {
                 <div>
                     <img src={userData === undefined ? '' : userData.imageUrl} alt={userData === undefined ? '' : userData.name} />
                     <h1>{userData === undefined ? '' : `${userData.name}'s posts`}</h1>
-                    {<FollowerButton follower={follower} setFollower={setFollower} />}
+                    {userData === undefined ?
+                        '' :
+                        <FollowerButton follower={follower} setFollower={setFollower} id={id} updatePage={updatePage} />}
                 </div>
                 <Panel>
                     <Posts>
