@@ -57,18 +57,6 @@ function TimeLine() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     };
 
-    const hashs = [
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' },
-        { hashtag: 'neymito' }
-    ]
-
     useEffect(() => {
 
         const promise = axios.get(`${BASE_URL}/timeline`, config(user.token))
@@ -97,9 +85,11 @@ function TimeLine() {
 
     function GetHashtags({ item }) {
 
+        let name = (item.name).replace('#', '')
+
         return (
-            <Link to={`/hashtag/${item.name}`}>
-                <p># {item.name}</p>
+            <Link to={`/hashtag/${name}`}>
+                <p> {item.name}</p>
             </Link>
 
         )
@@ -108,13 +98,14 @@ function TimeLine() {
     function publish(event) {
 
         event.preventDefault();
+
+        setDisable(!disable)
         const body = {
             url,
             description
         }
 
         const urlEmpty = url.length === 0
-        const descriptionEmpty = url.length === 0
 
         if (urlEmpty) {
             alert('Data cannot be empty')
@@ -157,7 +148,7 @@ function TimeLine() {
                                 <h2>Trending</h2>
                                 <Line></Line>
                                 <Hashtags>
-                                    {hashs.map((item, index) => { return (<GetHashtags key={index} item={item} />) })}
+                                    {(trends.length === 0) ? '' : trends.map((item, index) => { return (<GetHashtags key={index} item={item} />) })}
                                 </Hashtags>
                             </Sidebar>
                         </div>
@@ -214,11 +205,11 @@ function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navigate })
                         <PostContent>
                             <h3 onClick={() => navigate(`/user/${item.userId}`)}>{item.name} </h3>
                             {/*o item.description foi incorporado no contentString*/}
-                            <ReactTagify
+                            {/* <ReactTagify
                                 tagStyle={tagStyle}
-                                tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1, tag.length)}`)}>
-                                <EditPost description={item.description} editMode={editMode} setEditMode={setEditMode} message={message} setMessage={setMessage} id={item.id} setPosts={setPosts} />
-                            </ReactTagify>
+                                tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1, tag.length)}`)}> */}
+                            <EditPost description={item.description} editMode={editMode} setEditMode={setEditMode} message={message} setMessage={setMessage} id={item.id} setPosts={setPosts} />
+                            {/* </ReactTagify> */}
 
                             <Preview onClick={() => { window.open(item.url, '_blank') }}>
                                 <Infos>
@@ -239,4 +230,5 @@ function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navigate })
         </>
     )
 }
+
 export default TimeLine;

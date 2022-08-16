@@ -93,9 +93,11 @@ export default function UserPage() {
 
     function GetHashtags({ item, updatePage }) {
 
+        let name = (item.name).replace('#', '')
+
         return (
-            <Link to={`/hashtag/${item.name}`} onClick={() => setUpdatePage(!updatePage)}>
-                <p># {item.name}</p>
+            <Link to={`/hashtag/${name}`} onClick={() => setUpdatePage(!updatePage)}>
+                <p> {item.name}</p>
             </Link>
 
         )
@@ -184,7 +186,7 @@ export default function UserPage() {
             </div>
             <Main>
                 <div>
-                    <img src={userData === undefined ? '' :userData.imageUrl} alt={userData === undefined ? '' :userData.name} />
+                    <img src={userData === undefined ? '' : userData.imageUrl} alt={userData === undefined ? '' : userData.name} />
                     <h1>{userData === undefined ? '' : `${userData.name}'s posts`}</h1>
                 </div>
                 <Panel>
