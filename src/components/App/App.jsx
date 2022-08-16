@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import HashTagPage from '../pages/HashTag\'sPostsScreen/HashTag\'sPostsScreen.jsx';
+import HashTagPage from '../pages/HashTagsPostsScreen/HashTagsPostsScreen.jsx';
 import GlobalStyle from '../../assets/styles/GlobalStyle';
 import LoginScreen from '../pages/LoginScreen/LoginScreen';
 import RegisterScreen from '../pages/RegisterScreen/RegisterScreen';

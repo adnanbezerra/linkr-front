@@ -75,10 +75,10 @@ export default function SearchBox({ updatePage, setUpdatePage }) {
     }
 
     return (
-        <>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {getSearchContainerForWeb()};
             {getSearchContainerForMobile()};
             {usersResults[0] ? getSearchResults() : <></>}
-        </>
+        </div>
     )
 }

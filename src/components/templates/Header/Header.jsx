@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ArrowBox, HeaderContainer, LinkrLogo } from "./HeaderStyle";
 import { BiUserCircle } from 'react-icons/bi';
 import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io'
-import LogoffBox from "../timeline/LogoffBox";
+import LogoffBox from "./LogoffBox";
 
 export default function Header({ userInfo }) {
 
