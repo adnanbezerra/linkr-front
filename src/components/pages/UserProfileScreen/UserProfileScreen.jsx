@@ -13,9 +13,6 @@ import SearchBox from "../../templates/SearchBox/SearchBox.jsx";
 
 export default function UserPage() {
     const { id } = useParams();
-    const [url, setUrl] = useState('')
-    const [description, setDescription] = useState('')
-    const [disable, setDisable] = useState(false)
     const [loading, setLoading] = useState(false)
     const [updatePage, setUpdatePage] = useState(true);
     const [trends, setTrends] = useState([]);
