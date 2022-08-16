@@ -1,4 +1,4 @@
-import { Container, Main, Panel, Posts, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from ".//UserProfileScreenStyle.jsx";
+import { Container, Main, Panel, Posts, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos, Follow } from ".//UserProfileScreenStyle.jsx";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
 import Loading from "../../Loading/Loading.js";
@@ -10,6 +10,7 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 import LikePost from "../LikePost/LikePost.jsx";
 import { ReactTagify } from "react-tagify";
 import SearchBox from "../../templates/SearchBox/SearchBox.jsx";
+import FollowerButton from "./Follower.jsx";
 
 export default function UserPage() {
     const { id } = useParams();
@@ -23,6 +24,8 @@ export default function UserPage() {
     const navigate = useNavigate();
     const verifyUser = user === undefined;
     const [userInfo, setUserInfo] = useState();
+
+    const [follower, setFollower] = useState(false);
 
 
     useEffect(() => {
@@ -207,6 +210,7 @@ export default function UserPage() {
                 <div>
                     <img src={userData === undefined ? '' : userData.imageUrl} alt={userData === undefined ? '' : userData.name} />
                     <h1>{userData === undefined ? '' : `${userData.name}'s posts`}</h1>
+                    {<FollowerButton follower={follower} setFollower={setFollower} />}
                 </div>
                 <Panel>
                     <Posts>
