@@ -12,8 +12,9 @@ function FollowerButton({ follower, setFollower, id }) {
 
     function FollowOrUnfollow() {
 
-        const header = verifyUser ? "" : config(user.token);
         setDisable(true)
+
+        const header = verifyUser ? "" : config(user.token);
 
         const promise = axios.post(`${BASE_URL}/user/${id}`, '', header);
         promise.then((res) => {
@@ -24,7 +25,6 @@ function FollowerButton({ follower, setFollower, id }) {
                 alert('Não foi possívels seguir')
             }
             )
-
         setDisable(false)
     }
 
