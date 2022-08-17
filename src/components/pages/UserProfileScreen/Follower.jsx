@@ -9,6 +9,7 @@ function FollowerButton({ follower, setFollower, id }) {
     const { user } = useContext(UserContext)
     const verifyUser = user === undefined;
     const [disable, setDisable] = useState(false)
+    console.log(follower)
 
     function FollowOrUnfollow() {
 
