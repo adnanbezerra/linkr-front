@@ -1,29 +1,24 @@
-import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle } from "./UserProfileScreenStyle.jsx";
+import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle } from "./HashTagsPostsScreenStyle.jsx";
 import UserContext from '../../contexts/UserContext.js'
-import { useEffect, useState, useContext } from "react";
-import Loading from "../../Loading/Loading.js";
-import axios from 'axios';
-import DeletePost from "../EditPost/DeletePost.jsx";
-import Header from "../../templates/Header/Header";
-import { getCookieByName, config, BASE_URL } from "../../../mock/data";
-import { useNavigate, Link, useParams } from "react-router-dom";
-import LikePost from "../LikePost/LikePost.jsx";
-import { ReactTagify } from "react-tagify";
-import SearchBox from "../../templates/SearchBox/SearchBox.jsx";
 import UpdateContext from "../../contexts/UpdateContext.js";
+import { useEffect, useState, useContext } from "react";
+import axios from 'axios';
+import Header from "../../templates/Header/Header";
+import { config, BASE_URL, getCookieByName } from "../../../mock/data";
+import { useNavigate, Link, useParams } from "react-router-dom";
+import SearchBox from "../../templates/SearchBox/SearchBox";
 import { GetPosts } from "../timeline/auxiliaryFunctions.js";
 
-export default function UserPage() {
-    const { id } = useParams();
+export default function HashTagPage() {
+    const {hashtag} = useParams();
     const [loading, setLoading] = useState(false);
-    const { updatePage, setUpdatePage } = useContext(UpdateContext);
+    const {updatePage, setUpdatePage} = useContext(UpdateContext);
     const [trends, setTrends] = useState([]);
     const [posts, setPosts] = useState([])
     const [modalIsOpen, setIsOpen] = useState(false);
     const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
     const verifyUser = user === undefined;
-    const [userData,setUserData] = useState();
 
     const [userInfo, setUserInfo] = useState();
 
@@ -54,28 +49,10 @@ export default function UserPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     };
 
-    //requisição de dados do usuario
+    //requisição de posts com a hashtag
     useEffect(() => {
 
-
-        const promise = axios.get(`${BASE_URL}/user/${id}`, config(user.token));
-
-        promise.then((res) => {
-            console.log(res.data)
-            setUserData(res.data)
-            setLoading(false)
-        }).catch((err) => {
-            console.log(err)
-        })
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [updatePage]);
-
-    //requisição de posts com o id usuario
-    useEffect(() => {
-
-
-        const promise = axios.get(`${BASE_URL}/UserPosts/${id}`, config(user.token));
+        const promise = axios.get(`${BASE_URL}/posts/${hashtag}`, config(user.token));
 
         promise.then((res) => {
             console.log(res.data)
@@ -86,9 +63,7 @@ export default function UserPage() {
         })
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [updatePage]);
-
-
+    }, [updatePage])
 
     //requisição de trends
     useEffect(() => {
@@ -109,7 +84,7 @@ export default function UserPage() {
         let name = (item.name).replace('#', '')
 
         return (
-            <Link to={`/hashtag/${name}`} onClick={() => setUpdatePage(!updatePage)}>
+            <Link to={`/hashtag/${name}`} onClick={()=>setUpdatePage(!updatePage)}>
                 <p> {item.name}</p>
             </Link>
 
@@ -122,10 +97,7 @@ export default function UserPage() {
             <Main>
                 <Panel>
                     <div>
-                        <div>
-                            <img src={userData === undefined ? '' : userData.imageUrl} alt={userData === undefined ? '' : userData.name} />
-                            <h1>{userData === undefined ? '' : <TimelineTitle>{userData.name}'s posts</TimelineTitle>}</h1>
-                        </div>
+                        <TimelineTitle># {hashtag}</TimelineTitle>
                         <div style={{ display: 'flex', width: '100%' }}>
                             <Posts>
                                 {
@@ -147,6 +119,8 @@ export default function UserPage() {
         </Container>
     )
 }
+
+
 
 
 

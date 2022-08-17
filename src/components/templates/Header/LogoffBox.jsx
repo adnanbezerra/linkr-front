@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../../contexts/UserContext";
-import { LogoffContainer } from "../Header/HeaderStyle";
+import { LogoffContainer } from "./HeaderStyle";
 
 export default function LogoffBox({ displayBox }) {
 
