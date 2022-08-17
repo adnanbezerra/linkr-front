@@ -15,7 +15,6 @@ function FollowerButton({ follower, setFollower, id }) {
         const header = verifyUser ? "" : config(user.token);
         setDisable(true)
 
-
         const promise = axios.post(`${BASE_URL}/user/${id}`, '', header);
         promise.then((res) => {
             setFollower(!follower)
