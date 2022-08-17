@@ -1,5 +1,6 @@
 import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle } from "./TimelineStyle";
-import UserContext from '../../contexts/UserContext.js'
+import UserContext from '../../contexts/UserContext.js';
+import UpdateContext from "../../contexts/UpdateContext.js";
 import { useEffect, useState, useContext } from "react";
 import axios from 'axios';
 import Header from "../../templates/Header/Header";
@@ -13,7 +14,7 @@ function TimeLine() {
     const [description, setDescription] = useState('')
     const [disable, setDisable] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [updatePage, setUpdatePage] = useState(true);
+    const {updatePage, setUpdatePage} = useContext(UpdateContext);
     const [trends, setTrends] = useState([]);
     const [posts, setPosts] = useState([])
     const [modalIsOpen, setIsOpen] = useState(false);
@@ -84,7 +85,7 @@ function TimeLine() {
 
         return (
             <Link to={`/hashtag/${name}`}>
-                <p># {item.name}</p>
+                <p> {item.name}</p>
             </Link>
 
         )
@@ -125,7 +126,7 @@ function TimeLine() {
     return (
         <Container>
             <Header userInfo={verifyUser ? "" : userInfo} />
-            <SearchBox setUpdatePage={setUpdatePage} updatePage={updatePage} />
+            <SearchBox />
             <Main>
                 <Panel>
                     <div>

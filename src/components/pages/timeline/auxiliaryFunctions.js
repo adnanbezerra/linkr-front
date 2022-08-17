@@ -58,9 +58,8 @@ export function CreateNewPost({ userInfo, publish, setUrl, url, setDescription, 
                 <form onSubmit={publish}>
                     <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
                     <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
-                    <button disabled={disable} onClick={() => {
-                        setDisable(true)
-                    }}>{disable ? 'Publishing' : 'Publish'}</button>
+                    <button type={"submit"} disabled={disable}>{disable ? 'Publishing' : 'Publish'}</button>
+
                 </form>
             </PostContent>
         </NewPost>
