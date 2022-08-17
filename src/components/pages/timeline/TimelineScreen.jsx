@@ -84,7 +84,7 @@ function TimeLine() {
 
         return (
             <Link to={`/hashtag/${name}`}>
-                <p> {item.name}</p>
+                <p># {item.name}</p>
             </Link>
 
         )

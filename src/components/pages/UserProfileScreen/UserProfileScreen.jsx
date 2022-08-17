@@ -10,6 +10,7 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 import LikePost from "../LikePost/LikePost.jsx";
 import { ReactTagify } from "react-tagify";
 import SearchBox from "../../templates/SearchBox/SearchBox.jsx";
+import FollowerButton from "./Follower.jsx";
 
 export default function UserPage() {
     const { id } = useParams();
@@ -23,6 +24,8 @@ export default function UserPage() {
     const navigate = useNavigate();
     const verifyUser = user === undefined;
     const [userInfo, setUserInfo] = useState();
+
+    const [follower, setFollower] = useState(false);
 
 
     useEffect(() => {
@@ -70,8 +73,8 @@ export default function UserPage() {
         const promise = axios.get(`${BASE_URL}/user/${id}`, config(user.token));
 
         promise.then((res) => {
-            console.log(res.data)
             setUserData(res.data)
+            setFollower(res.data.following)
             setLoading(false)
         }).catch((err) => {
             console.log(err)
@@ -87,7 +90,6 @@ export default function UserPage() {
         const promise = axios.get(`${BASE_URL}/UserPosts/${id}`, config(user.token));
 
         promise.then((res) => {
-            console.log(res.data)
             setPosts(res.data)
             setLoading(false)
         }).catch((err) => {
@@ -109,7 +111,6 @@ export default function UserPage() {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage]);
-
 
     function GetHashtags({ item, updatePage }) {
 
@@ -207,6 +208,9 @@ export default function UserPage() {
                 <div>
                     <img src={userData === undefined ? '' : userData.imageUrl} alt={userData === undefined ? '' : userData.name} />
                     <h1>{userData === undefined ? '' : `${userData.name}'s posts`}</h1>
+                    {userData === undefined ?
+                        '' :
+                        <FollowerButton follower={follower} setFollower={setFollower} id={id} updatePage={updatePage} />}
                 </div>
                 <Panel>
                     <Posts>
