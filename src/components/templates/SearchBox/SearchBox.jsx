@@ -3,12 +3,20 @@ import { DebounceInput } from 'react-debounce-input';
 import { AiOutlineSearch } from 'react-icons/ai';
 import axios from "axios";
 import { BASE_URL } from "../../../mock/data";
+<<<<<<< HEAD
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import UpdateContext from "../../contexts/UpdateContext.js";
 
 export default function SearchBox() {
     const {updatePage, setUpdatePage} = useContext(UpdateContext);
+=======
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+export default function SearchBox({ updatePage, setUpdatePage }) {
+
+>>>>>>> e4be4e13159fa9cff0b478b1935fbf15016082ca
     const [usersResults, setUsersResults] = useState([]);
     const navigate = useNavigate();
 

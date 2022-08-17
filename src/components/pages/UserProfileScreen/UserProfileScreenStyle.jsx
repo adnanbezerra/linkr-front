@@ -340,5 +340,10 @@ h4{
 `
 
 // export const Main = styled.div`
+<<<<<<< HEAD
     
 // `
+=======
+
+// `
+>>>>>>> e4be4e13159fa9cff0b478b1935fbf15016082ca

@@ -1,31 +1,33 @@
-import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle } from "./HashTagsPostsScreenStyle.jsx";
+import { Container, Main, Panel, Posts, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos } from "./HashTagsPostsScreenStyle.jsx";
 import UserContext from '../../contexts/UserContext.js'
-import UpdateContext from "../../contexts/UpdateContext.js";
 import { useEffect, useState, useContext } from "react";
+import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
+import DeletePost from "../EditPost/DeletePost.jsx";
 import Header from "../../templates/Header/Header";
-import { config, BASE_URL, getCookieByName } from "../../../mock/data";
+import { getCookieByName, config, BASE_URL } from "../../../mock/data";
 import { useNavigate, Link, useParams } from "react-router-dom";
-import SearchBox from "../../templates/SearchBox/SearchBox";
-import { GetPosts } from "../timeline/auxiliaryFunctions.js";
+import LikePost from "../LikePost/LikePost.jsx";
+import { ReactTagify } from "react-tagify";
+import SearchBox from "../../templates/SearchBox/SearchBox.jsx";
 
 export default function HashTagPage() {
-    const {hashtag} = useParams();
-    const [loading, setLoading] = useState(false);
-    const {updatePage, setUpdatePage} = useContext(UpdateContext);
+    const { hashtag } = useParams();
+    const [loading, setLoading] = useState(false)
+    const [updatePage, setUpdatePage] = useState(true);
     const [trends, setTrends] = useState([]);
     const [posts, setPosts] = useState([])
     const [modalIsOpen, setIsOpen] = useState(false);
-    const { user, setUser } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate();
     const verifyUser = user === undefined;
-
     const [userInfo, setUserInfo] = useState();
 
     useEffect(() => {
         const tokenCookie = getCookieByName('token');
         if (tokenCookie) {
             setUser({ token: tokenCookie });
+            navigate(`/hashtag/${hashtag}`, { replace: true });
         }
         if (verifyUser) {
             navigate('/', { replace: true });
@@ -38,7 +40,7 @@ export default function HashTagPage() {
     function getUserInfo() {
         const userToken = verifyUser ? "" : user.token;
         const token = config(userToken);
-
+    
         axios.get(`${BASE_URL}/user/me`, token)
             .then(response => {
                 setUserInfo(response.data);
@@ -52,7 +54,7 @@ export default function HashTagPage() {
     //requisição de posts com a hashtag
     useEffect(() => {
 
-        const promise = axios.get(`${BASE_URL}/posts/${hashtag}`, config(user.token));
+        const promise = axios.get(`${BASE_URL}/posts/#${hashtag}`, config(user.token));
 
         promise.then((res) => {
             console.log(res.data)
@@ -65,10 +67,10 @@ export default function HashTagPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage])
 
+
     //requisição de trends
     useEffect(() => {
-        const header = verifyUser ? "" : config(user.token);
-        const trends = axios.get(`${BASE_URL}/trends`, header);
+        const trends = axios.get(`${BASE_URL}/trends`, config(user.token));
         trends.then((r) => {
             setTrends(r.data);
         }).catch((err) => {
@@ -79,48 +81,115 @@ export default function HashTagPage() {
     }, [updatePage]);
 
 
-    function GetHashtags({ item }) {
+    function GetHashtags({ item, updatePage }) {
 
         let name = (item.name).replace('#', '')
 
         return (
-            <Link to={`/hashtag/${name}`} onClick={()=>setUpdatePage(!updatePage)}>
+            <Link to={`/hashtag/${name}`} onClick={() => setUpdatePage(!updatePage)}>
                 <p> {item.name}</p>
             </Link>
 
         )
     }
+
+    function GetPosts({ item, updatePage }) {
+        //variaveis para uso na biblioteca tagify
+        const tagStyle = {
+            fontWeight: 900,
+            color: 'white',
+            cursor: 'pointer'
+        }
+        const [contentString, setContentString] = useState(item.description);
+        //
+
+        //requisição de hashtags por post
+        useEffect(() => {
+            axios.get(`${BASE_URL}/hashtags/${item.id}`, config(user.token)).then((r) => {
+                let hashs = '';
+                for (let i = 0; i < r.data.length; i++) {
+                    hashs += ' #' + r.data[i].name;
+                }
+                setContentString(contentString + hashs);
+            }).catch((err) => {
+                console.log(err)
+            })
+
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, []);
+        //
+        
+        return (
+            <Post>
+                <Perfil>
+                    <img src={item.imageUrl} alt={item.name} />
+                    <LikePost id={item.id} />
+                </Perfil>
+                <PostContent>
+                    <h3 onClick={() => navigate(`/user/${item.userId}`)}>{item.name} </h3>
+                    {/*o item.description foi incorporado no contentString*/}
+                    <ReactTagify
+                        tagStyle={tagStyle}
+                        tagClicked={(tag) => {
+                            navigate(`/hashtag/${tag.substring(1, tag.length)}`);
+                            setUpdatePage(!updatePage);
+                        }}>
+                        <p>
+                            {contentString}
+                        </p>
+                    </ReactTagify>
+
+                    <Preview onClick={() => { window.open(item.url, '_blank') }}>
+                        <Infos>
+                            <h2>{item.titlePreview}</h2>
+                            <h3>{item.descriptionPreview}</h3>
+                            <h4>{item.url}</h4>
+                        </Infos>
+                        <img src={item.imagePreview} alt="" />
+                    </Preview>
+                    <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setLoading={setLoading} />
+                </PostContent>
+            </Post>
+        )
+    }
+
+    function ShowPosts() {
+
+        if (posts.length === 0) {
+            return (
+                <h1>There are no posts yet</h1>
+            )
+        }
+        else {
+            return (
+                posts.map((item, index) => { return (<GetPosts key={index} item={item} updatePage={updatePage} />) })
+            )
+        }
+    }
+
     return (
         <Container>
             <Header userInfo={verifyUser ? "" : userInfo} />
-            <SearchBox />
+            <SearchBox setUpdatePage={setUpdatePage} updatePage={updatePage} />
             <Main>
+                <h1># {hashtag}</h1>
                 <Panel>
-                    <div>
-                        <TimelineTitle># {hashtag}</TimelineTitle>
-                        <div style={{ display: 'flex', width: '100%' }}>
-                            <Posts>
-                                {
-                                    posts.length === 0 ? <h1>There are no posts yet</h1> :
-                                        posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} navigate={navigate} />) })
-                                }
-                            </Posts>
-                            <Sidebar>
-                                <h2>Trending</h2>
-                                <Line></Line>
-                                <Hashtags>
-                                    {(trends.length === 0) ? '' : trends.map((item, index) => { return (<GetHashtags key={index} item={item} />) })}
-                                </Hashtags>
-                            </Sidebar>
-                        </div>
-                    </div>
+                    <Posts>
+                        {!loading ?
+                            <ShowPosts /> :
+                            <LoadSpinner>
+                                <Loading />
+                            </LoadSpinner>}
+                    </Posts>
+                    <Sidebar>
+                        <h2>Trendings</h2>
+                        <Line></Line>
+                        <Hashtags>
+                            {trends.length === 0 ? 'No trends at the moment' : trends.map((item, index) => { return (<GetHashtags key={index} item={item} updatePage={updatePage} />) })}
+                        </Hashtags>
+                    </Sidebar>
                 </Panel>
             </Main>
         </Container>
     )
 }
-
-
-
-
-
