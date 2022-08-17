@@ -9,7 +9,6 @@ function FollowerButton({ follower, setFollower, id }) {
     const { user } = useContext(UserContext)
     const verifyUser = user === undefined;
     const [disable, setDisable] = useState(false)
-    console.log(follower)
 
     function FollowOrUnfollow() {
 
@@ -19,7 +18,6 @@ function FollowerButton({ follower, setFollower, id }) {
 
         const promise = axios.post(`${BASE_URL}/user/${id}`, '', header);
         promise.then((res) => {
-            console.log(res.data)
             setFollower(!follower)
         }
         )

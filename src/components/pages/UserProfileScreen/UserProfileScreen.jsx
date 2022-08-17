@@ -73,7 +73,6 @@ export default function UserPage() {
         const promise = axios.get(`${BASE_URL}/user/${id}`, config(user.token));
 
         promise.then((res) => {
-            console.log(res.data)
             setUserData(res.data)
             setFollower(res.data.following)
             setLoading(false)
@@ -91,7 +90,6 @@ export default function UserPage() {
         const promise = axios.get(`${BASE_URL}/UserPosts/${id}`, config(user.token));
 
         promise.then((res) => {
-            console.log(res.data)
             setPosts(res.data)
             setLoading(false)
         }).catch((err) => {
