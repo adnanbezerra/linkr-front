@@ -76,7 +76,7 @@ export default function LikePost({ id }) {
                 :
                 <AiFillHeart color="red" size={20} cursor='pointer' onClick={() => postDeslike()} />
             }
-            <p data-tip={quantityLikes === 0? '': text }>{quantityLikes}</p>
+            <p data-tip={quantityLikes === 0? '': text }>{quantityLikes} {quantityLikes === 1 ? 'like' : 'likes'}</p>
             <ReactTooltip
                 effect="solid"
                 place="bottom"
