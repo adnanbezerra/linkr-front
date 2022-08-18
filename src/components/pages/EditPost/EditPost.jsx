@@ -2,13 +2,14 @@ import axios from "axios";
 import { BASE_URL, config } from "../../../mock/data";
 import { useContext, useEffect, useRef, useState } from 'react';
 import UserContext from '../../contexts/UserContext.js';
+import UpdateContext from "../../contexts/UpdateContext.js";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 
 export default function EditPost({ description, editMode, setEditMode, message, setMessage, id, setPosts }) {
 
   const navigate = useNavigate();
-
+  const { updatePage, setUpdatePage } = useContext(UpdateContext);
   const tagStyle = {
     fontWeight: 900,
     color: 'white',
@@ -55,7 +56,10 @@ export default function EditPost({ description, editMode, setEditMode, message, 
           onKeyDown={editPost}
           disabled={disabled}> asdasd </textarea> : <ReactTagify
             tagStyle={tagStyle}
-            tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1, tag.length)}`)}><p>{description}</p></ReactTagify>
+            tagClicked={(tag) =>{
+              navigate(`/hashtag/${tag.substring(1, tag.length)}`);
+              setUpdatePage(!updatePage);
+            } }><p>{description}</p></ReactTagify>
       }
     </>
   )
