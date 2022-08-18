@@ -18,6 +18,7 @@ export function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navi
     const [editMode, setEditMode] = useState(false);
     const [displayComments, setDisplayComments] = useState(false);
     const [commentsList, setCommentsList] = useState([]);
+    const [followingList, setFollowingList] = useState();
     const { user } = useContext(UserContext);
     const verifyUser = user === undefined;
 
@@ -31,6 +32,13 @@ export function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navi
                 console.error(error);
             })
 
+        axios.get(`${BASE_URL}/following`, headers)
+            .then(response => {
+                setFollowingList(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -78,7 +86,7 @@ export function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navi
                                 </PostContent>
                             </div>
                         </Post>
-                        <CommentPost displayComments={displayComments} commentsList={commentsList} setCommentsList={setCommentsList} id={item.id} posterId={item.userId} />
+                        <CommentPost displayComments={displayComments} commentsList={commentsList} setCommentsList={setCommentsList} id={item.id} posterId={item.userId} followingList={followingList} />
                     </div>
             }
         </>

@@ -7,7 +7,7 @@ import UserContext from '../../contexts/UserContext';
 import { Comment, CommentMessage, CommentTextContainer, CommentUserName, Container, CreateNewComment, ExtraInfo, FormButton, FormInput, FormInputContainer } from './CommentStyle';
 import { IoPaperPlaneOutline } from 'react-icons/io5';
 
-export default function CommentPost({ displayComments, commentsList, setCommentsList, id, posterId }) {
+export default function CommentPost({ displayComments, commentsList, setCommentsList, id, posterId, followingList }) {
 
     const { user } = useContext(UserContext);
 
@@ -45,12 +45,8 @@ export default function CommentPost({ displayComments, commentsList, setComments
 
         const commentContent = { commentText, name, imageUrl };
 
-        console.log(commentContent)
-
         axios.post(`${BASE_URL}/comment/${id}`, content, headers)
             .then(response => {
-                console.log('chegou aqui');
-                console.log(commentText);
                 setCommentsList([...commentsList, commentContent]);
                 setCommentText("");
             })
@@ -60,18 +56,30 @@ export default function CommentPost({ displayComments, commentsList, setComments
             });
     }
 
+    function checkIfIFollowCommenter(commenterId){
+        for(let following of followingList) {
+            if(following.id === commenterId) return true;
+        }
+
+        return false;
+    }
+
     return (
         <Container displayComments={displayComments}>
             {
                 commentsList ? commentsList.map((comment, index) => {
+                    console.log(followingList);
+                    console.log(checkIfIFollowCommenter(comment.commenterId));
+
                     return (
                         <Comment key={index}>
                             <img src={comment.imageUrl} alt="" />
 
                             <CommentTextContainer>
-                                <div style={{display: 'flex'}}>
+                                <div style={{ display: 'flex' }}>
                                     <CommentUserName>{comment.name}</CommentUserName>
                                     <ExtraInfo>{comment.commenterId === posterId ? "• post’s author" : ""}</ExtraInfo>
+                                    <ExtraInfo>{followingList ? (checkIfIFollowCommenter(comment.commenterId) ? "• following" : "") : ""}</ExtraInfo>
                                 </div>
                                 <CommentMessage>{comment.commentText}</CommentMessage>
                             </CommentTextContainer>
