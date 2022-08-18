@@ -111,7 +111,6 @@ function TimeLine() {
         const promise = axios.post(`${BASE_URL}/timeline`, body, header)
 
         promise.then((res) => {
-            console.log('postei')
             setUpdatePage(!updatePage)
             setDisable(false)
             setDescription('')
