@@ -24,7 +24,6 @@ export default function UserPage() {
     const navigate = useNavigate();
     const verifyUser = user === undefined;
     const [userInfo, setUserInfo] = useState();
-
     const [follower, setFollower] = useState(undefined);
 
 
