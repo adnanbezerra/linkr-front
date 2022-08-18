@@ -50,6 +50,7 @@ export default function DeletePost({ id, modalIsOpen, setIsOpen, setPosts, setEd
                         right: 'auto',
                         bottom: 'auto',
                         border: 'none',
+                        borderRadius: '15px',
                         background: 'rgba(255, 255, 255, 0.7)',
                         marginRight: '-50%',
                         transform: 'translate(-50%, -50%)',

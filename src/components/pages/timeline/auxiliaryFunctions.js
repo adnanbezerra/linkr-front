@@ -2,6 +2,7 @@ import { useState } from "react";
 import Loading from "../../Loading/Loading";
 import DeletePost from "../EditPost/DeletePost";
 import EditPost from "../EditPost/EditPost";
+import Repost from "../EditPost/Repost.jsx";
 import LikePost from "../LikePost/LikePost";
 import { Infos, LoadSpinner, NewPost, Perfil, Post, PostContent, Preview } from "./TimelineStyle";
 
@@ -21,6 +22,7 @@ export function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navi
                         <Perfil>
                             <img src={item.imageUrl} alt={item.name} />
                             <LikePost id={item.id} />
+                            <Repost />
                         </Perfil>
                         <PostContent>
                             <h3 onClick={() => navigate(`/user/${item.userId}`)}>{item.name} </h3>
