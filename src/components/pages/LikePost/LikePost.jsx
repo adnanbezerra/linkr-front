@@ -7,17 +7,19 @@ import ReactTooltip from 'react-tooltip';
 
 export default function LikePost({ id }) {
     const { user } = useContext(UserContext);
-    const [infoLikes, setInfoLikes] = useState({liked: false, likes: [], total: 0})
+    const [infoLikes, setInfoLikes] = useState({ liked: false, likes: [], total: 0 })
     const [liked, setLiked] = useState();
-    const [text, setText ] = useState('');
+    const [text, setText] = useState('');
 
 
     function searchLike() {
         const likeInfo = axios.get(`${BASE_URL}/likes/${id}`, config(user.token))
         likeInfo
-        .then((res) => { setInfoLikes(res.data); setLiked(res.data.liked);
-            const textInf = Text(res.data); setText(textInf)})
-        .catch((err)=> { console.log(err)})
+            .then((res) => {
+                setInfoLikes(res.data); setLiked(res.data.liked);
+                const textInf = Text(res.data); setText(textInf)
+            })
+            .catch((err) => { console.log(err) })
     }
 
     function postLike() {
@@ -45,30 +47,32 @@ export default function LikePost({ id }) {
                 alert("nao foi possivel descurtir o post")
             })
     }
-    const quantityLikes = infoLikes.liked ? infoLikes.total+1 : infoLikes.total
+    const quantityLikes = infoLikes.liked ? infoLikes.total + 1 : infoLikes.total
 
     function Text(inf) {
         let info;
-        if (inf.liked && inf.total > 2){
+        if (inf.liked && inf.total > 2) {
             info = `Você, ${inf.likes[0].whoLiked} e outras ${inf.total - 1} pessoas`;
         } else if (inf.liked && inf.total === 1) {
-          info = `Você e ${inf.likes[0].whoLiked} curtiram`;
+            info = `Você e ${inf.likes[0].whoLiked} curtiram`;
         } else if (inf.liked && inf.total === 2) {
-          info = `Você, ${inf.likes[0].whoLiked}  e mais uma pessoa curtiram`;
+            info = `Você, ${inf.likes[0].whoLiked}  e mais uma pessoa curtiram`;
         } else if (inf.liked && inf.total === 0) {
-          info = `Você curtiu`;
+            info = `Você curtiu`;
         } else if (!inf.liked && inf.total > 2) {
-          info = `${inf.likes[0].whoLiked} , ${inf.likes[1].whoLiked}  e outras ${ inf.total - 1} pessoas curtiram`;
+            info = `${inf.likes[0].whoLiked} , ${inf.likes[1].whoLiked}  e outras ${inf.total - 1} pessoas curtiram`;
         } else if (!inf.liked && inf.total === 1) {
-          info = `${inf.likes[0].whoLiked}  curtiu`;
+            info = `${inf.likes[0].whoLiked}  curtiu`;
         } else if (!inf.liked && inf.total === 2) {
-          info = `${inf.likes[0].whoLiked}  e ${inf.likes[1].whoLiked}  curtiram`;
+            info = `${inf.likes[0].whoLiked}  e ${inf.likes[1].whoLiked}  curtiram`;
         }
-    
+
         return info;
     }
-    
-    useEffect(() => { searchLike() }, []);
+
+    useEffect(() => { searchLike() },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        []);
     return (
         <>
             {(!liked) ?
@@ -76,7 +80,7 @@ export default function LikePost({ id }) {
                 :
                 <AiFillHeart color="red" size={20} cursor='pointer' onClick={() => postDeslike()} />
             }
-            <p data-tip={quantityLikes === 0? '': text }>{quantityLikes} {quantityLikes === 1 ? 'like' : 'likes'}</p>
+            <p data-tip={quantityLikes === 0 ? '' : text}>{quantityLikes} {quantityLikes === 1 ? 'like' : 'likes'}</p>
             <ReactTooltip
                 effect="solid"
                 place="bottom"

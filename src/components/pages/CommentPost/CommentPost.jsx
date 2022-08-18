@@ -68,9 +68,6 @@ export default function CommentPost({ displayComments, commentsList, setComments
         <Container displayComments={displayComments}>
             {
                 commentsList ? commentsList.map((comment, index) => {
-                    console.log(followingList);
-                    console.log(checkIfIFollowCommenter(comment.commenterId));
-
                     return (
                         <Comment key={index}>
                             <img src={comment.imageUrl} alt="" />
@@ -78,7 +75,7 @@ export default function CommentPost({ displayComments, commentsList, setComments
                             <CommentTextContainer>
                                 <div style={{ display: 'flex' }}>
                                     <CommentUserName>{comment.name}</CommentUserName>
-                                    <ExtraInfo>{comment.commenterId === posterId ? "• post’s author" : ""}</ExtraInfo>
+                                    <ExtraInfo>{comment.commenterId === posterId ? "• post's author" : ""}</ExtraInfo>
                                     <ExtraInfo>{followingList ? (checkIfIFollowCommenter(comment.commenterId) ? "• following" : "") : ""}</ExtraInfo>
                                 </div>
                                 <CommentMessage>{comment.commentText}</CommentMessage>
