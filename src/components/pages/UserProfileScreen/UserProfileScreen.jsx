@@ -27,8 +27,7 @@ export default function UserPage() {
     const verifyUser = user === undefined;
     const [userData, setUserData] = useState();
     const [userInfo, setUserInfo] = useState();
-
-    const [follower, setFollower] = useState(false);
+    const [follower, setFollower] = useState(undefined);
 
     useEffect(() => {
         const tokenCookie = getCookieByName('token');
@@ -61,7 +60,6 @@ export default function UserPage() {
     //requisição de dados do usuario
     useEffect(() => {
 
-
         const promise = axios.get(`${BASE_URL}/user/${id}`, config(user.token));
 
         promise.then((res) => {
@@ -77,7 +75,6 @@ export default function UserPage() {
 
     //requisição de posts com o id usuario
     useEffect(() => {
-
 
         const promise = axios.get(`${BASE_URL}/UserPosts/${id}`, config(user.token));
 
@@ -121,6 +118,13 @@ export default function UserPage() {
             <Header userInfo={verifyUser ? "" : userInfo} />
             <SearchBox />
             <Main>
+                <div>
+                    <img src={userData === undefined ? '' : userData.imageUrl} alt={userData === undefined ? '' : userData.name} />
+                    <h1>{userData === undefined ? '' : `${userData.name}'s posts`}</h1>
+                    {follower === undefined ?
+                        '' :
+                        <FollowerButton follower={follower} setFollower={setFollower} id={id} updatePage={updatePage} />}
+                </div>
                 <Panel>
                     <div>
                         <div>
