@@ -16,6 +16,7 @@ function TimeLine() {
     const [updatePage, setUpdatePage] = useState(true);
     const [trends, setTrends] = useState([]);
     const [posts, setPosts] = useState([])
+    const [messagePost, setMessagePost] = useState('')
     const [modalIsOpen, setIsOpen] = useState(false);
     const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
@@ -55,7 +56,14 @@ function TimeLine() {
 
         const promise = axios.get(`${BASE_URL}/timeline`, header)
         promise.then((res) => {
-            setPosts(res.data)
+            console.log(typeof (res.data) === "string")
+            if (typeof (res.data) === "string") {
+                setMessagePost(res.data)
+            }
+            else {
+                setMessagePost('')
+                setPosts(res.data)
+            }
             setLoading(false)
         }).catch((err) => {
             console.error(err)
@@ -122,6 +130,12 @@ function TimeLine() {
         })
     }
 
+    function MessagePost({ messagePost }) {
+        return (
+            <h1>{messagePost}</h1>
+        )
+    }
+
     return (
         <Container>
             <Header userInfo={verifyUser ? "" : userInfo} />
@@ -134,8 +148,11 @@ function TimeLine() {
                             <Posts>
                                 <CreateNewPost userInfo={userInfo} publish={publish} setUrl={setUrl} url={url} setDescription={setDescription} description={description} disable={disable} setDisable={setDisable} />
                                 {
-                                    posts.length === 0 ? <h1>There are no posts yet</h1> :
+                                    posts.length === 0 ? '' :
                                         posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} navigate={navigate} />) })
+                                }
+                                {
+                                    (messagePost === '') ? '' : <MessagePost messagePost={messagePost} />
                                 }
                             </Posts>
                             <Sidebar>

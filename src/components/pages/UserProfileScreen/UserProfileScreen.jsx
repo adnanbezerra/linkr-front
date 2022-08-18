@@ -69,10 +69,10 @@ export default function UserPage() {
     //requisição de dados do usuario
     useEffect(() => {
 
-
         const promise = axios.get(`${BASE_URL}/user/${id}`, config(user.token));
 
         promise.then((res) => {
+            console.log(res.data)
             setUserData(res.data)
             setFollower(res.data.following)
             setLoading(false)
@@ -85,7 +85,6 @@ export default function UserPage() {
 
     //requisição de posts com o id usuario
     useEffect(() => {
-
 
         const promise = axios.get(`${BASE_URL}/UserPosts/${id}`, config(user.token));
 
