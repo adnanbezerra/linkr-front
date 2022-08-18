@@ -2,14 +2,15 @@ import { SearchContainerMobile, SearchResults, SearchContainer } from "./SearchB
 import { DebounceInput } from 'react-debounce-input';
 import { AiOutlineSearch } from 'react-icons/ai';
 import axios from "axios";
-import { BASE_URL, config } from "../../../mock/data";
+
+import { BASE_URL } from "../../../mock/data";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import UserContext from "../../contexts/UserContext";
+import UpdateContext from "../../contexts/UpdateContext.js";
 
-export default function SearchBox({ updatePage, setUpdatePage }) {
-
-    const [usersResults, setUsersResults] = useState(false);
+export default function SearchBox() {
+    const {updatePage, setUpdatePage} = useContext(UpdateContext);
+  const [usersResults, setUsersResults] = useState(false);
     const [myFollowers, setMyfollowers] = useState([]);
     const [otherUsers, setOtherUsers] = useState([]);
     const navigate = useNavigate();
