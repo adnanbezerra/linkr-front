@@ -1,14 +1,10 @@
 import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle } from "./HashTagsPostsScreenStyle.jsx";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
-import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
-import DeletePost from "../EditPost/DeletePost.jsx";
 import Header from "../../templates/Header/Header";
 import { getCookieByName, config, BASE_URL } from "../../../mock/data";
 import { useNavigate, Link, useParams } from "react-router-dom";
-import LikePost from "../LikePost/LikePost.jsx";
-import { ReactTagify } from "react-tagify";
 import SearchBox from "../../templates/SearchBox/SearchBox.jsx";
 import UpdateContext from "../../contexts/UpdateContext.js";
 import { GetPosts } from "../timeline/auxiliaryFunctions.js";
@@ -24,7 +20,6 @@ export default function UserPage() {
     const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
     const verifyUser = user === undefined;
-    const [userData, setUserData] = useState();
     const [userInfo, setUserInfo] = useState();
 
     useEffect(() => {
