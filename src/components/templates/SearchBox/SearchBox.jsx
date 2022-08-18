@@ -25,9 +25,8 @@ export default function SearchBox({ updatePage, setUpdatePage }) {
         if (text.length < 3) setUsersResults([]);
         console.log(`${BASE_URL}/user/${text}`)
 
-        axios.get(`${BASE_URL}/user/${text}`, token)
+        axios.get(`${BASE_URL}/user/profile/${text}`, token)
             .then(response => {
-                console.log(response.data)
                 if ((response.data.myFolowers) === undefined) {
                     setMyfollowers([])
                 }

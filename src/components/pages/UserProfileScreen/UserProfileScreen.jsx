@@ -25,7 +25,7 @@ export default function UserPage() {
     const verifyUser = user === undefined;
     const [userInfo, setUserInfo] = useState();
 
-    const [follower, setFollower] = useState(false);
+    const [follower, setFollower] = useState(undefined);
 
 
     useEffect(() => {
@@ -72,7 +72,6 @@ export default function UserPage() {
         const promise = axios.get(`${BASE_URL}/user/${id}`, config(user.token));
 
         promise.then((res) => {
-            console.log(res.data)
             setUserData(res.data)
             setFollower(res.data.following)
             setLoading(false)
@@ -207,7 +206,7 @@ export default function UserPage() {
                 <div>
                     <img src={userData === undefined ? '' : userData.imageUrl} alt={userData === undefined ? '' : userData.name} />
                     <h1>{userData === undefined ? '' : `${userData.name}'s posts`}</h1>
-                    {userData === undefined ?
+                    {follower === undefined ?
                         '' :
                         <FollowerButton follower={follower} setFollower={setFollower} id={id} updatePage={updatePage} />}
                 </div>
