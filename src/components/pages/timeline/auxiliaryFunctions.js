@@ -5,7 +5,7 @@ import EditPost from "../EditPost/EditPost";
 import Repost from "../EditPost/Repost.jsx";
 import LikePost from "../LikePost/LikePost";
 import { BiRepost } from 'react-icons/bi';
-import { Infos, LoadSpinner, NewPost, Perfil, Post, PostContent, Preview,  RepostStyle } from "./TimelineStyle";
+import { Infos, LoadSpinner, NewPost, Perfil, Post, PostContent, Preview, RepostStyle } from "./TimelineStyle";
 import { AiOutlineComment } from 'react-icons/ai';
 import CommentPost from "../CommentPost/CommentPost";
 import { useEffect } from "react";
@@ -45,7 +45,7 @@ export function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navi
     }, []);
 
     function getCommentsNumber() {
-        if(commentsList.length === 1) return '1 comment'
+        if (commentsList.length === 1) return '1 comment'
         else return `${commentsList.length} comments`
     }
 
@@ -59,55 +59,59 @@ export function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navi
 
     return (
         <>
-            {item.isRepost == null ? 
-                    <div style={{ marginBottom: '20px', backgroundColor: '#1E1E1E', borderRadius: '16px' }}>
-                        <Post>
-                            <div style={{ display: 'flex' }}>
-                                <Perfil>
-                                    <img src={item.imageUrl} alt={item.name} />
-                                    <LikePost id={item.id} />
-                                    <div onClick={() => { setDisplayComments(!displayComments) }} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                                        <AiOutlineComment color='#fff' size={25} cursor='pointer' style={{ marginTop: '15px' }} />
-                                        <p>{getCommentsNumber()}</p>
-                                    </div>
-                                </Perfil>
-                                <PostContent>
-                                    <h3 onClick={() => navigate(`/user/${item.userId}`)}>{item.name} </h3>
-                                    <EditPost description={item.description} editMode={editMode} setEditMode={setEditMode} message={message} setMessage={setMessage} id={item.id} setPosts={setPosts} />
-                                    <Preview onClick={() => { window.open(item.url, '_blank') }}>
-                                        <Infos>
-                                            <h2>{item.titlePreview}</h2>
-                                            <h3>{item.descriptionPreview}</h3>
-                                            <h4>{item.url}</h4>
-                                        </Infos>
-                                        <img src={item.imagePreview} alt="" />
-                                    </Preview>
-                                    {
-                                        item.isMyPost === "true" ?
-                                            <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode={setEditMode} editMode={editMode} /> :
-                                            ``
-                                    }
-                                </PostContent>
-                            </div>
-                        </Post>
-                        <CommentPost displayComments={displayComments} commentsList={commentsList} setCommentsList={setCommentsList} id={item.id} posterId={item.userId} followingList={followingList} />
-                    </div>
+            {item.isRepost == null ?
+                <div style={{ marginBottom: '20px', backgroundColor: '#1E1E1E', borderRadius: '16px' }}>
+                    <Post>
+                        <div style={{ display: 'flex' }}>
+                            <Perfil>
+                                <img src={item.imageUrl} alt={item.name} />
+                                <LikePost id={item.id} />
+                                <div onClick={() => { setDisplayComments(!displayComments) }} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                                    <AiOutlineComment color='#fff' size={25} cursor='pointer' style={{ marginTop: '15px' }} />
+                                    <p>{getCommentsNumber()}</p>
+                                </div>
+                                <Repost id={item.id} />
+                            </Perfil>
+                            <PostContent>
+                                <h3 onClick={() => navigate(`/user/${item.userId}`)}>{item.name} </h3>
+                                <EditPost description={item.description} editMode={editMode} setEditMode={setEditMode} message={message} setMessage={setMessage} id={item.id} setPosts={setPosts} />
+                                <Preview onClick={() => { window.open(item.url, '_blank') }}>
+                                    <Infos>
+                                        <h2>{item.titlePreview}</h2>
+                                        <h3>{item.descriptionPreview}</h3>
+                                        <h4>{item.url}</h4>
+                                    </Infos>
+                                    <img src={item.imagePreview} alt="" />
+                                </Preview>
+                                {
+                                    item.isMyPost === "true" ?
+                                        <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode={setEditMode} editMode={editMode} /> :
+                                        ``
+                                }
+                            </PostContent>
+                        </div>
+                    </Post>
+                    <CommentPost displayComments={displayComments} commentsList={commentsList} setCommentsList={setCommentsList} id={item.id} posterId={item.userId} followingList={followingList} />
+                </div>
                 :
                 <>
-                    <RepostStyle> 
-                    <BiRepost color="#FFFFFF" size={25} cursor='pointer' />
-                    <p> Re-posted by <span> { item.meRepost ==='true'? 'you': item.isRepost} </span> </p>
-                    </RepostStyle>
-                                        <div style={{ marginBottom: '20px', backgroundColor: '#1E1E1E', borderRadius: '16px' }}>
+
+                    <div style={{ marginBottom: '20px', backgroundColor: '#1E1E1E', borderRadius: '16px' }}>
+                        <RepostStyle>
+                            <BiRepost color="#FFFFFF" size={25} cursor='pointer' />
+                            <p> Re-posted by <span> {item.meRepost === 'true' ? 'you' : item.isRepost} </span> </p>
+                        </RepostStyle>
                         <Post>
                             <div style={{ display: 'flex' }}>
                                 <Perfil>
                                     <img src={item.imageUrl} alt={item.name} />
                                     <LikePost id={item.id} />
-                                    <div onClick={() => { setDisplayComments(!displayComments) }} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                            
+                                    <div onClick={() => { setDisplayComments(!displayComments) }} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                                         <AiOutlineComment color='#fff' size={25} cursor='pointer' style={{ marginTop: '15px' }} />
                                         <p>{getCommentsNumber()}</p>
                                     </div>
+                                    <Repost id={item.id} />
                                 </Perfil>
                                 <PostContent>
                                     <h3 onClick={() => navigate(`/user/${item.userId}`)}>{item.name} </h3>
@@ -120,16 +124,12 @@ export function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navi
                                         </Infos>
                                         <img src={item.imagePreview} alt="" />
                                     </Preview>
-                                    {
-                                        item.isMyPost === "true" ?
-                                            <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode={setEditMode} editMode={editMode} /> :
-                                            ``
-                                    }
                                 </PostContent>
                             </div>
                         </Post>
                         <CommentPost displayComments={displayComments} commentsList={commentsList} setCommentsList={setCommentsList} id={item.id} posterId={item.userId} followingList={followingList} />
                     </div>
+                </>
             }
         </>
     )
