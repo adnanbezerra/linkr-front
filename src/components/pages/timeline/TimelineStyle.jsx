@@ -63,7 +63,8 @@ export const Posts = styled.div`
     margin: 0 20px 0 0;
     border-radius: 15px;
     position: relative;
-
+    overflow:auto;
+    height: fit-content;
     @media(max-width: 980px){
         margin: 0;
     }
@@ -73,6 +74,13 @@ export const Posts = styled.div`
         margin: 0;
         border-radius: 0;
     }
+    *:last-child{
+        ::-webkit-scrollbar {
+        width: 10px;
+    }
+    }
+        
+    
 `
 
 export const NewPost = styled.div`
@@ -343,4 +351,18 @@ export const WarningNewPosts = styled.div`
     justify-content: center;
     color: white;
     margin-bottom: 16px;
+`
+
+export const LoadingWarning = styled.div`
+    color:white;
+    width: 100%;
+    margin-bottom: 200px;    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Lato;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: 0.05em;
 `

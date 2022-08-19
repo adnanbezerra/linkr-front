@@ -1,4 +1,4 @@
-import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle } from "./UserProfileScreenStyle.jsx";
+import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle, LoadingWarning, Perfil } from "./UserProfileScreenStyle.jsx";
 import FollowerButton from "./Follower.jsx";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
@@ -13,6 +13,7 @@ import { ReactTagify } from "react-tagify";
 import SearchBox from "../../templates/SearchBox/SearchBox.jsx";
 import UpdateContext from "../../contexts/UpdateContext.js";
 import { GetPosts } from "../timeline/auxiliaryFunctions.js";
+import InfiniteScroll from 'react-infinite-scroller';
 
 export default function UserPage() {
     const { id } = useParams();
@@ -29,6 +30,12 @@ export default function UserPage() {
     const [userInfo, setUserInfo] = useState();
 
     const [follower, setFollower] = useState(false);
+
+    const [lastPostsUpdate, setLastPostsUpdate] = useState('-infinity');
+    const [newposts, setNewposts] = useState([]);
+    const [numberOfNewposts, setNumberOfNewposts] = useState(0);
+    const [cut, setCut] = useState(0);
+    const [areMorePosts, setAreMorePosts] = useState(true);
 
     useEffect(() => {
         const tokenCookie = getCookieByName('token');
@@ -78,12 +85,17 @@ export default function UserPage() {
     //requisição de posts com o id usuario
     useEffect(() => {
 
+        const header = verifyUser ? "" : config(user.token);
 
-        const promise = axios.get(`${BASE_URL}/UserPosts/${id}`, config(user.token));
+        const promise = axios.get(`${BASE_URL}/UserPosts/${id}?cut=${cut}`, header);
 
         promise.then((res) => {
             setPosts(res.data)
             setLoading(false)
+            setCut(cut + res.data.length);
+            if (res.data.length === 0) {
+                setAreMorePosts(false);
+            }
         }).catch((err) => {
             console.log(err)
         })
@@ -91,7 +103,22 @@ export default function UserPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage]);
 
+    function morePosts(page) {
+        const header = verifyUser ? "" : config(user.token);
 
+        const promise = axios.get(`${BASE_URL}/UserPosts/${id}?cut=${cut}`, header);
+        promise.then((res) => {
+            setPosts([...posts, ...res.data]);
+            setLoading(false);
+            setCut(cut + res.data.length);
+            if (res.data.length === 0) {
+                setAreMorePosts(false);
+                console.log('finished')
+            }
+        }).catch((err) => {
+            console.error(err)
+        })
+    }
 
     //requisição de trends
     useEffect(() => {
@@ -121,6 +148,10 @@ export default function UserPage() {
             <Header userInfo={verifyUser ? "" : userInfo} />
             <SearchBox />
             <Main>
+                <div>
+                    <img src={userData === undefined ? '' : userData.imageUrl} alt={userData === undefined ? '' : userData.name} />
+                    <h1>{userData === undefined ? '' : `${userData.name}'s posts`}</h1>
+                </div>
                 <Panel>
                     <div>
                         <div>
@@ -132,10 +163,19 @@ export default function UserPage() {
                         </div>
                         <div style={{ display: 'flex', width: '100%' }}>
                             <Posts>
-                                {
-                                    posts.length === 0 ? <h1>There are no posts yet</h1> :
-                                        posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} navigate={navigate} />) })
-                                }
+                                <div style={{ height: '500px', overflow: 'auto' }}>
+                                    <InfiniteScroll
+                                        pageStart={0}
+                                        loadMore={morePosts}
+                                        hasMore={areMorePosts}
+                                        loader={<LoadingWarning key={0}>Loading more posts...</LoadingWarning>}
+                                        threshold={0}
+                                        useWindow={false}
+
+                                    >
+                                        {posts.length === 0 ? <h1>There are no posts yet</h1> : posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} navigate={navigate} />) })}
+                                    </InfiniteScroll>
+                                </div>
                             </Posts>
                             <Sidebar>
                                 <h2>Trending</h2>

@@ -86,6 +86,11 @@ export const Posts = styled.div`
         margin: 0;
         border-radius: 0;
     }
+    *:last-child{
+        ::-webkit-scrollbar {
+        width: 10px;
+    }
+    }
 `
 
 export const NewPost = styled.div`
@@ -342,3 +347,16 @@ h4{
 // export const Main = styled.div`
     
 // `
+export const LoadingWarning = styled.div`
+    color:white;
+    width: 100%;
+    margin-bottom: 200px;    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Lato;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: 0.05em;
+`
