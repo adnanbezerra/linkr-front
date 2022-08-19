@@ -63,7 +63,8 @@ export const Posts = styled.div`
     margin: 0 20px 0 0;
     border-radius: 15px;
     position: relative;
-
+    overflow:auto;
+    height: fit-content;
     @media(max-width: 980px){
         margin: 0;
     }
@@ -73,6 +74,13 @@ export const Posts = styled.div`
         margin: 0;
         border-radius: 0;
     }
+    *:last-child{
+        ::-webkit-scrollbar {
+        width: 10px;
+    }
+    }
+        
+    
 `
 
 export const NewPost = styled.div`
@@ -102,7 +110,6 @@ export const Post = styled.div`
     display: flex;
     border-radius: 15px;
     padding: 20px;
-    margin-bottom: 20px;
     position: relative;
     box-sizing: border-box;
     background-color: #151515;
@@ -325,8 +332,53 @@ h4{
     word-break: break-all;
 }
 `
+export const RepostStyle = styled.div `
+    background: #1E1E1E;
+    border-radius: 16px 16px 0 0 ;
+    color: rgba(255, 255, 255, 1);
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+    p {
+        margin-left: 10px;
+        span {
+            font-weight: bold;
+        }
+    }
+`
 
 // export const Main = styled.div`
-    
+
 // `
 
+export const WarningNewPosts = styled.div`
+    height: 61px;
+    width: 100%;
+    left: 241px;
+    top: 481px;
+    border-radius: 16px;
+    background-color: #1877F2;
+    box-shadow: 0px 4px 4px 0px #00000040;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-bottom: 16px;
+`
+
+export const LoadingWarning = styled.div`
+    color:white;
+    width: 100%;
+    margin-bottom: 200px;    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Lato;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: 0.05em;
+`

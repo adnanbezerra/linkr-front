@@ -1,5 +1,4 @@
-import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle, LoadingWarning, Perfil } from "./UserProfileScreenStyle.jsx";
-import FollowerButton from "./Follower.jsx";
+import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle, LoadingWarning } from "./HashTagsPostsScreenStyle.jsx";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
 import axios from 'axios';
@@ -12,7 +11,7 @@ import { GetPosts } from "../timeline/auxiliaryFunctions.js";
 import InfiniteScroll from 'react-infinite-scroller';
 
 export default function UserPage() {
-    const { id } = useParams();
+    const { hashtag } = useParams();
     const [loading, setLoading] = useState(false);
     const { updatePage, setUpdatePage } = useContext(UpdateContext);
 
@@ -22,13 +21,8 @@ export default function UserPage() {
     const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
     const verifyUser = user === undefined;
-    const [userData, setUserData] = useState();
     const [userInfo, setUserInfo] = useState();
-    const [follower, setFollower] = useState(undefined);
 
-    const [lastPostsUpdate, setLastPostsUpdate] = useState('-infinity');
-    const [newposts, setNewposts] = useState([]);
-    const [numberOfNewposts, setNumberOfNewposts] = useState(0);
     const [cut, setCut] = useState(0);
     const [areMorePosts, setAreMorePosts] = useState(true);
 
@@ -36,12 +30,13 @@ export default function UserPage() {
         const tokenCookie = getCookieByName('token');
         if (tokenCookie) {
             setUser({ token: tokenCookie });
+            navigate(`/hashtag/${hashtag}`, { replace: true });
         }
         if (verifyUser) {
             navigate('/', { replace: true });
         } else {
             getUserInfo();
-        }   
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -59,29 +54,13 @@ export default function UserPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     };
 
-    //requisição de dados do usuario
-    useEffect(() => {
-
-        const promise = axios.get(`${BASE_URL}/user/${id}`, config(verifyUser ? "" : user.token));
-
-        promise.then((res) => {
-            setUserData(res.data)
-            setFollower(res.data.following)
-            setLoading(false)
-        }).catch((err) => {
-            console.log(err)
-        })
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [updatePage]);
-
-    //requisição de posts com o id usuario
+    //requisição de posts com a hashtag
     useEffect(() => {
         const header = verifyUser ? "" : config(user.token);
-
-        const promise = axios.get(`${BASE_URL}/UserPosts/${id}?cut=${cut}`, header);
+        const promise = axios.get(`${BASE_URL}/posts/${hashtag}?cut=${cut}`, header);
 
         promise.then((res) => {
+            console.log(res.data)
             setPosts(res.data)
             setLoading(false)
             setCut(cut + res.data.length);
@@ -93,12 +72,14 @@ export default function UserPage() {
         })
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [updatePage]);
+    }, [updatePage])
 
     function morePosts(page) {
+        console.log('oia a faca')
+        console.log(cut);
         const header = verifyUser ? "" : config(user.token);
 
-        const promise = axios.get(`${BASE_URL}/UserPosts/${id}?cut=${cut}`, header);
+        const promise = axios.get(`${BASE_URL}/posts/${hashtag}?cut=${cut}`, header);
         promise.then((res) => {
             setPosts([...posts, ...res.data]);
             setLoading(false);
@@ -114,7 +95,7 @@ export default function UserPage() {
 
     //requisição de trends
     useEffect(() => {
-        const header = verifyUser ? "" : config(verifyUser ? "" : user.token);
+        const header = verifyUser ? "" : config(user.token);
         const trends = axios.get(`${BASE_URL}/trends`, header);
         trends.then((r) => {
             setTrends(r.data);
@@ -140,19 +121,11 @@ export default function UserPage() {
             <Header userInfo={verifyUser ? "" : userInfo} />
             <SearchBox />
             <Main>
-                <div>
-                    <img src={userData === undefined ? '' : userData.imageUrl} alt={userData === undefined ? '' : userData.name} />
-                    <h1>{userData === undefined ? '' : `${userData.name}'s posts`}</h1>
-                </div>
                 <Panel>
                     <div>
-                        <div>
-                            <img src={userData === undefined ? '' : userData.imageUrl} alt={userData === undefined ? '' : userData.name} />
-                            <h1>{userData === undefined ? '' : <TimelineTitle>{userData === undefined ? '' : userData.name}'s posts</TimelineTitle>}</h1>
-                            {userData === undefined ?
-                                '' :
-                                <FollowerButton follower={follower} setFollower={setFollower} id={id} updatePage={updatePage} />}
-                        </div>
+
+                        <TimelineTitle>#{hashtag}</TimelineTitle>
+
                         <div style={{ display: 'flex', width: '100%' }}>
                             <Posts>
                                 <div style={{ height: '500px', overflow: 'auto' }}>
@@ -183,6 +156,4 @@ export default function UserPage() {
         </Container>
     )
 }
-
-
 

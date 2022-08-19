@@ -2,12 +2,14 @@ import { useState } from "react";
 import { ArrowBox, HeaderContainer, LinkrLogo } from "./HeaderStyle";
 import { BiUserCircle } from 'react-icons/bi';
 import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io'
-import LogoffBox from "../timeline/LogoffBox";
+import LogoffBox from "./LogoffBox";
+import { useNavigate } from "react-router-dom";
 
 export default function Header({ userInfo }) {
 
     const [arrowDown, setArrowDown] = useState(true);
     const [displayBox, setDisplayBox] = useState(false);
+    const navigate = useNavigate();
 
     const verifyUser = userInfo === undefined;
 
@@ -21,7 +23,7 @@ export default function Header({ userInfo }) {
     return (
         <>
             <HeaderContainer>
-                <LinkrLogo>linkr</LinkrLogo>
+                <LinkrLogo onClick={() => navigate('/')} style={{ cursor: 'pointer' }} >linkr</LinkrLogo>
 
                 <ArrowBox onClick={clickOnTheArrow}>
                     {arrowDown ? <IoIosArrowDown /> : <IoIosArrowUp />}

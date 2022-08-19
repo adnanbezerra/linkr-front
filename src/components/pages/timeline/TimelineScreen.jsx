@@ -1,34 +1,39 @@
-
-import { Container, Main, Panel, Posts, NewPost, Post, Perfil, PostContent, Sidebar, Line, Hashtags, LoadSpinner, Preview, Infos, TimelineTitle } from "./TimelineStyle";
-import UserContext from '../../contexts/UserContext.js'
+import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle, WarningNewPosts, LoadingWarning } from "./TimelineStyle";
+import UserContext from '../../contexts/UserContext.js';
+import UpdateContext from "../../contexts/UpdateContext.js";
 import { useEffect, useState, useContext } from "react";
-import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
-import EditPost from "../EditPost/EditPost.jsx";
-import DeletePost from "../EditPost/DeletePost.jsx"
-import Header from "../Header/Header";
+import Header from "../../templates/Header/Header";
 import { config, BASE_URL, getCookieByName } from "../../../mock/data";
-import LikePost from "../LikePost/LikePost.jsx";
 import { useNavigate, Link } from "react-router-dom";
-import SearchBox from "../SearchBox/SearchBox";
-import { ReactTagify } from "react-tagify";
+import SearchBox from "../../templates/SearchBox/SearchBox";
+import { CreateNewPost, GetPosts } from "./auxiliaryFunctions";
+import useInterval from 'use-interval';
+import { BsArrowCounterclockwise } from 'react-icons/bs';
+import InfiniteScroll from 'react-infinite-scroller';
+
 
 function TimeLine() {
     const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
     const [disable, setDisable] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [updatePage, setUpdatePage] = useState(true);
+    const { updatePage, setUpdatePage } = useContext(UpdateContext);
     const [trends, setTrends] = useState([]);
     const [posts, setPosts] = useState([])
+    const [messagePost, setMessagePost] = useState('')
     const [modalIsOpen, setIsOpen] = useState(false);
     const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
     const verifyUser = user === undefined;
-
     const [userInfo, setUserInfo] = useState();
 
-    // const profilePicture = userInfo === undefined ? <BiUserCircle /> : <img src={verifyUser ? "" : userInfo.imageUrl} alt="" />;
+    const [lastPostsUpdate, setLastPostsUpdate] = useState('-infinity');
+    const [newposts, setNewposts] = useState([]);
+    const [numberOfNewposts, setNumberOfNewposts] = useState(0);
+    const [cut, setCut] = useState(0);
+    const [areMorePosts, setAreMorePosts] = useState(true);
+
 
     useEffect(() => {
         const tokenCookie = getCookieByName('token');
@@ -58,11 +63,30 @@ function TimeLine() {
     };
 
     useEffect(() => {
+        const header = verifyUser ? "" : config(user.token);
 
-        const promise = axios.get(`${BASE_URL}/timeline`, config(user.token))
+        const promise = axios.get(`${BASE_URL}/timeline?cut=${cut}`, header)
         promise.then((res) => {
-            setPosts(res.data)
-            setLoading(false)
+            if (typeof (res.data) === "string") {
+                setMessagePost(res.data)
+            }
+            else {
+                setMessagePost('')
+                setPosts(res.data)
+                setCut(cut + res.data.length);
+            }
+            setLoading(false);
+            if (res.data.length === 0) {
+                setAreMorePosts(false);
+            }
+        }).catch((err) => {
+            console.error(err)
+        })
+
+        //obtendo timestamp atual
+        axios.get(`${BASE_URL}/currentTime`, header).then((res) => {
+            setLastPostsUpdate(res.data);
+            console.log(res.data);
         }).catch((err) => {
             console.error(err)
         })
@@ -70,9 +94,30 @@ function TimeLine() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage])
 
+    function morePosts(page) {
+        const header = verifyUser ? "" : config(user.token);
+
+        const promise = axios.get(`${BASE_URL}/timeline?cut=${cut}`, header)
+        promise.then((res) => {
+            setPosts([...posts, ...res.data]);
+            setLoading(false);
+            setCut(cut + res.data.length);
+            if (res.data.length === 0) {
+                setAreMorePosts(false);
+            }
+        }).catch((err) => {
+            console.error(err)
+        })
+    }
+
+    
+
+
+
     //requisição de trends
     useEffect(() => {
-        const trends = axios.get(`${BASE_URL}/trends`, config(user.token));
+        const header = verifyUser ? "" : config(user.token);
+        const trends = axios.get(`${BASE_URL}/trends`, header);
         trends.then((r) => {
             setTrends(r.data);
         }).catch((err) => {
@@ -82,6 +127,31 @@ function TimeLine() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage]);
 
+
+    //atualização de post novos a cada 15 segundos
+    useInterval(() => {
+        const header = verifyUser ? "" : config(user.token);
+
+        const promise = axios.get(`${BASE_URL}/timeline?time=${lastPostsUpdate}`, header)
+        promise.then((res) => {
+            if (res.data.length > 0) {
+                setNewposts([...res.data, ...newposts]);
+                setNumberOfNewposts(numberOfNewposts + res.data.length);
+                setCut(cut + res.data.length);
+            }
+
+        }).catch((err) => {
+            console.error(err)
+        })
+
+        //obtendo timestamp atual
+        axios.get(`${BASE_URL}/currentTime`, header).then((res) => {
+            setLastPostsUpdate(res.data);
+            console.log(res.data);
+        }).catch((err) => {
+            console.error(err)
+        })
+    }, 15000);
 
     function GetHashtags({ item }) {
 
@@ -112,26 +182,31 @@ function TimeLine() {
             return;
         }
 
-        const promise = axios.post(`${BASE_URL}/timeline`, body, config(user.token))
+        const header = verifyUser ? "" : config(user.token);
+        const promise = axios.post(`${BASE_URL}/timeline`, body, header)
 
         promise.then((res) => {
-            console.log('postei')
-            setUpdatePage(!updatePage)
+            
             setDisable(false)
             setDescription('')
             setUrl('')
+            navigate('/')
         }).catch((err) => {
             alert('Houve um erro ao publicar seu link')
             console.error(err)
+
         })
     }
 
+    function MessagePost({ messagePost }) {
+        return (
+            <h1>{messagePost}</h1>
+        )
+    }
     return (
         <Container>
             <Header userInfo={verifyUser ? "" : userInfo} />
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <SearchBox setUpdatePage={setUpdatePage} updatePage={updatePage} />
-            </div>
+            <SearchBox />
             <Main>
                 <Panel>
                     <div>
@@ -139,9 +214,30 @@ function TimeLine() {
                         <div style={{ display: 'flex', width: '100%' }}>
                             <Posts>
                                 <CreateNewPost userInfo={userInfo} publish={publish} setUrl={setUrl} url={url} setDescription={setDescription} description={description} disable={disable} setDisable={setDisable} />
+
+
+                                {numberOfNewposts === 0 ? '' : <WarningNewPosts onClick={() => {
+                                    setPosts([...newposts, ...posts]);
+                                    setNewposts([]);
+                                    setNumberOfNewposts(0);
+                                }}>{numberOfNewposts} new posts, load more!<BsArrowCounterclockwise color="#FFFFFF" />
+                                </WarningNewPosts>}
+                                
+                                <div style={{height:'500px',overflow:'auto'}}>
+                                <InfiniteScroll
+                                    pageStart={0}
+                                    loadMore={morePosts}
+                                    hasMore={areMorePosts}
+                                    loader={<LoadingWarning key={0}>Loading more posts...</LoadingWarning>}
+                                    threshold={0}
+                                    useWindow={false}
+
+                                >
+                                    {posts.length === 0 ? <h1>There are no posts yet</h1> : posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} navigate={navigate} />) })}
+                                </InfiniteScroll>
+                                </div>
                                 {
-                                    posts.length === 0 ? <h1>There are no posts yet</h1> :
-                                        posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} navigate={navigate} />) })
+                                    (messagePost === '') ? '' : <MessagePost messagePost={messagePost} />
                                 }
                             </Posts>
                             <Sidebar>
@@ -156,78 +252,6 @@ function TimeLine() {
                 </Panel>
             </Main>
         </Container>
-    )
-}
-function CreateNewPost({ userInfo, publish, setUrl, url, setDescription, description, disable, setDisable }) {
-    return (
-        <NewPost>
-            <Perfil>
-                <img src={userInfo === undefined ? "" : userInfo.imageUrl} alt="" />
-            </Perfil>
-            <PostContent>
-                <h2>What are you going to share today?</h2>
-                <form onSubmit={publish}>
-                    <input type='text' placeholder="http://..." onChange={(e) => { setUrl(e.target.value) }} value={url} />
-                    <textarea placeholder="Awesome article about #javascript" onChange={(e) => { setDescription(e.target.value) }} value={description}></textarea>
-                    <button disabled={disable} onClick={() => {
-                        setDisable(true)
-                    }}>{disable ? 'Publishing' : 'Publish'}</button>
-                </form>
-            </PostContent>
-        </NewPost>
-    )
-}
-
-function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navigate }) {
-
-    const [message, setMessage] = useState(item.description);
-    const [editMode, setEditMode] = useState(false);
-
-    //variaveis para uso na biblioteca tagify
-    const tagStyle = {
-        fontWeight: 900,
-        color: 'white',
-        cursor: 'pointer'
-    }
-
-    return (
-        <>
-            {
-                loading ?
-                    <LoadSpinner>
-                        < Loading />
-                    </LoadSpinner > :
-                    <Post>
-                        <Perfil>
-                            <img src={item.imageUrl} alt={item.name} />
-                            <LikePost id={item.id} />
-                        </Perfil>
-                        <PostContent>
-                            <h3 onClick={() => navigate(`/user/${item.userId}`)}>{item.name} </h3>
-                            {/*o item.description foi incorporado no contentString*/}
-                            {/* <ReactTagify
-                                tagStyle={tagStyle}
-                                tagClicked={(tag) => navigate(`/hashtag/${tag.substring(1, tag.length)}`)}> */}
-                            <EditPost description={item.description} editMode={editMode} setEditMode={setEditMode} message={message} setMessage={setMessage} id={item.id} setPosts={setPosts} />
-                            {/* </ReactTagify> */}
-
-                            <Preview onClick={() => { window.open(item.url, '_blank') }}>
-                                <Infos>
-                                    <h2>{item.titlePreview}</h2>
-                                    <h3>{item.descriptionPreview}</h3>
-                                    <h4>{item.url}</h4>
-                                </Infos>
-                                <img src={item.imagePreview} alt="" />
-                            </Preview>
-                            {
-                                item.isMyPost === "true" ?
-                                    <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode={setEditMode} editMode={editMode} /> :
-                                    ``
-                            }
-                        </PostContent>
-                    </Post>
-            }
-        </>
     )
 }
 
