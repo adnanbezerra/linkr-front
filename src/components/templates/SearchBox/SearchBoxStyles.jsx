@@ -58,6 +58,11 @@ export const SearchResults = styled.div`
         margin-right: 12px;
     }
 
+    p {
+        color: #C5C5C5;
+        margin-left: 10px;
+    }
+
     @media(max-width: 650px) {
         z-index: 1;
         top: 110px;

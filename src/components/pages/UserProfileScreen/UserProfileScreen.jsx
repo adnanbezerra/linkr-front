@@ -2,14 +2,10 @@ import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle }
 import FollowerButton from "./Follower.jsx";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
-import Loading from "../../Loading/Loading.js";
 import axios from 'axios';
-import DeletePost from "../EditPost/DeletePost.jsx";
 import Header from "../../templates/Header/Header";
 import { getCookieByName, config, BASE_URL } from "../../../mock/data";
 import { useNavigate, Link, useParams } from "react-router-dom";
-import LikePost from "../LikePost/LikePost.jsx";
-import { ReactTagify } from "react-tagify";
 import SearchBox from "../../templates/SearchBox/SearchBox.jsx";
 import UpdateContext from "../../contexts/UpdateContext.js";
 import { GetPosts } from "../timeline/auxiliaryFunctions.js";
@@ -27,20 +23,18 @@ export default function UserPage() {
     const verifyUser = user === undefined;
     const [userData, setUserData] = useState();
     const [userInfo, setUserInfo] = useState();
-
-    const [follower, setFollower] = useState(false);
+    const [follower, setFollower] = useState(undefined);
 
     useEffect(() => {
         const tokenCookie = getCookieByName('token');
         if (tokenCookie) {
             setUser({ token: tokenCookie });
-            navigate(`/user/${id}`, { replace: true });
         }
         if (verifyUser) {
             navigate('/', { replace: true });
         } else {
             getUserInfo();
-        }
+        }   
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -61,8 +55,7 @@ export default function UserPage() {
     //requisição de dados do usuario
     useEffect(() => {
 
-
-        const promise = axios.get(`${BASE_URL}/user/${id}`, config(user.token));
+        const promise = axios.get(`${BASE_URL}/user/${id}`, config(verifyUser ? "" : user.token));
 
         promise.then((res) => {
             setUserData(res.data)
@@ -78,8 +71,7 @@ export default function UserPage() {
     //requisição de posts com o id usuario
     useEffect(() => {
 
-
-        const promise = axios.get(`${BASE_URL}/UserPosts/${id}`, config(user.token));
+        const promise = axios.get(`${BASE_URL}/UserPosts/${id}`, config(verifyUser ? "" : user.token));
 
         promise.then((res) => {
             setPosts(res.data)
@@ -95,7 +87,7 @@ export default function UserPage() {
 
     //requisição de trends
     useEffect(() => {
-        const header = verifyUser ? "" : config(user.token);
+        const header = verifyUser ? "" : config(verifyUser ? "" : user.token);
         const trends = axios.get(`${BASE_URL}/trends`, header);
         trends.then((r) => {
             setTrends(r.data);
@@ -125,7 +117,7 @@ export default function UserPage() {
                     <div>
                         <div>
                             <img src={userData === undefined ? '' : userData.imageUrl} alt={userData === undefined ? '' : userData.name} />
-                            <h1>{userData === undefined ? '' : <TimelineTitle>{userData.name}'s posts</TimelineTitle>}</h1>
+                            <h1>{userData === undefined ? '' : <TimelineTitle>{userData === undefined ? '' : userData.name}'s posts</TimelineTitle>}</h1>
                             {userData === undefined ?
                                 '' :
                                 <FollowerButton follower={follower} setFollower={setFollower} id={id} updatePage={updatePage} />}
