@@ -1,4 +1,4 @@
-import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle } from "./HashTagsPostsScreenStyle.jsx";
+import { Container, Main, Panel, Posts, Sidebar, Line, Hashtags, TimelineTitle, LoadingWarning } from "./HashTagsPostsScreenStyle.jsx";
 import UserContext from '../../contexts/UserContext.js'
 import { useEffect, useState, useContext } from "react";
 import axios from 'axios';
@@ -8,6 +8,7 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 import SearchBox from "../../templates/SearchBox/SearchBox.jsx";
 import UpdateContext from "../../contexts/UpdateContext.js";
 import { GetPosts } from "../timeline/auxiliaryFunctions.js";
+import InfiniteScroll from 'react-infinite-scroller';
 
 export default function UserPage() {
     const { hashtag } = useParams();
@@ -21,6 +22,9 @@ export default function UserPage() {
     const navigate = useNavigate();
     const verifyUser = user === undefined;
     const [userInfo, setUserInfo] = useState();
+
+    const [cut, setCut] = useState(0);
+    const [areMorePosts, setAreMorePosts] = useState(true);
 
     useEffect(() => {
         const tokenCookie = getCookieByName('token');
@@ -39,7 +43,7 @@ export default function UserPage() {
     function getUserInfo() {
         const userToken = verifyUser ? "" : user.token;
         const token = config(userToken);
-    
+
         axios.get(`${BASE_URL}/user/me`, token)
             .then(response => {
                 setUserInfo(response.data);
@@ -52,13 +56,17 @@ export default function UserPage() {
 
     //requisição de posts com a hashtag
     useEffect(() => {
-
-        const promise = axios.get(`${BASE_URL}/posts/${hashtag}`, config(user.token));
+        const header = verifyUser ? "" : config(user.token);
+        const promise = axios.get(`${BASE_URL}/posts/${hashtag}?cut=${cut}`, header);
 
         promise.then((res) => {
             console.log(res.data)
             setPosts(res.data)
             setLoading(false)
+            setCut(cut + res.data.length);
+            if (res.data.length === 0) {
+                setAreMorePosts(false);
+            }
         }).catch((err) => {
             console.log(err)
         })
@@ -66,6 +74,24 @@ export default function UserPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updatePage])
 
+    function morePosts(page) {
+        console.log('oia a faca')
+        console.log(cut);
+        const header = verifyUser ? "" : config(user.token);
+
+        const promise = axios.get(`${BASE_URL}/posts/${hashtag}?cut=${cut}`, header);
+        promise.then((res) => {
+            setPosts([...posts, ...res.data]);
+            setLoading(false);
+            setCut(cut + res.data.length);
+            if (res.data.length === 0) {
+                setAreMorePosts(false);
+                console.log('finished')
+            }
+        }).catch((err) => {
+            console.error(err)
+        })
+    }
 
     //requisição de trends
     useEffect(() => {
@@ -98,14 +124,23 @@ export default function UserPage() {
                 <Panel>
                     <div>
 
-                        <TimelineTitle>{hashtag}</TimelineTitle>
+                        <TimelineTitle>#{hashtag}</TimelineTitle>
 
                         <div style={{ display: 'flex', width: '100%' }}>
                             <Posts>
-                                {
-                                    posts.length === 0 ? <h1>There are no posts yet</h1> :
-                                        posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} navigate={navigate} />) })
-                                }
+                                <div style={{ height: '500px', overflow: 'auto' }}>
+                                    <InfiniteScroll
+                                        pageStart={0}
+                                        loadMore={morePosts}
+                                        hasMore={areMorePosts}
+                                        loader={<LoadingWarning key={0}>Loading more posts...</LoadingWarning>}
+                                        threshold={0}
+                                        useWindow={false}
+
+                                    >
+                                        {posts.length === 0 ? <h1>There are no posts yet</h1> : posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} navigate={navigate} />) })}
+                                    </InfiniteScroll>
+                                </div>
                             </Posts>
                             <Sidebar>
                                 <h2>Trending</h2>
