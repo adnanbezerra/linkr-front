@@ -110,7 +110,6 @@ export const Post = styled.div`
     display: flex;
     border-radius: 15px;
     padding: 20px;
-    margin-bottom: 20px;
     position: relative;
     box-sizing: border-box;
     background-color: #151515;
@@ -332,6 +331,23 @@ h4{
     font-family: 'Lato', sans-serif;
     word-break: break-all;
 }
+`
+export const RepostStyle = styled.div `
+    background: #1E1E1E;
+    border-radius: 16px 16px 0 0 ;
+    color: rgba(255, 255, 255, 1);
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+    p {
+        margin-left: 10px;
+        span {
+            font-weight: bold;
+        }
+    }
 `
 
 // export const Main = styled.div`

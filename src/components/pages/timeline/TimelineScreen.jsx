@@ -12,6 +12,7 @@ import useInterval from 'use-interval';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
 import InfiniteScroll from 'react-infinite-scroller';
 
+
 function TimeLine() {
     const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
@@ -19,7 +20,8 @@ function TimeLine() {
     const [loading, setLoading] = useState(false)
     const { updatePage, setUpdatePage } = useContext(UpdateContext);
     const [trends, setTrends] = useState([]);
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState([])
+    const [messagePost, setMessagePost] = useState('')
     const [modalIsOpen, setIsOpen] = useState(false);
     const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
@@ -65,9 +67,15 @@ function TimeLine() {
 
         const promise = axios.get(`${BASE_URL}/timeline?cut=${cut}`, header)
         promise.then((res) => {
-            setPosts(res.data);
+            if (typeof (res.data) === "string") {
+                setMessagePost(res.data)
+            }
+            else {
+                setMessagePost('')
+                setPosts(res.data)
+                setCut(cut + res.data.length);
+            }
             setLoading(false);
-            setCut(cut + res.data.length);
             if (res.data.length === 0) {
                 setAreMorePosts(false);
             }
@@ -178,15 +186,22 @@ function TimeLine() {
         const promise = axios.post(`${BASE_URL}/timeline`, body, header)
 
         promise.then((res) => {
-            console.log('postei')
-            setUpdatePage(!updatePage)
+            
             setDisable(false)
             setDescription('')
             setUrl('')
+            navigate('/')
         }).catch((err) => {
             alert('Houve um erro ao publicar seu link')
             console.error(err)
+
         })
+    }
+
+    function MessagePost({ messagePost }) {
+        return (
+            <h1>{messagePost}</h1>
+        )
     }
     return (
         <Container>
@@ -199,6 +214,7 @@ function TimeLine() {
                         <div style={{ display: 'flex', width: '100%' }}>
                             <Posts>
                                 <CreateNewPost userInfo={userInfo} publish={publish} setUrl={setUrl} url={url} setDescription={setDescription} description={description} disable={disable} setDisable={setDisable} />
+
 
                                 {numberOfNewposts === 0 ? '' : <WarningNewPosts onClick={() => {
                                     setPosts([...newposts, ...posts]);
@@ -220,7 +236,9 @@ function TimeLine() {
                                     {posts.length === 0 ? <h1>There are no posts yet</h1> : posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} navigate={navigate} />) })}
                                 </InfiniteScroll>
                                 </div>
-
+                                {
+                                    (messagePost === '') ? '' : <MessagePost messagePost={messagePost} />
+                                }
                             </Posts>
                             <Sidebar>
                                 <h2>Trending</h2>
