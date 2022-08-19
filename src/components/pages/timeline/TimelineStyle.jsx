@@ -324,6 +324,23 @@ h4{
     word-break: break-all;
 }
 `
+export const RepostStyle = styled.div `
+    background: #1E1E1E;
+    border-radius: 16px 16px 0 0 ;
+    color: rgba(255, 255, 255, 1);
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+    p {
+        margin-left: 10px;
+        span {
+            font-weight: bold;
+        }
+    }
+`
 
 // export const Main = styled.div`
     

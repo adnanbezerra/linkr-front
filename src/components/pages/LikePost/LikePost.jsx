@@ -4,12 +4,15 @@ import { BASE_URL, config } from '../../../mock/data';
 import { useContext, useEffect, useState } from 'react';
 import UserContext from '../../contexts/UserContext.js';
 import ReactTooltip from 'react-tooltip';
+import UpdateContext from "../../contexts/UpdateContext.js";
 
 export default function LikePost({ id }) {
     const { user } = useContext(UserContext);
     const [infoLikes, setInfoLikes] = useState({ liked: false, likes: [], total: 0 })
     const [liked, setLiked] = useState();
-    const [text, setText] = useState('');
+    const [text, setText ] = useState('');
+    const {updatePage, setUpdatePage} = useContext(UpdateContext);
+
 
 
     function searchLike() {
@@ -70,9 +73,8 @@ export default function LikePost({ id }) {
         return info;
     }
 
-    useEffect(() => { searchLike() },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        []);
+    useEffect(() => { searchLike() }, [updatePage, searchLike]);
+
     return (
         <>
             {(!liked) ?
