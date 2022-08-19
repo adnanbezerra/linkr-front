@@ -327,6 +327,20 @@ h4{
 `
 
 // export const Main = styled.div`
-    
+
 // `
 
+export const WarningNewPosts = styled.div`
+    height: 61px;
+    width: 100%;
+    left: 241px;
+    top: 481px;
+    border-radius: 16px;
+    background-color: #1877F2;
+    box-shadow: 0px 4px 4px 0px #00000040;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-bottom: 16px;
+`
