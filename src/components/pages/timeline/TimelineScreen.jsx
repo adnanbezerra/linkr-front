@@ -9,6 +9,7 @@ import { useNavigate, Link } from "react-router-dom";
 import SearchBox from "../../templates/SearchBox/SearchBox";
 import { CreateNewPost, GetPosts } from "./auxiliaryFunctions";
 import useInterval from 'use-interval';
+import {BsArrowCounterclockwise} from 'react-icons/bs';
 
 function TimeLine() {
     const [url, setUrl] = useState('')
@@ -174,7 +175,8 @@ function TimeLine() {
                                     setPosts([...newposts,...posts]);
                                     setNewposts([]);
                                     setNumberOfNewposts(0);
-                                }}>{numberOfNewposts} new posts, load more!</WarningNewPosts>}
+                                }}>{numberOfNewposts} new posts, load more!<BsArrowCounterclockwise color="#FFFFFF"/>
+                                </WarningNewPosts>}
                                 {
                                     posts.length === 0 ? <h1>There are no posts yet</h1> :
                                         posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} navigate={navigate} />) })
