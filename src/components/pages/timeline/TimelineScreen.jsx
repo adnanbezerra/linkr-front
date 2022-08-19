@@ -110,7 +110,7 @@ function TimeLine() {
         })
     }
 
-    
+
 
 
 
@@ -186,7 +186,7 @@ function TimeLine() {
         const promise = axios.post(`${BASE_URL}/timeline`, body, header)
 
         promise.then((res) => {
-            
+
             setDisable(false)
             setDescription('')
             setUrl('')
@@ -222,19 +222,20 @@ function TimeLine() {
                                     setNumberOfNewposts(0);
                                 }}>{numberOfNewposts} new posts, load more!<BsArrowCounterclockwise color="#FFFFFF" />
                                 </WarningNewPosts>}
-                                
-                                <div style={{height:'500px',overflow:'auto'}}>
-                                <InfiniteScroll
-                                    pageStart={0}
-                                    loadMore={morePosts}
-                                    hasMore={areMorePosts}
-                                    loader={<LoadingWarning key={0}>Loading more posts...</LoadingWarning>}
-                                    threshold={0}
-                                    useWindow={false}
 
-                                >
-                                    {posts.length === 0 ? <h1>There are no posts yet</h1> : posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} navigate={navigate} />) })}
-                                </InfiniteScroll>
+                                <div style={{ height: '500px', overflow: 'auto' }}>
+                                    {posts.length === 0 ? <h1>There are no posts yet</h1> : <InfiniteScroll
+                                        pageStart={0}
+                                        loadMore={morePosts}
+                                        hasMore={areMorePosts}
+                                        loader={<LoadingWarning key={0}>Loading more posts...</LoadingWarning>}
+                                        threshold={0}
+                                        useWindow={false}
+
+                                    >
+                                        {posts.length === 0 ? <h1>There are no posts yet</h1> : posts.map((item, index) => { return (<GetPosts key={index} item={item} loading={loading} setPosts={setPosts} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} navigate={navigate} />) })}
+                                    </InfiniteScroll>}
+                                    
                                 </div>
                                 {
                                     (messagePost === '') ? '' : <MessagePost messagePost={messagePost} />
