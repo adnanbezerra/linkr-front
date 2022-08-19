@@ -140,10 +140,6 @@ export default function UserPage() {
             <Header userInfo={verifyUser ? "" : userInfo} />
             <SearchBox />
             <Main>
-                <div>
-                    <img src={userData === undefined ? '' : userData.imageUrl} alt={userData === undefined ? '' : userData.name} />
-                    <h1>{userData === undefined ? '' : `${userData.name}'s posts`}</h1>
-                </div>
                 <Panel>
                     <div>
                         <div>
