@@ -4,25 +4,62 @@ import DeletePost from "../EditPost/DeletePost";
 import EditPost from "../EditPost/EditPost";
 import Repost from "../EditPost/Repost.jsx";
 import LikePost from "../LikePost/LikePost";
-import { Infos, LoadSpinner, NewPost, Perfil, Post, PostContent, Preview } from "./TimelineStyle";
+import { BiRepost } from 'react-icons/bi';
+import { Infos, LoadSpinner, NewPost, Perfil, Post, PostContent, Preview, RepostStyle } from "./TimelineStyle";
+
 
 export function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navigate }) {
-
     const [message, setMessage] = useState(item.description);
     const [editMode, setEditMode] = useState(false);
 
+    if (loading) {
+        return (
+            <LoadSpinner>
+                < Loading />
+            </LoadSpinner >
+        )
+    }
+
     return (
         <>
-            {
-                loading ?
-                    <LoadSpinner>
-                        < Loading />
-                    </LoadSpinner > :
+            {item.isRepost == null ? 
+            <Post>
+                <Perfil>
+                    <img src={item.imageUrl} alt={item.name} />
+                    <LikePost id={item.id} />
+                    <Repost id={item.id}  />
+                </Perfil>
+                <PostContent>
+                    <h3 onClick={() => navigate(`/user/${item.userId}`)}>{item.name} </h3>
+
+                    <EditPost description={item.description} editMode={editMode} setEditMode={setEditMode} message={message} setMessage={setMessage} id={item.id} setPosts={setPosts} />
+
+                    <Preview onClick={() => { window.open(item.url, '_blank') }}>
+                        <Infos>
+                            <h2>{item.titlePreview}</h2>
+                            <h3>{item.descriptionPreview}</h3>
+                            <h4>{item.url}</h4>
+                        </Infos>
+                        <img src={item.imagePreview} alt="" />
+                    </Preview>
+                    {
+                        item.isMyPost === "true" ?
+                            <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode={setEditMode} editMode={editMode} /> :
+                            ``
+                    }
+                </PostContent>
+            </Post>
+                :
+                <>
+                    <RepostStyle> 
+                    <BiRepost color="#FFFFFF" size={25} cursor='pointer' />
+                    <p> Re-posted by <span> { item.meRepost ==='true'? 'you': item.isRepost} </span> </p>
+                    </RepostStyle>
                     <Post>
                         <Perfil>
                             <img src={item.imageUrl} alt={item.name} />
                             <LikePost id={item.id} />
-                            <Repost />
+                            <Repost id={item.id} />
                         </Perfil>
                         <PostContent>
                             <h3 onClick={() => navigate(`/user/${item.userId}`)}>{item.name} </h3>
@@ -37,14 +74,9 @@ export function GetPosts({ item, loading, setPosts, modalIsOpen, setIsOpen, navi
                                 </Infos>
                                 <img src={item.imagePreview} alt="" />
                             </Preview>
-                            {
-                                item.isMyPost === "true" ?
-                                    <DeletePost id={item.id} modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} setPosts={setPosts} setEditMode={setEditMode} editMode={editMode} /> :
-                                    ``
-                            }
                         </PostContent>
                     </Post>
-            }
+                </>}
         </>
     )
 }
