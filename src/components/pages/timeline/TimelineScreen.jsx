@@ -9,6 +9,7 @@ import { useNavigate, Link } from "react-router-dom";
 import SearchBox from "../../templates/SearchBox/SearchBox";
 import { CreateNewPost, GetPosts } from "./auxiliaryFunctions";
 
+
 function TimeLine() {
     const [url, setUrl] = useState('')
     const [description, setDescription] = useState('')
@@ -57,7 +58,7 @@ function TimeLine() {
 
         const promise = axios.get(`${BASE_URL}/timeline`, header)
         promise.then((res) => {
-            console.log(typeof (res.data) === "string")
+            console.log("entrei")
             if (typeof (res.data) === "string") {
                 setMessagePost(res.data)
             }
@@ -120,13 +121,15 @@ function TimeLine() {
         const promise = axios.post(`${BASE_URL}/timeline`, body, header)
 
         promise.then((res) => {
-            setUpdatePage(!updatePage)
+            
             setDisable(false)
             setDescription('')
             setUrl('')
+            navigate('/')
         }).catch((err) => {
             alert('Houve um erro ao publicar seu link')
             console.error(err)
+
         })
     }
 
@@ -135,6 +138,7 @@ function TimeLine() {
             <h1>{messagePost}</h1>
         )
     }
+
 
     return (
         <Container>

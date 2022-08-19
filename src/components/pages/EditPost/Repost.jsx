@@ -1,13 +1,13 @@
 import { BiRepost } from 'react-icons/bi';
 import Modal from "react-modal";
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useCallback } from 'react';
 import { BASE_URL, config } from '../../../mock/data';
 import UserContext from '../../contexts/UserContext.js';
 import Loading from "../../Loading/Loading.js";
 import { PostModal } from "./EditPostStyle.jsx";
 import axios from 'axios';
 import UpdateContext from "../../contexts/UpdateContext.js";
-
+import { useNavigate } from "react-router-dom";
 
 export default function Repost( {id }) {
     const { user } = useContext(UserContext);
@@ -16,6 +16,9 @@ export default function Repost( {id }) {
     const [infoRepost, setInfoRepost] = useState()
     const verifyUser = user === undefined;
     const {updatePage, setUpdatePage} = useContext(UpdateContext);
+    const userToken = verifyUser ? "" : user.token;
+    const token = config(userToken);
+    const navigate = useNavigate();
 
     function searchRepost(){
         setLoading(true)
@@ -29,11 +32,9 @@ export default function Repost( {id }) {
 
     function postRepost() {
         setLoading(true)
-        const userToken = verifyUser ? "" : user.token;
-        const token = config(userToken);
         const repost = axios.post(`${BASE_URL}/repost/${id}`, {} , token)
         repost
-        .then((res) => {setLoading(false);setUpdatePage(!updatePage); setIsOpen(false)})
+        .then((res) => {setLoading(false); navigate("/") ; setIsOpen(false)})
         .catch((err) => {setLoading(false); alert("Nao foi possivel repostar"); console.log(err); setIsOpen(false)})
     }
 
@@ -41,7 +42,7 @@ export default function Repost( {id }) {
     return (
         <>
             <BiRepost color="#FFFFFF" size={25} cursor='pointer' onClick={() => setIsOpen(true)} />
-            <p> {infoRepost} </p>
+            <p> {infoRepost} re-post </p>
             <Modal isOpen={modalIsOpen}
                 style={{
                     content: {

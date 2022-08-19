@@ -6,11 +6,12 @@ import { BASE_URL, config } from '../../../mock/data';
 import UserContext from '../../contexts/UserContext';
 import { Comment, CommentMessage, CommentTextContainer, CommentUserName, Container, CreateNewComment, ExtraInfo, FormButton, FormInput, FormInputContainer } from './CommentStyle';
 import { IoPaperPlaneOutline } from 'react-icons/io5';
+import UpdateContext from "../../contexts/UpdateContext.js";
 
 export default function CommentPost({ displayComments, commentsList, setCommentsList, id, posterId, followingList }) {
 
     const { user } = useContext(UserContext);
-
+    const {updatePage, setUpdatePage} = useContext(UpdateContext);
     const [userInfo, setUserInfo] = useState();
     const [commentText, setCommentText] = useState("");
     const verifyUser = user === undefined;
@@ -20,7 +21,7 @@ export default function CommentPost({ displayComments, commentsList, setComments
         getUserInfo();
     }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        , [])
+        , [updatePage])
 
     function getUserInfo() {
         const userToken = verifyUser ? "" : user.token;
@@ -46,9 +47,10 @@ export default function CommentPost({ displayComments, commentsList, setComments
         const commentContent = { commentText, name, imageUrl };
 
         axios.post(`${BASE_URL}/comment/${id}`, content, headers)
-            .then(response => {
+            .then(response => { 
                 setCommentsList([...commentsList, commentContent]);
                 setCommentText("");
+                setUpdatePage(!updatePage)
             })
             .catch(error => {
                 console.error(error);

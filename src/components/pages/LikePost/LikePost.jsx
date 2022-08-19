@@ -9,28 +9,15 @@ import UpdateContext from "../../contexts/UpdateContext.js";
 export default function LikePost({ id }) {
     const { user } = useContext(UserContext);
     const [infoLikes, setInfoLikes] = useState({ liked: false, likes: [], total: 0 })
-    const [liked, setLiked] = useState();
+    const [liked, setLiked] = useState(false);
     const [text, setText ] = useState('');
-    const {updatePage, setUpdatePage} = useContext(UpdateContext);
-
-
-
-    function searchLike() {
-        const likeInfo = axios.get(`${BASE_URL}/likes/${id}`, config(user.token))
-        likeInfo
-            .then((res) => {
-                setInfoLikes(res.data); setLiked(res.data.liked);
-                const textInf = Text(res.data); setText(textInf)
-            })
-            .catch((err) => { console.log(err) })
-    }
-
+    const {updatePage, setUpdatePage} = useContext(UpdateContext)
     function postLike() {
         const request = axios.post(`${BASE_URL}/like/${id}`, null, config(user.token))
         request
             .then(() => {
                 setLiked(!liked)
-                searchLike()
+                setUpdatePage(!updatePage)
             })
             .catch((err) => {
                 console.log(err)
@@ -43,7 +30,7 @@ export default function LikePost({ id }) {
         request
             .then(() => {
                 setLiked(!liked)
-                searchLike()
+                setUpdatePage(!updatePage)
             })
             .catch((err) => {
                 console.log(err)
@@ -73,7 +60,14 @@ export default function LikePost({ id }) {
         return info;
     }
 
-    useEffect(() => { searchLike() }, [updatePage, searchLike]);
+    useEffect(() => { 
+        const likeInfo = axios.get(`${BASE_URL}/likes/${id}`, config(user.token))
+        likeInfo
+        .then((res) => {
+            setInfoLikes(res.data); setLiked(res.data.liked);
+            const textInf = Text(res.data); setText(textInf)
+        })
+        .catch((err) => { console.log(err) }) }, [updatePage]);
 
     return (
         <>
